@@ -23,6 +23,7 @@ public class RedisCache extends AbstractCache {
     private int redisPort = IRedisClient.DEFAULT_REDIS_PORT;
     private PoolConfig poolConfig;
     private long timeToLiveSeconds = -1;
+    private boolean compactMode = false;
 
     public RedisCache(RedisCacheFactory redisCacheFactory) {
         this.redisCacheFactory = redisCacheFactory;
@@ -100,6 +101,59 @@ public class RedisCache extends AbstractCache {
     }
 
     /**
+     * Is compact mode on or off?
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @return
+     * @since 0.1.1
+     */
+    public boolean isCompactMode() {
+        return compactMode;
+    }
+
+    /**
+     * Is compact mode on or off?
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @return
+     * @since 0.1.1
+     */
+    public boolean getCompactMode() {
+        return compactMode;
+    }
+
+    /**
+     * Sets compact mode on/off.
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @param compactMode
+     * @return
+     * @since 0.1.1
+     */
+    public RedisCache setCompactMode(boolean compactMode) {
+        this.compactMode = compactMode;
+        return this;
+    }
+
+    /**
      * Serializes an object to byte array.
      * 
      * @param obj
@@ -139,7 +193,6 @@ public class RedisCache extends AbstractCache {
      */
     @Override
     public void destroy() {
-        // EMPTY
     }
 
     private IRedisClient getRedisClient() {
@@ -156,13 +209,24 @@ public class RedisCache extends AbstractCache {
     }
 
     /**
+     * Generates "flat" cachekey for non-compact mode.
+     * 
+     * @param key
+     * @return
+     * @since 0.1.1
+     */
+    protected String genCacheKeyNonCompact(String key) {
+        return getName() + "-" + key;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public long getSize() {
         IRedisClient redisClient = getRedisClient();
         try {
-            return redisClient != null ? redisClient.hashSize(getName()) : -1;
+            return redisClient != null && compactMode ? redisClient.hashSize(getName()) : -1;
         } finally {
             returnRedisClient(redisClient);
         }
@@ -191,7 +255,12 @@ public class RedisCache extends AbstractCache {
             try {
                 long ttl = expireAfterAccess > 0 ? expireAfterAccess
                         : (expireAfterWrite > 0 ? expireAfterWrite : timeToLiveSeconds);
-                redisClient.hashSet(getName(), key, serializeObject(entry), (int) ttl);
+                byte[] data = serializeObject(entry);
+                if (compactMode) {
+                    redisClient.hashSet(getName(), key, data, (int) ttl);
+                } else {
+                    redisClient.set(genCacheKeyNonCompact(key), data, (int) ttl);
+                }
             } finally {
                 returnRedisClient(redisClient);
             }
@@ -206,7 +275,11 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                redisClient.hashDelete(getName(), key);
+                if (compactMode) {
+                    redisClient.hashDelete(getName(), key);
+                } else {
+                    redisClient.delete(genCacheKeyNonCompact(key));
+                }
             } finally {
                 returnRedisClient(redisClient);
             }
@@ -219,7 +292,7 @@ public class RedisCache extends AbstractCache {
     @Override
     public void deleteAll() {
         IRedisClient redisClient = getRedisClient();
-        if (redisClient != null) {
+        if (redisClient != null && compactMode) {
             try {
                 redisClient.delete(getName());
             } finally {
@@ -236,7 +309,11 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                return redisClient.hashGet(getName(), key) != null;
+                if (compactMode) {
+                    return redisClient.hashGet(getName(), key) != null;
+                } else {
+                    return redisClient.get(genCacheKeyNonCompact(key)) != null;
+                }
             } finally {
                 returnRedisClient(redisClient);
             }
@@ -252,11 +329,13 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                byte[] obj = redisClient.hashGetAsBinary(getName(), key);
+                byte[] obj = compactMode ? redisClient.hashGetAsBinary(getName(), key)
+                        : redisClient.getAsBinary(genCacheKeyNonCompact(key));
                 if (obj != null) {
                     long expireAfterAccess = getExpireAfterAccess();
                     if (expireAfterAccess > 0) {
-                        redisClient.expire(getName(), (int) expireAfterAccess);
+                        redisClient.expire(compactMode ? getName() : genCacheKeyNonCompact(key),
+                                (int) expireAfterAccess);
                     }
                     return deserializeObject(obj);
                 } else {

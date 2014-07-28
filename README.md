@@ -18,7 +18,7 @@ Third party libraries are distributed under their own licenses.
 
 ## Installation #
 
-Latest release version: `0.1.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.1.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency:
 
@@ -26,7 +26,7 @@ Maven dependency:
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ ICacheFactory factory = new RedisCacheFactory()
     .setPoolConfig(poolConfig)
     .init();
 
-// A cache factory with soem specific cache settings.
+// A cache factory with some specific cache settings.
 Map<String, Properties> cacheProps = new HashMap<String, Properties>();
 Properties propCache1 = new Properties();
 propCache1.put("cache.capacity", 1000);
@@ -71,6 +71,18 @@ ICacheFactory factory = new GuavaCacheFactory()
     .setDefaultExpireAfterWrite(1800)
     .init();
 ```
+
+> Compact mode for Redis cache:
+> 
+> With compact-mode=on, each cache is a Redis hash; cache entries are stored with in the hash.
+> 
+> Witn compact-mode=off, each cache entry is prefixed by cache-name and store to Redis' top-level key:value storage.
+>
+>
+> Compact-mode can be set via `RedisCacheFactory.setCompactMode(boolean)`
+>
+> Default behavior: compact-mode=off.
+
 
 2. Obtain the cache object
 

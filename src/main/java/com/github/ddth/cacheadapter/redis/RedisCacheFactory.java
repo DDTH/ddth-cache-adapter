@@ -22,6 +22,7 @@ public class RedisCacheFactory extends AbstractCacheFactory {
     private String redisHost = "localhost", redisUsername, redisPassword;
     private int redisPort = IRedisClient.DEFAULT_REDIS_PORT;
     private PoolConfig poolConfig;
+    private boolean compactMode = false;
 
     public RedisClientFactory getRedisClientFactory() {
         return redisClientFactory;
@@ -79,6 +80,59 @@ public class RedisCacheFactory extends AbstractCacheFactory {
 
     public RedisCacheFactory setPoolConfig(PoolConfig poolConfig) {
         this.poolConfig = poolConfig;
+        return this;
+    }
+
+    /**
+     * Is compact mode on or off?
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @return
+     * @since 0.1.1
+     */
+    public boolean isCompactMode() {
+        return compactMode;
+    }
+
+    /**
+     * Is compact mode on or off?
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @return
+     * @since 0.1.1
+     */
+    public boolean getCompactMode() {
+        return compactMode;
+    }
+
+    /**
+     * Sets compact mode on/off.
+     * 
+     * <p>
+     * Compact mode: each cache is a Redis hash; cache entries are stored within
+     * the hash. When compact mode is off, each cache entry is prefixed by
+     * cache-name and store to Redis' top-level key:value storage (default:
+     * compact-mode=off).
+     * </p>
+     * 
+     * @param compactMode
+     * @return
+     * @since 0.1.1
+     */
+    public RedisCacheFactory setCompactMode(boolean compactMode) {
+        this.compactMode = compactMode;
         return this;
     }
 
