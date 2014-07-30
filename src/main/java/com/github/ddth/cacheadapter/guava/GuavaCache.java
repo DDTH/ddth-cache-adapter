@@ -23,7 +23,9 @@ import com.google.common.cache.LoadingCache;
 public class GuavaCache extends AbstractCache {
 
     private LoadingCache<String, Object> cache;
-    private CacheLoader<String, Object> cacheLoader;
+    private ICacheLoader cacheLoader;
+
+    // private CacheLoader<String, Object> cacheLoader;
 
     public GuavaCache() {
     }
@@ -43,6 +45,7 @@ public class GuavaCache extends AbstractCache {
     public GuavaCache(String name, long capacity, long expireAfterWrite, long expireAfterAccess,
             ICacheLoader cacheLoader) {
         super(name, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
+        setCacheLoader(cacheLoader);
     }
 
     /**
@@ -56,7 +59,7 @@ public class GuavaCache extends AbstractCache {
 
         super.init();
 
-        cacheLoader = new CacheLoader<String, Object>() {
+        CacheLoader<String, Object> guavaCacheLoader = new CacheLoader<String, Object>() {
             @Override
             public Object load(String key) throws Exception {
                 Object result = cacheLoader != null ? cacheLoader.load(key) : null;
@@ -78,7 +81,7 @@ public class GuavaCache extends AbstractCache {
 
         int numProcessores = Runtime.getRuntime().availableProcessors();
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().concurrencyLevel(
-                numProcessores);
+                numProcessores * 2);
         if (capacity > 0) {
             cacheBuilder.maximumSize(capacity);
         }
@@ -95,7 +98,7 @@ public class GuavaCache extends AbstractCache {
             setExpireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS);
         }
 
-        cache = cacheBuilder.build(cacheLoader);
+        cache = cacheBuilder.build(guavaCacheLoader);
     }
 
     /**
