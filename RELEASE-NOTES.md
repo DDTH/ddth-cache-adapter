@@ -1,8 +1,8 @@
 ddth-cache-adapter release notes
 ================================
 
-0.2.0 - 2014-10-13
-------------------
+0.2.0.1 - 2014-10-13
+--------------------
 - New caches: `ThreadLocalCache` and `LocalRemoteCache`
 - Some improvements.
 
