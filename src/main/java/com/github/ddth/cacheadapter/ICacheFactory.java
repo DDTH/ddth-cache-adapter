@@ -22,6 +22,17 @@ public interface ICacheFactory {
     public ICache createCache(String name);
 
     /**
+     * Creates a cache with default capacity and option, and specify a cache
+     * loader. This method returns the existing cache if such exists.
+     * 
+     * @param name
+     * @param cacheLoader
+     * @return
+     * @since 0.2.0
+     */
+    public ICache createCache(String name, ICacheLoader cacheLoader);
+
+    /**
      * Creates a cache with default options. This method returns the existing
      * cache if such exists.
      * 
@@ -30,6 +41,18 @@ public interface ICacheFactory {
      * @return
      */
     public ICache createCache(String name, long capacity);
+
+    /**
+     * Creates a cache with default options, and specify a cache loader. This
+     * method returns the existing cache if such exists.
+     * 
+     * @param name
+     * @param capacity
+     * @param cacheLoader
+     * @return
+     * @since 0.2.0
+     */
+    public ICache createCache(String name, long capacity, ICacheLoader cacheLoader);
 
     /**
      * Creates a cache. This method returns the existing cache if such exists.
@@ -69,5 +92,4 @@ public interface ICacheFactory {
      * @param name
      */
     public void removeCache(String name);
-
 }

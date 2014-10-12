@@ -3,7 +3,6 @@ package com.github.ddth.cacheadapter.redis;
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
-import com.github.ddth.cacheadapter.ICacheLoader;
 import com.github.ddth.redis.IRedisClient;
 import com.github.ddth.redis.PoolConfig;
 import com.github.ddth.redis.RedisClientFactory;
@@ -169,17 +168,12 @@ public class RedisCacheFactory extends AbstractCacheFactory {
      */
     @Override
     protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess, ICacheLoader cacheLoader) {
-
-        RedisCache cache = new RedisCache(this, name);
-        cache.setCapacity(capacity > 0 ? capacity : getDefaultCacheCapacity());
-        cache.setExpireAfterAccess(expireAfterAccess);
-        cache.setExpireAfterWrite(expireAfterWrite);
-
+            long expireAfterAccess) {
+        RedisCache cache = new RedisCache();
+        cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
+                .setExpireAfterWrite(expireAfterWrite);
         cache.setRedisHost(redisHost).setRedisPort(redisPort).setRedisUsername(redisUsername)
                 .setRedisPassword(redisPassword).setPoolConfig(poolConfig);
-
-        cache.init();
         return cache;
     }
 

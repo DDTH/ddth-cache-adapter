@@ -1,6 +1,7 @@
 package com.github.ddth.cacheadapter.redis;
 
 import com.github.ddth.cacheadapter.AbstractCache;
+import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheLoader;
@@ -18,41 +19,36 @@ import com.github.ddth.redis.RedisClientFactory;
  */
 public class RedisCache extends AbstractCache {
 
-    private RedisCacheFactory redisCacheFactory;
     private String redisHost = "localhost", redisUsername, redisPassword;
     private int redisPort = IRedisClient.DEFAULT_REDIS_PORT;
     private PoolConfig poolConfig;
     private long timeToLiveSeconds = -1;
     private boolean compactMode = false;
 
-    public RedisCache(RedisCacheFactory redisCacheFactory) {
-        this.redisCacheFactory = redisCacheFactory;
+    public RedisCache() {
     }
 
-    public RedisCache(RedisCacheFactory redisCacheFactory, String name) {
-        super(name);
-        this.redisCacheFactory = redisCacheFactory;
+    public RedisCache(String name, AbstractCacheFactory cacheFactory) {
+        super(name, cacheFactory);
     }
 
-    public RedisCache(RedisCacheFactory redisCacheFactory, String name, long capacity) {
-        super(name, capacity);
-        this.redisCacheFactory = redisCacheFactory;
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
+        super(name, cacheFactory, capacity);
     }
 
-    public RedisCache(RedisCacheFactory redisCacheFactory, String name, long capacity,
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess) {
-        super(name, capacity, expireAfterWrite, expireAfterAccess);
-        this.redisCacheFactory = redisCacheFactory;
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
     }
 
-    public RedisCache(RedisCacheFactory redisCacheFactory, String name, long capacity,
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
-        super(name, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
-        this.redisCacheFactory = redisCacheFactory;
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
     }
 
     protected RedisClientFactory getRedisClientFactory() {
-        return redisCacheFactory.getRedisClientFactory();
+        RedisCacheFactory rfc = (RedisCacheFactory) getCacheFactory();
+        return rfc.getRedisClientFactory();
     }
 
     public String getRedisHost() {

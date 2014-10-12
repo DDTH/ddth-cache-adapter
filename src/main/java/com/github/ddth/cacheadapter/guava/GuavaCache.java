@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ddth.cacheadapter.AbstractCache;
+import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICacheFactory;
@@ -23,29 +24,26 @@ import com.google.common.cache.LoadingCache;
 public class GuavaCache extends AbstractCache {
 
     private LoadingCache<String, Object> cache;
-    private ICacheLoader cacheLoader;
-
-    // private CacheLoader<String, Object> cacheLoader;
 
     public GuavaCache() {
     }
 
-    public GuavaCache(String name) {
-        super(name);
+    public GuavaCache(String name, AbstractCacheFactory cacheFactory) {
+        super(name, cacheFactory);
     }
 
-    public GuavaCache(String name, long capacity) {
-        super(name, capacity);
+    public GuavaCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
+        super(name, cacheFactory, capacity);
     }
 
-    public GuavaCache(String name, long capacity, long expireAfterWrite, long expireAfterAccess) {
-        super(name, capacity, expireAfterWrite, expireAfterAccess);
+    public GuavaCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess) {
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
     }
 
-    public GuavaCache(String name, long capacity, long expireAfterWrite, long expireAfterAccess,
-            ICacheLoader cacheLoader) {
-        super(name, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
-        setCacheLoader(cacheLoader);
+    public GuavaCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
     }
 
     /**
@@ -58,18 +56,6 @@ public class GuavaCache extends AbstractCache {
         }
 
         super.init();
-
-        CacheLoader<String, Object> guavaCacheLoader = new CacheLoader<String, Object>() {
-            @Override
-            public Object load(String key) throws Exception {
-                Object result = cacheLoader != null ? cacheLoader.load(key) : null;
-                if (result != null) {
-                    return result;
-                } else {
-                    throw new CacheException.CacheEntryFoundException();
-                }
-            }
-        };
 
         long capacity = getCapacity();
         if (capacity >= 0) {
@@ -98,18 +84,19 @@ public class GuavaCache extends AbstractCache {
             setExpireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS);
         }
 
+        CacheLoader<String, Object> guavaCacheLoader = new CacheLoader<String, Object>() {
+            @Override
+            public Object load(String key) throws Exception {
+                ICacheLoader cacheLoader = getCacheLoader();
+                Object result = cacheLoader != null ? cacheLoader.load(key) : null;
+                if (result != null) {
+                    return result;
+                } else {
+                    throw new CacheException.CacheEntryFoundException();
+                }
+            }
+        };
         cache = cacheBuilder.build(guavaCacheLoader);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void inactive() {
-        super.inactive();
-        if (cache != null) {
-            cache.invalidateAll();
-        }
     }
 
     /**

@@ -14,45 +14,51 @@ public abstract class AbstractCache implements ICache {
     private long expireAfterAccess;
     private CacheStats stats = new CacheStats();
     private ICacheLoader cacheLoader;
+    private AbstractCacheFactory cacheFactory;
 
     public AbstractCache() {
     }
 
-    public AbstractCache(String name) {
+    public AbstractCache(String name, AbstractCacheFactory cacheFactory) {
         this.name = name;
+        this.cacheFactory = cacheFactory;
     }
 
-    public AbstractCache(String name, long capacity) {
+    public AbstractCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
         this.name = name;
+        this.cacheFactory = cacheFactory;
         this.capacity = capacity;
     }
 
-    public AbstractCache(String name, long capacity, long expireAfterWrite, long expireAfterAccess) {
+    public AbstractCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess) {
         this.name = name;
+        this.cacheFactory = cacheFactory;
         this.capacity = capacity;
         this.expireAfterWrite = expireAfterWrite;
         this.expireAfterAccess = expireAfterAccess;
     }
 
-    public AbstractCache(String name, long capacity, long expireAfterWrite, long expireAfterAccess,
-            ICacheLoader cacheLoader) {
+    public AbstractCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
         this.name = name;
+        this.cacheFactory = cacheFactory;
         this.capacity = capacity;
         this.expireAfterWrite = expireAfterWrite;
         this.expireAfterAccess = expireAfterAccess;
         this.cacheLoader = cacheLoader;
     }
 
+    /**
+     * Initializes the cache before use.
+     */
     public void init() {
-
     }
 
+    /**
+     * Destroys the cache after use.
+     */
     public void destroy() {
-
-    }
-
-    public void inactive() {
-
     }
 
     /**
@@ -65,6 +71,15 @@ public abstract class AbstractCache implements ICache {
 
     public AbstractCache setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    protected AbstractCacheFactory getCacheFactory() {
+        return cacheFactory;
+    }
+
+    public AbstractCache setCacheFactory(AbstractCacheFactory cacheFactory) {
+        this.cacheFactory = cacheFactory;
         return this;
     }
 
@@ -173,18 +188,39 @@ public abstract class AbstractCache implements ICache {
      */
     @Override
     public Object get(String key) {
+        return get(key, cacheLoader);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object get(String key, ICacheLoader cacheLoader) {
         Object value = internalGet(key);
+        boolean fromCacheLoader = false;
+        if (value == null && cacheLoader != null) {
+            try {
+                value = cacheLoader.load(key);
+                fromCacheLoader = true;
+            } catch (Exception e) {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                }
+                throw new RuntimeException(e);
+            }
+        }
         if (value instanceof CacheEntry) {
             if (((CacheEntry) value).isExpired()) {
                 stats.miss();
                 return null;
             } else {
                 // update entry's access timestamp
-                ((CacheEntry) value).touch();
-                set(key, value);
+                if (((CacheEntry) value).touch()) {
+                    set(key, value);
+                }
             }
         }
-        if (value == null) {
+        if (fromCacheLoader || value == null) {
             stats.miss();
         } else {
             stats.hit();

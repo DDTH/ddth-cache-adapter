@@ -86,8 +86,13 @@ public class CacheEntry implements Serializable {
         return lastAccessTimestamp;
     }
 
-    public void touch() {
-        lastAccessTimestamp = System.currentTimeMillis();
+    public boolean touch() {
+        long t = System.currentTimeMillis();
+        if (t - lastAccessTimestamp > 1000) {
+            lastAccessTimestamp = t;
+            return true;
+        }
+        return false;
     }
 
 }

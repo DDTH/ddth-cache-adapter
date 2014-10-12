@@ -95,6 +95,17 @@ public interface ICache {
     public Object get(String key);
 
     /**
+     * Gets an entry from cache. If the entry does not exist in the cache, it
+     * will be loaded into cache via the supplied {@link ICacheLoader}.
+     * 
+     * @param key
+     * @param cacheLoader
+     * @return
+     * @since 0.2.0
+     */
+    public Object get(String key, ICacheLoader cacheLoader);
+
+    /**
      * Deletes an entry from cache.
      * 
      * @param key

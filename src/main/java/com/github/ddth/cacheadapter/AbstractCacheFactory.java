@@ -36,7 +36,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
                 @Override
                 public void onRemoval(RemovalNotification<String, AbstractCache> notification) {
                     AbstractCache cache = notification.getValue();
-                    cache.inactive();
+                    cache.destroy();
                 }
             }).build();
 
@@ -124,8 +124,16 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
      */
     @Override
     public AbstractCache createCache(String name) {
+        return createCache(name, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AbstractCache createCache(String name, ICacheLoader cacheLoader) {
         return createCache(name, defaultCacheCapacity, defaultExpireAfterWrite,
-                defaultExpireAfterAccess);
+                defaultExpireAfterAccess, cacheLoader);
     }
 
     /**
@@ -133,7 +141,16 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
      */
     @Override
     public AbstractCache createCache(String name, long capacity) {
-        return createCache(name, capacity, defaultExpireAfterWrite, defaultExpireAfterAccess);
+        return createCache(name, capacity, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AbstractCache createCache(String name, long capacity, ICacheLoader cacheLoader) {
+        return createCache(name, capacity, defaultExpireAfterWrite, defaultExpireAfterAccess,
+                cacheLoader);
     }
 
     /**
@@ -185,8 +202,8 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
                             cacheExpireAfterAccess = expireAfterAccess;
                         }
                     }
-                    return createCacheInternal(cacheName, cacheCapacity, cacheExpireAfterWrite,
-                            cacheExpireAfterAccess, cacheLoader);
+                    return createAndInitCacheInstance(cacheName, cacheCapacity,
+                            cacheExpireAfterWrite, cacheExpireAfterAccess, cacheLoader);
                 }
             });
             return cache;
@@ -196,7 +213,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
     }
 
     /**
-     * Creates a new cache instance. Convenient for sub-class to override.
+     * Creates and initializes an {@link ICache} instance, ready for use.
      * 
      * @param name
      * @param capacity
@@ -205,8 +222,27 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
      * @param cacheLoader
      * @return
      */
+    protected AbstractCache createAndInitCacheInstance(String name, long capacity,
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
+        AbstractCache cache = createCacheInternal(name, capacity, expireAfterWrite,
+                expireAfterAccess);
+        cache.setCacheLoader(cacheLoader).setCacheFactory(this);
+        cache.init();
+        return null;
+    }
+
+    /**
+     * Creates a new cache instance, but does not initialize it. Convenient
+     * method for sub-class to override.
+     * 
+     * @param name
+     * @param capacity
+     * @param expireAfterWrite
+     * @param expireAfterAccess
+     * @return
+     */
     protected abstract AbstractCache createCacheInternal(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader);
+            long expireAfterWrite, long expireAfterAccess);
 
     /**
      * {@inheritDoc}

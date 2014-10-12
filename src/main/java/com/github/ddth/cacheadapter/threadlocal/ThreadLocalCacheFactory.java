@@ -1,17 +1,16 @@
-package com.github.ddth.cacheadapter.guava;
+package com.github.ddth.cacheadapter.threadlocal;
 
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
 
 /**
- * <a href="http://code.google.com/p/guava-libraries/">Guava</a> implementation
- * of {@link ICacheFactory}.
+ * In-memory threadlocal-scope implementation of {@link ICacheFactory}.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
- * @since 0.1.0
+ * @since 0.2.0
  */
-public class GuavaCacheFactory extends AbstractCacheFactory {
+public class ThreadLocalCacheFactory extends AbstractCacheFactory {
 
     /**
      * {@inheritDoc}
@@ -19,7 +18,7 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
     @Override
     protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
             long expireAfterAccess) {
-        GuavaCache cache = new GuavaCache();
+        ThreadLocalCache cache = new ThreadLocalCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
         return cache;
