@@ -228,7 +228,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
                 expireAfterAccess);
         cache.setCacheLoader(cacheLoader).setCacheFactory(this);
         cache.init();
-        return null;
+        return cache;
     }
 
     /**
