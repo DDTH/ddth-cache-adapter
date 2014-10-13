@@ -110,6 +110,16 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
     }
 
     /**
+     * Gets all cache properties settings.
+     * 
+     * @return
+     * @since 0.2.0.2
+     */
+    protected Map<String, Properties> getCachePropertiesMap() {
+        return cacheProperties;
+    }
+
+    /**
      * Gets a cache's properties
      * 
      * @param name
