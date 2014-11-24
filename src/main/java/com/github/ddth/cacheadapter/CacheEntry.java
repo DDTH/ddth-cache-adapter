@@ -86,11 +86,19 @@ public class CacheEntry implements Serializable {
         return lastAccessTimestamp;
     }
 
+    /**
+     * "Touch" the cache entry.
+     * 
+     * @return
+     * @since 0.2.1 entry can be touched only if {@code expireAfterAccess >0}.
+     */
     public boolean touch() {
-        long t = System.currentTimeMillis();
-        if (t - lastAccessTimestamp > 1000) {
-            lastAccessTimestamp = t;
-            return true;
+        if (expireAfterAccess > 0) {
+            long t = System.currentTimeMillis();
+            if (t - lastAccessTimestamp > 1000) {
+                lastAccessTimestamp = t;
+                return true;
+            }
         }
         return false;
     }

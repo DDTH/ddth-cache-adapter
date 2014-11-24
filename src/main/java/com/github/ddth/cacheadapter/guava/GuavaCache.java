@@ -140,6 +140,9 @@ public class GuavaCache extends AbstractCache {
         if (!(entry instanceof CacheEntry)) {
             CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
             entry = ce;
+        } else {
+            CacheEntry ce = (CacheEntry) entry;
+            ce.toString();
         }
         cache.put(key, entry);
     }

@@ -249,9 +249,19 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                long ttl = expireAfterAccess > 0 ? expireAfterAccess
-                        : (expireAfterWrite > 0 ? expireAfterWrite : timeToLiveSeconds);
+                long ttl = 0;
+                if (!(entry instanceof CacheEntry)) {
+                    CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
+                    entry = ce;
+                    ttl = expireAfterAccess > 0 ? expireAfterAccess
+                            : (expireAfterWrite > 0 ? expireAfterWrite
+                                    : (timeToLiveSeconds > 0 ? timeToLiveSeconds : 0));
+                } else {
+                    CacheEntry ce = (CacheEntry) entry;
+                    ttl = ce.touch() ? ce.getExpireAfterAccess() : IRedisClient.TTL_NO_CHANGE;
+                }
                 byte[] data = serializeObject(entry);
+
                 if (compactMode) {
                     redisClient.hashSet(getName(), key, data, (int) ttl);
                 } else {

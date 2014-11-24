@@ -1,6 +1,11 @@
 ddth-cache-adapter release notes
 ================================
 
+0.2.1 - 2014-11-24
+------------------
+- Bugs fixed: cache entry's TTL.
+
+
 0.2.0.2 - 2014-10-13
 --------------------
 - New caches: `ThreadLocalCache` and `LocalRemoteCache`.
@@ -15,7 +20,7 @@ ddth-cache-adapter release notes
 
 0.1.1 - 2014-07-28
 ------------------
-- Support compact and non-compact mode (default mode: non-compact).
+- Redis cache: Support compact and non-compact mode (default mode: non-compact).
 
 
 0.1.0 - 2014-03-24

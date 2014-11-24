@@ -29,8 +29,8 @@
 	</scm>
 
 	<properties>
-		<version.ddth-redis>0.1.0.1</version.ddth-redis>
-		<version.ddth-commons>0.2.1.1</version.ddth-commons>
+		<version.ddth-redis>0.3.1</version.ddth-redis>
+		<version.ddth-commons>0.3.0.6</version.ddth-commons>
 	</properties>
 
 	<dependencies>
