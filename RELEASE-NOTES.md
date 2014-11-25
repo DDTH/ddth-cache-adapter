@@ -1,7 +1,7 @@
 ddth-cache-adapter release notes
 ================================
 
-0.2.1.5 - 2014-11-24
+0.2.1.6 - 2014-11-24
 --------------------
 - Bugs fixed: cache entry's TTL.
 
