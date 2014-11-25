@@ -44,10 +44,10 @@ public class CacheEntry implements Serializable {
 
     public boolean isExpired() {
         if (expireAfterWrite > 0) {
-            return creationTimestampMs + expireAfterWrite * 1000L > System.currentTimeMillis();
+            return creationTimestampMs + expireAfterWrite * 1000L <= System.currentTimeMillis();
         }
         if (expireAfterAccess > 0) {
-            return lastAccessTimestampMs + expireAfterAccess * 1000L > System.currentTimeMillis();
+            return lastAccessTimestampMs + expireAfterAccess * 1000L <= System.currentTimeMillis();
         }
         return false;
     }
