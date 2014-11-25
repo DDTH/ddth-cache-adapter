@@ -211,15 +211,7 @@ public abstract class AbstractCache implements ICache {
         }
         if (value instanceof CacheEntry) {
             CacheEntry ce = (CacheEntry) value;
-            if (ce.isExpired()) {
-                stats.miss();
-                return null;
-            } else {
-                value = ce.getValue();
-                if (value != null) {
-                    set(key, ce);
-                }
-            }
+            value = ce.getValue();
         }
         if (fromCacheLoader || value == null) {
             stats.miss();

@@ -14,18 +14,28 @@ public class CacheEntry implements Serializable {
 
     private String key;
     private Object value;
-    private long creationTimestamp = System.currentTimeMillis(), lastAccessTimestamp = System
+    private long creationTimestampMs = System.currentTimeMillis(), lastAccessTimestampMs = System
             .currentTimeMillis(), expireAfterWrite = -1, expireAfterAccess = -1;
 
+    private void _init() {
+        creationTimestampMs = System.currentTimeMillis();
+        lastAccessTimestampMs = System.currentTimeMillis();
+        expireAfterWrite = -1;
+        expireAfterAccess = -1;
+    }
+
     public CacheEntry() {
+        _init();
     }
 
     public CacheEntry(String key, Object value) {
+        _init();
         setKey(key);
         setValue(value);
     }
 
     public CacheEntry(String key, Object value, long expireAfterWrite, long expireAfterAccess) {
+        _init();
         setKey(key);
         setValue(value);
         setExpireAfterAccess(expireAfterAccess);
@@ -33,11 +43,11 @@ public class CacheEntry implements Serializable {
     }
 
     public boolean isExpired() {
-        if (expireAfterWrite >= 0) {
-            return creationTimestamp + expireAfterWrite * 1000L > System.currentTimeMillis();
+        if (expireAfterWrite > 0) {
+            return creationTimestampMs + expireAfterWrite * 1000L > System.currentTimeMillis();
         }
-        if (expireAfterAccess >= 0) {
-            return lastAccessTimestamp + expireAfterAccess * 1000L > System.currentTimeMillis();
+        if (expireAfterAccess > 0) {
+            return lastAccessTimestampMs + expireAfterAccess * 1000L > System.currentTimeMillis();
         }
         return false;
     }
@@ -66,24 +76,24 @@ public class CacheEntry implements Serializable {
         return expireAfterWrite;
     }
 
-    public void setExpireAfterWrite(long expireAfterWrite) {
-        this.expireAfterWrite = expireAfterWrite;
+    public void setExpireAfterWrite(long expireAfterWriteSeconds) {
+        this.expireAfterWrite = expireAfterWriteSeconds;
     }
 
     public long getExpireAfterAccess() {
         return expireAfterAccess;
     }
 
-    public void setExpireAfterAccess(long expireAfterAccess) {
-        this.expireAfterAccess = expireAfterAccess;
+    public void setExpireAfterAccess(long expireAfterAccessSeconds) {
+        this.expireAfterAccess = expireAfterAccessSeconds;
     }
 
     public long getCreationTimestamp() {
-        return creationTimestamp;
+        return creationTimestampMs;
     }
 
     public long getLastAccessTimestamp() {
-        return lastAccessTimestamp;
+        return lastAccessTimestampMs;
     }
 
     /**
@@ -94,11 +104,8 @@ public class CacheEntry implements Serializable {
      */
     public boolean touch() {
         if (expireAfterAccess > 0) {
-            long t = System.currentTimeMillis();
-            if (t - lastAccessTimestamp > 1000) {
-                lastAccessTimestamp = t;
-                return true;
-            }
+            lastAccessTimestampMs = System.currentTimeMillis();
+            return true;
         }
         return false;
     }

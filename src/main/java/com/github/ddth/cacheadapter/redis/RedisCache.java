@@ -228,6 +228,22 @@ public class RedisCache extends AbstractCache {
         }
     }
 
+    // private void _set(String key, Object entry, int ttl) {
+    // IRedisClient redisClient = getRedisClient();
+    // if (redisClient != null) {
+    // try {
+    // byte[] data = serializeObject(entry);
+    // if (compactMode) {
+    // redisClient.hashSet(getName(), key, data, ttl);
+    // } else {
+    // redisClient.set(genCacheKeyNonCompact(key), data, ttl);
+    // }
+    // } finally {
+    // returnRedisClient(redisClient);
+    // }
+    // }
+    // }
+
     /**
      * {@inheritDoc}
      */
@@ -249,7 +265,9 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                long ttl = 0;
+                final String KEY = compactMode ? getName() : genCacheKeyNonCompact(key);
+                final long currentTTL = redisClient.ttl(KEY);
+                long ttl = IRedisClient.TTL_NO_CHANGE;
                 if (!(entry instanceof CacheEntry)) {
                     CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
                     entry = ce;
@@ -258,14 +276,27 @@ public class RedisCache extends AbstractCache {
                                     : (timeToLiveSeconds > 0 ? timeToLiveSeconds : 0));
                 } else {
                     CacheEntry ce = (CacheEntry) entry;
-                    ttl = ce.touch() ? ce.getExpireAfterAccess() : IRedisClient.TTL_NO_CHANGE;
+                    ttl = ce.getExpireAfterAccess();
                 }
                 byte[] data = serializeObject(entry);
 
+                // TTL Rules:
+                // 1. New item: TTL is calculated as formula(s) above.
+                // 2. Old item:
+                // 2.1. If [compactMode=true]: extends the current TTL
+                // 2.2. If [compactMode=false]: extends the current TTL only
+                // when expireAfterAccess > 0
+                if (compactMode && currentTTL >= -1) {
+                    ttl = currentTTL > 0 ? currentTTL : IRedisClient.TTL_NO_CHANGE;
+                }
+                if (!compactMode && currentTTL >= -1) {
+                    ttl = expireAfterAccess > 0 ? expireAfterAccess : IRedisClient.TTL_NO_CHANGE;
+                }
+
                 if (compactMode) {
-                    redisClient.hashSet(getName(), key, data, (int) ttl);
+                    redisClient.hashSet(KEY, key, data, (int) ttl);
                 } else {
-                    redisClient.set(genCacheKeyNonCompact(key), data, (int) ttl);
+                    redisClient.set(KEY, data, (int) ttl);
                 }
             } finally {
                 returnRedisClient(redisClient);
@@ -335,24 +366,30 @@ public class RedisCache extends AbstractCache {
         IRedisClient redisClient = getRedisClient();
         if (redisClient != null) {
             try {
-                byte[] obj = compactMode ? redisClient.hashGetAsBinary(getName(), key)
-                        : redisClient.getAsBinary(genCacheKeyNonCompact(key));
+                final String KEY = compactMode ? getName() : genCacheKeyNonCompact(key);
+                byte[] obj = compactMode ? redisClient.hashGetAsBinary(KEY, key) : redisClient
+                        .getAsBinary(KEY);
                 if (obj != null) {
-                    long expireAfterAccess = getExpireAfterAccess();
-                    if (expireAfterAccess > 0) {
-                        redisClient.expire(compactMode ? getName() : genCacheKeyNonCompact(key),
-                                (int) expireAfterAccess);
+                    Object result = deserializeObject(obj);
+                    if (result != null) {
+                        if (result instanceof CacheEntry) {
+                            CacheEntry ce = (CacheEntry) result;
+                            if (ce.touch()) {
+                                set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
+                            }
+                        } else {
+                            long currentTTL = redisClient.ttl(KEY);
+                            if (currentTTL > 0) {
+                                redisClient.expire(KEY, (int) currentTTL);
+                            }
+                        }
+                        return result;
                     }
-                    return deserializeObject(obj);
-                } else {
-                    return null;
                 }
             } finally {
                 returnRedisClient(redisClient);
             }
-        } else {
-            return null;
         }
+        return null;
     }
-
 }

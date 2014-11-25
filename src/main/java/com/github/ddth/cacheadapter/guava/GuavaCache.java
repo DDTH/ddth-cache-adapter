@@ -140,9 +140,6 @@ public class GuavaCache extends AbstractCache {
         if (!(entry instanceof CacheEntry)) {
             CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
             entry = ce;
-        } else {
-            CacheEntry ce = (CacheEntry) entry;
-            ce.toString();
         }
         cache.put(key, entry);
     }
@@ -177,7 +174,15 @@ public class GuavaCache extends AbstractCache {
     @Override
     protected Object internalGet(String key) {
         try {
-            return cache.get(key);
+            Object result = cache.get(key);
+            if (result instanceof CacheEntry) {
+                // update entry's private TTL if needed.
+                CacheEntry ce = (CacheEntry) result;
+                if (ce.touch()) {
+                    set(key, ce);
+                }
+            }
+            return result;
         } catch (ExecutionException e) {
             Throwable t = e.getCause();
             if (t instanceof CacheException.CacheEntryFoundException) {
