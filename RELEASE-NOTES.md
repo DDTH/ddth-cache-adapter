@@ -1,6 +1,11 @@
 ddth-cache-adapter release notes
 ================================
 
+0.2.1.8 - 2015-06-30
+--------------------
+- Bugs fixed: Redis' compact mode is not set.
+
+
 0.2.1.7 - 2014-11-24
 --------------------
 - Bugs fixed: cache entry's TTL.

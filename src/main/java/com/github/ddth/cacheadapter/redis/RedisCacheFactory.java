@@ -174,6 +174,7 @@ public class RedisCacheFactory extends AbstractCacheFactory {
                 .setExpireAfterWrite(expireAfterWrite);
         cache.setRedisHost(redisHost).setRedisPort(redisPort).setRedisUsername(redisUsername)
                 .setRedisPassword(redisPassword).setPoolConfig(poolConfig);
+        cache.setCompactMode(getCompactMode());
         return cache;
     }
 
