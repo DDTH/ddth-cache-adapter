@@ -1,8 +1,8 @@
 ddth-cache-adapter release notes
 ================================
 
-0.3.0 - 2015-11-01
-------------------
+0.3.1.1 - 2015-11-01
+--------------------
 
 - Custom cache entry de/serializations.
 - 2 built-in cache entry serializers: `DefaultCacheEntrySerializer` and `KryoCacheEntrySerializer`.
