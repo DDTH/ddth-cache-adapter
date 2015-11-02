@@ -1,7 +1,6 @@
 package com.github.ddth.cacheadapter.redis;
 
-import com.github.ddth.cacheadapter.AbstractCache;
-import com.github.ddth.cacheadapter.AbstractCacheFactory;
+import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.redis.IRedisClient;
 import com.github.ddth.redis.PoolConfig;
@@ -14,7 +13,7 @@ import com.github.ddth.redis.RedisClientFactory;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class RedisCacheFactory extends AbstractCacheFactory {
+public class RedisCacheFactory extends AbstractSerializingCacheFactory {
 
     private boolean myOwnRedisClientFactory = false;
     private RedisClientFactory redisClientFactory;
@@ -167,7 +166,7 @@ public class RedisCacheFactory extends AbstractCacheFactory {
      * {@inheritDoc}
      */
     @Override
-    protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
+    protected RedisCache createCacheInternal(String name, long capacity, long expireAfterWrite,
             long expireAfterAccess) {
         RedisCache cache = new RedisCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
@@ -175,6 +174,7 @@ public class RedisCacheFactory extends AbstractCacheFactory {
         cache.setRedisHost(redisHost).setRedisPort(redisPort).setRedisUsername(redisUsername)
                 .setRedisPassword(redisPassword).setPoolConfig(poolConfig);
         cache.setCompactMode(getCompactMode());
+        cache.setCacheEntrySerializer(getCacheEntrySerializer());
         return cache;
     }
 

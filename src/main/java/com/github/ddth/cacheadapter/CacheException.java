@@ -7,12 +7,12 @@ package com.github.ddth.cacheadapter;
  * @author Thanh Ba Nguyen <bnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class CacheException extends Exception {
+public class CacheException extends RuntimeException {
 
-    private static final long serialVersionUID = "0.1.0".hashCode();
+    private static final long serialVersionUID = "0.3.0".hashCode();
 
-    public static class CacheEntryFoundException extends CacheException {
-        private static final long serialVersionUID = "0.1.0".hashCode();
+    public static class CacheEntryNotFoundException extends CacheException {
+        private static final long serialVersionUID = "0.3.0".hashCode();
     }
 
     public CacheException() {

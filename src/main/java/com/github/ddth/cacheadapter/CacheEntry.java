@@ -2,6 +2,10 @@ package com.github.ddth.cacheadapter;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Encapsulates a cache item with extra functionality.
  * 
@@ -110,4 +114,52 @@ public class CacheEntry implements Serializable {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.2.2
+     */
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder(this);
+        tsb.append("key", this.key);
+        tsb.append("value", this.value);
+        tsb.append("timestampCreate", this.creationTimestampMs);
+        tsb.append("timestampLastAccess", this.lastAccessTimestampMs);
+        tsb.append("expireAfterAccess", this.expireAfterAccess);
+        tsb.append("expireAfterWrite", this.expireAfterWrite);
+        return tsb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.2.2
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CacheEntry)) {
+            return false;
+        }
+        CacheEntry other = (CacheEntry) obj;
+        EqualsBuilder eq = new EqualsBuilder();
+        eq.append(this.key, other.key).append(this.value, other.value)
+                .append(this.creationTimestampMs, other.creationTimestampMs)
+                .append(this.lastAccessTimestampMs, other.lastAccessTimestampMs)
+                .append(this.expireAfterAccess, other.expireAfterAccess)
+                .append(this.expireAfterWrite, other.expireAfterWrite);
+        return eq.isEquals();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.2.2
+     */
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hcb = new HashCodeBuilder(19, 81);
+        hcb.append(this.key).append(this.value);
+        return hcb.hashCode();
+    }
 }

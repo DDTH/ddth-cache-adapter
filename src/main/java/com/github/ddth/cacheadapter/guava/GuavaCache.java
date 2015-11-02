@@ -92,7 +92,7 @@ public class GuavaCache extends AbstractCache {
                 if (result != null) {
                     return result;
                 } else {
-                    throw new CacheException.CacheEntryFoundException();
+                    throw new CacheException.CacheEntryNotFoundException();
                 }
             }
         };
@@ -185,7 +185,7 @@ public class GuavaCache extends AbstractCache {
             return result;
         } catch (ExecutionException e) {
             Throwable t = e.getCause();
-            if (t instanceof CacheException.CacheEntryFoundException) {
+            if (t instanceof CacheException.CacheEntryNotFoundException) {
                 return null;
             } else {
                 throw new RuntimeException(e);

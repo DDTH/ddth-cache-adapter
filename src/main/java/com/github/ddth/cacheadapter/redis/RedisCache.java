@@ -1,11 +1,11 @@
 package com.github.ddth.cacheadapter.redis;
 
-import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
+import com.github.ddth.cacheadapter.AbstractSerializingCache;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICache;
+import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
-import com.github.ddth.commons.utils.SerializationUtils;
 import com.github.ddth.redis.IRedisClient;
 import com.github.ddth.redis.PoolConfig;
 import com.github.ddth.redis.RedisClientFactory;
@@ -17,7 +17,7 @@ import com.github.ddth.redis.RedisClientFactory;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class RedisCache extends AbstractCache {
+public class RedisCache extends AbstractSerializingCache {
 
     private String redisHost = "localhost", redisUsername, redisPassword;
     private int redisPort = IRedisClient.DEFAULT_REDIS_PORT;
@@ -26,14 +26,36 @@ public class RedisCache extends AbstractCache {
     private boolean compactMode = false;
 
     public RedisCache() {
+        super();
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory) {
-        super(name, cacheFactory);
+    public RedisCache(String name, AbstractCacheFactory cacheFactory,
+            ICacheEntrySerializer cacheEntrySerializer) {
+        super(name, cacheFactory, cacheEntrySerializer);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
-        super(name, cacheFactory, capacity);
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            ICacheEntrySerializer cacheEntrySerializer) {
+        super(name, cacheFactory, capacity, cacheEntrySerializer);
+    }
+
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess,
+            ICacheEntrySerializer cacheEntrySerializer) {
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
+                cacheEntrySerializer);
+    }
+
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
+            ICacheEntrySerializer cacheEntrySerializer) {
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader,
+                cacheEntrySerializer);
+    }
+
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
+        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
     }
 
     public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
@@ -41,9 +63,12 @@ public class RedisCache extends AbstractCache {
         super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
-        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
+    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
+        super(name, cacheFactory, capacity);
+    }
+
+    public RedisCache(String name, AbstractCacheFactory cacheFactory) {
+        super(name, cacheFactory);
     }
 
     protected RedisClientFactory getRedisClientFactory() {
@@ -149,25 +174,25 @@ public class RedisCache extends AbstractCache {
         return this;
     }
 
-    /**
-     * Serializes an object to byte array.
-     * 
-     * @param obj
-     * @return
-     */
-    protected byte[] serializeObject(Object obj) {
-        return SerializationUtils.toByteArray(obj);
-    }
-
-    /**
-     * De-serializes object from byte array.
-     * 
-     * @param byteArr
-     * @return
-     */
-    protected Object deserializeObject(byte[] byteArr) {
-        return SerializationUtils.fromByteArray(byteArr);
-    }
+    // /**
+    // * Serializes an object to byte array.
+    // *
+    // * @param obj
+    // * @return
+    // */
+    // protected byte[] serializeObject(Object obj) {
+    // return SerializationUtils.toByteArray(obj);
+    // }
+    //
+    // /**
+    // * De-serializes object from byte array.
+    // *
+    // * @param byteArr
+    // * @return
+    // */
+    // protected Object deserializeObject(byte[] byteArr) {
+    // return SerializationUtils.fromByteArray(byteArr);
+    // }
 
     /**
      * {@inheritDoc}
@@ -278,7 +303,7 @@ public class RedisCache extends AbstractCache {
                     CacheEntry ce = (CacheEntry) entry;
                     ttl = ce.getExpireAfterAccess();
                 }
-                byte[] data = serializeObject(entry);
+                byte[] data = serializeCacheEntry((CacheEntry) entry);
 
                 // TTL Rules:
                 // 1. New item: TTL is calculated as formula(s) above.
@@ -370,21 +395,11 @@ public class RedisCache extends AbstractCache {
                 byte[] obj = compactMode ? redisClient.hashGetAsBinary(KEY, key) : redisClient
                         .getAsBinary(KEY);
                 if (obj != null) {
-                    Object result = deserializeObject(obj);
-                    if (result != null) {
-                        if (result instanceof CacheEntry) {
-                            CacheEntry ce = (CacheEntry) result;
-                            if (ce.touch()) {
-                                set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
-                            }
-                        } else {
-                            long currentTTL = redisClient.ttl(KEY);
-                            if (currentTTL > 0) {
-                                redisClient.expire(KEY, (int) currentTTL);
-                            }
-                        }
-                        return result;
+                    CacheEntry ce = deserializeCacheEntry(obj);
+                    if (ce.touch()) {
+                        set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
                     }
+                    return ce;
                 }
             } finally {
                 returnRedisClient(redisClient);

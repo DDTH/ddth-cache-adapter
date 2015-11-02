@@ -12,7 +12,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
 /**
- * Abstract implementation of {@link ICacheFactory}.
+ * Abstract implementation of {@link ICacheFactory} that creates
+ * {@link AbstractCache} instances.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
