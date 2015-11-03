@@ -1,11 +1,12 @@
 ddth-cache-adapter release notes
 ================================
 
-0.3.1.2 - 2015-11-03
+0.3.1.3 - 2015-11-03
 --------------------
 
 - Refactor & Enhancements.
 - New class `ThriftCacheEntrySerializer`.
+- Release due to a bug with Sonatype OSS' multiple client IP addresses.
 
 
 0.3.1.1 - 2015-11-01
