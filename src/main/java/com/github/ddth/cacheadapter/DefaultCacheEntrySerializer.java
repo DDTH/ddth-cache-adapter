@@ -18,13 +18,24 @@ import org.jboss.serial.io.JBossObjectOutputStream;
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.3.0
  */
-public class DefaultCacheEntrySerializer implements ICacheEntrySerializer {
+public class DefaultCacheEntrySerializer extends AbstractCacheEntrySerializer {
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public DefaultCacheEntrySerializer init() {
+        super.init();
+
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void destroy() {
+        super.destroy();
     }
 
     /**

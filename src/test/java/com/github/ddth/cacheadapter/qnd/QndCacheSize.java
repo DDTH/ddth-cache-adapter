@@ -1,62 +1,70 @@
 package com.github.ddth.cacheadapter.qnd;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.lang3.SerializationUtils;
+import org.apache.thrift.TException;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.github.ddth.cacheadapter.CacheEntry;
+import com.github.ddth.cacheadapter.utils.KryoUtils;
+import com.github.ddth.cacheadapter.utils.ThriftUtils;
+import com.github.ddth.commons.utils.SerializationUtils;
 
 public class QndCacheSize {
 
-    private static byte[] ser1(Serializable obj) {
-        return SerializationUtils.serialize(obj);
+    private static byte[] serDDTHCommons(Object obj) {
+        return SerializationUtils.toByteArray(obj);
     }
 
-    private static byte[] ser2(Object obj) {
-        return com.github.ddth.commons.utils.SerializationUtils.toByteArray(obj);
+    private static byte[] serKyro(Object obj) {
+        return KryoUtils.serialize(obj);
     }
 
-    private static byte[] ser3(Object obj) {
-        Kryo kryo = new Kryo();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = new Output(baos);
-        kryo.writeObject(output, obj);
-        output.flush();
-        output.close();
-        return baos.toByteArray();
+    private static byte[] serThrift(CacheEntry ce) throws TException {
+        return ThriftUtils.serialize(ce);
     }
 
     public static void main(String[] args) throws Exception {
         String key = "key";
-        String value = "Nguyễn Bá Thành";
+        // String value = "Nguyễn Bá Thành";
+        Map<String, Object> value = new HashMap<String, Object>();
+        {
+            value.put("first_name", "Thành");
+            value.put("last_name", "Nguyễn");
+            value.put("email", "btnguyen2k@gmail.com");
+            value.put("dob", new Date());
+        }
         CacheEntry ce = new CacheEntry(key, value, 3600, 0);
 
-        System.out.println("Raw    : " + value.getBytes("UTF-8").length);
-        System.out.println("SerRaw1: " + ser1(value).length);
-        System.out.println("SerRaw2: " + ser2(value).length);
-        System.out.println("SerRaw3: " + ser3(value).length);
-        System.out.println("SerCE1: " + ser1(ce).length);
-        System.out.println("SerCE2: " + ser2(ce).length);
-        System.out.println("SerCE3: " + ser3(ce).length);
+        // System.out.println("Raw                : " +
+        // value.getBytes("UTF-8").length);
+        System.out.println("serDDTHCommons(raw): " + serDDTHCommons(value).length);
+        System.out.println("serKyro(raw)       : " + serKyro(value).length);
+        System.out.println("========================================");
+        System.out.println("serDDTHCommons(ce) : " + serDDTHCommons(ce).length);
+        System.out.println("serKyro(ce)        : " + serKyro(ce).length);
+        System.out.println("serThrift(ce)      : " + serThrift(ce).length);
 
+        System.out.println("========================================");
         {
-            byte[] dataRaw = ser3(value);
+            byte[] dataRaw = KryoUtils.serialize(value);
             System.out.println(dataRaw.length);
-            Kryo kryo = new Kryo();
-            Input input = new Input(new ByteArrayInputStream(dataRaw));
-            Object obj = kryo.readObject(input, String.class);
+            Object obj = KryoUtils.deserialize(dataRaw, HashMap.class);
             System.out.println(obj);
         }
         {
-            byte[] dataCe = ser3(ce);
-            Kryo kryo = new Kryo();
-            Input input = new Input(new ByteArrayInputStream(dataCe));
-            Object obj = kryo.readObject(input, CacheEntry.class);
+            byte[] dataCe = KryoUtils.serialize(ce);
+            System.out.println(dataCe.length);
+            Object obj = KryoUtils.deserialize(dataCe, CacheEntry.class);
+            System.out.println(obj);
+        }
+
+        System.out.println("========================================");
+        {
+            byte[] dataCe = ThriftUtils.serialize(ce);
+            System.out.println(dataCe.length);
+            Object obj = ThriftUtils.deserialize(dataCe);
             System.out.println(obj);
         }
 

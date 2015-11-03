@@ -60,8 +60,9 @@ public class CacheEntry implements Serializable {
         return key;
     }
 
-    public void setKey(String key) {
+    public CacheEntry setKey(String key) {
         this.key = key;
+        return this;
     }
 
     public Object getValue() {
@@ -72,24 +73,27 @@ public class CacheEntry implements Serializable {
         return null;
     }
 
-    public void setValue(Object value) {
+    public CacheEntry setValue(Object value) {
         this.value = value;
+        return this;
     }
 
     public long getExpireAfterWrite() {
         return expireAfterWrite;
     }
 
-    public void setExpireAfterWrite(long expireAfterWriteSeconds) {
+    public CacheEntry setExpireAfterWrite(long expireAfterWriteSeconds) {
         this.expireAfterWrite = expireAfterWriteSeconds;
+        return this;
     }
 
     public long getExpireAfterAccess() {
         return expireAfterAccess;
     }
 
-    public void setExpireAfterAccess(long expireAfterAccessSeconds) {
+    public CacheEntry setExpireAfterAccess(long expireAfterAccessSeconds) {
         this.expireAfterAccess = expireAfterAccessSeconds;
+        return this;
     }
 
     public long getCreationTimestamp() {

@@ -1,6 +1,13 @@
 ddth-cache-adapter release notes
 ================================
 
+0.3.1.2 - 2015-11-03
+--------------------
+
+- Refactor & Enhancements.
+- New class `ThriftCacheEntrySerializer`.
+
+
 0.3.1.1 - 2015-11-01
 --------------------
 
