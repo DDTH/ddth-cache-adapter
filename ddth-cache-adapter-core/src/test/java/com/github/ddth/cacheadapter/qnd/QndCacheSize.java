@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.thrift.TException;
 
 import com.github.ddth.cacheadapter.CacheEntry;
-import com.github.ddth.cacheadapter.utils.KryoUtils;
 import com.github.ddth.cacheadapter.utils.ThriftUtils;
 import com.github.ddth.commons.utils.SerializationUtils;
 
@@ -18,7 +17,7 @@ public class QndCacheSize {
     }
 
     private static byte[] serKyro(Object obj) {
-        return KryoUtils.serialize(obj);
+        return SerializationUtils.toByteArrayKryo(obj);
     }
 
     private static byte[] serThrift(CacheEntry ce) throws TException {
@@ -48,15 +47,15 @@ public class QndCacheSize {
 
         System.out.println("========================================");
         {
-            byte[] dataRaw = KryoUtils.serialize(value);
+            byte[] dataRaw = SerializationUtils.toByteArrayKryo(value);
             System.out.println(dataRaw.length);
-            Object obj = KryoUtils.deserialize(dataRaw, HashMap.class);
+            Object obj = SerializationUtils.fromByteArrayKryo(dataRaw, HashMap.class);
             System.out.println(obj);
         }
         {
-            byte[] dataCe = KryoUtils.serialize(ce);
+            byte[] dataCe = SerializationUtils.toByteArrayKryo(ce);
             System.out.println(dataCe.length);
-            Object obj = KryoUtils.deserialize(dataCe, CacheEntry.class);
+            Object obj = SerializationUtils.fromByteArrayKryo(dataCe, CacheEntry.class);
             System.out.println(obj);
         }
 

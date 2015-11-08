@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.github.ddth</groupId>
+		<artifactId>ddth-cache-adapter</artifactId>
+		<version>0.3.1.4-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ddth-cache-adapter-redis</artifactId>
+	<version>0.3.1.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>ddth-cache-adapter-redis</name>
+	<description>DDTH's adapter for various cache systems</description>
+	<url>https://github.com/DDTH/ddth-cache-adapter</url>
+
+	<developers>
+		<developer>
+			<id>btnguyen2k</id>
+			<name>Thanh Ba Nguyen</name>
+			<email>btnguyen2k@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.ddth</groupId>
+			<artifactId>ddth-cache-adapter-serializing</artifactId>
+			<version>0.3.1.4-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- for Redis-based cache -->
+		<dependency>
+			<groupId>com.github.ddth</groupId>
+			<artifactId>ddth-redis</artifactId>
+			<version>${version.ddth_redis}</version>
+		</dependency>
+	</dependencies>
+</project>

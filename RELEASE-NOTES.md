@@ -1,6 +1,13 @@
 ddth-cache-adapter release notes
 ================================
 
+0.4.0 - 2015-11-07
+------------------
+
+- Support Memcached-based cache.
+- Separated artifacts: `ddth-cache-adapter-core`, `ddth-cache-adapter-redis` and `ddth-cache-adapter-memcached`.
+
+
 0.3.1.3 - 2015-11-03
 --------------------
 

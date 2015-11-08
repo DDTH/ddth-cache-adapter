@@ -11,22 +11,36 @@ OSGi environment: `ddth-cache-adapter` is packaged as an OSGi bundle.
 
 ## License ##
 
-See LICENSE.txt for details. Copyright (c) 2014 Thanh Ba Nguyen.
+See LICENSE.txt for details. Copyright (c) 2014-2015 Thanh Ba Nguyen.
 
 Third party libraries are distributed under their own licenses.
 
 
 ## Installation #
 
-Latest release version: `0.3.1.3`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.4.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
-Maven dependency:
+Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
+dependency artifact(s) to reduce the number of unused jar files.
+
+*ddth-cache-adapter-core*: in-memory cache, all other dependencies *optional*.
 
 ```xml
 <dependency>
 	<groupId>com.github.ddth</groupId>
-	<artifactId>ddth-cache-adapter</artifactId>
-	<version>0.3.1.3</version>
+	<artifactId>ddth-cache-adapter-core</artifactId>
+	<version>0.4.0</version>
+</dependency>
+```
+
+*ddth-cache-adapter-redis*: include all *ddth-cache-adapter-core* and Redis dependencies.
+
+```xml
+<dependency>
+    <groupId>com.github.ddth</groupId>
+    <artifactId>ddth-cache-adapter-redis</artifactId>
+    <version>0.4.0</version>
+    <type>pom</type>
 </dependency>
 ```
 
