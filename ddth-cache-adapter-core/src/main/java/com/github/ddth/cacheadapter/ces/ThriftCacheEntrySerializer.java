@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.thrift;
+package com.github.ddth.cacheadapter.ces;
 
 import org.apache.thrift.TException;
 
@@ -36,26 +36,22 @@ public class ThriftCacheEntrySerializer extends AbstractCacheEntrySerializer {
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws TException
      */
     @Override
-    public byte[] serialize(final CacheEntry ce) {
-        try {
-            return ThriftUtils.serialize(ce);
-        } catch (TException e) {
-            throw new RuntimeException(e);
-        }
+    protected byte[] doSerialize(CacheEntry ce) throws TException {
+        return ThriftUtils.serialize(ce);
     }
 
     /**
      * {@inheritDoc}
+     * 
+     * @throws TException
      */
     @Override
-    public CacheEntry deserialize(final byte[] data) {
-        try {
-            return ThriftUtils.deserialize(data);
-        } catch (TException e) {
-            throw new RuntimeException(e);
-        }
+    protected CacheEntry doDeserialize(byte[] data) throws TException {
+        return ThriftUtils.deserialize(data);
     }
 
 }

@@ -9,7 +9,6 @@ import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
 import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
-import com.github.ddth.redis.PoolConfig;
 
 public class QndGuavaCache {
 
@@ -17,10 +16,8 @@ public class QndGuavaCache {
         ICacheFactory factory1 = new GuavaCacheFactory().setDefaultCacheCapacity(1000)
                 .setDefaultExpireAfterAccess(3600).init();
 
-        PoolConfig poolConfig = new PoolConfig().setMaxActive(64).setMaxIdle(16).setMinIdle(4)
-                .setMaxWaitTime(1000);
-        ICacheFactory factory2 = new RedisCacheFactory().setRedisHost("localhost")
-                .setRedisPort(6379).setPoolConfig(poolConfig).init();
+        ICacheFactory factory2 = new RedisCacheFactory().setRedisHostAndPort("localhost:6379")
+                .init();
 
         Map<String, Properties> cacheProps = new HashMap<String, Properties>();
         Properties propCache1 = new Properties();

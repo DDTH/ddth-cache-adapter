@@ -2,6 +2,7 @@ package com.github.ddth.cacheadapter;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -14,12 +15,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class CacheEntry implements Serializable {
 
-    private static final long serialVersionUID = "0.1.0".hashCode();
+    private static final long serialVersionUID = "0.4.1".hashCode();
 
-    private String key;
-    private Object value;
-    private long creationTimestampMs = System.currentTimeMillis(), lastAccessTimestampMs = System
-            .currentTimeMillis(), expireAfterWrite = -1, expireAfterAccess = -1;
+    private String key = "";
+    private Object value = ArrayUtils.EMPTY_BYTE_ARRAY;
+    private long creationTimestampMs = System.currentTimeMillis(),
+            lastAccessTimestampMs = System.currentTimeMillis(), expireAfterWrite = -1,
+            expireAfterAccess = -1;
 
     private void _init() {
         creationTimestampMs = System.currentTimeMillis();
@@ -147,11 +149,11 @@ public class CacheEntry implements Serializable {
         }
         CacheEntry other = (CacheEntry) obj;
         EqualsBuilder eq = new EqualsBuilder();
-        eq.append(this.key, other.key).append(this.value, other.value)
-                .append(this.creationTimestampMs, other.creationTimestampMs)
-                .append(this.lastAccessTimestampMs, other.lastAccessTimestampMs)
-                .append(this.expireAfterAccess, other.expireAfterAccess)
-                .append(this.expireAfterWrite, other.expireAfterWrite);
+        eq.append(this.key, other.key).append(this.value, other.value);
+        // .append(this.creationTimestampMs, other.creationTimestampMs)
+        // .append(this.lastAccessTimestampMs, other.lastAccessTimestampMs)
+        // .append(this.expireAfterAccess, other.expireAfterAccess)
+        // .append(this.expireAfterWrite, other.expireAfterWrite);
         return eq.isEquals();
     }
 

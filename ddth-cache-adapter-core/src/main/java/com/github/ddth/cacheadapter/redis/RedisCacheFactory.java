@@ -2,55 +2,134 @@ package com.github.ddth.cacheadapter.redis;
 
 import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
-import com.github.ddth.redis.IRedisClient;
-import com.github.ddth.redis.PoolConfig;
-import com.github.ddth.redis.RedisClientFactory;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
 
 /**
- * <a href="https://github.com/DDTH/ddth-redis">Redis</a> implementation of
- * {@link ICacheFactory}.
+ * <a href="http://redis.io">Redis</a> implementation of {@link ICacheFactory}
+ * that creates {@link RedisCache} objects.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
 public class RedisCacheFactory extends AbstractSerializingCacheFactory {
 
-    private boolean myOwnRedisClientFactory = false;
-    private RedisClientFactory redisClientFactory;
-    private String redisHost = "localhost", redisUsername, redisPassword;
-    private int redisPort = IRedisClient.DEFAULT_REDIS_PORT;
-    private PoolConfig poolConfig;
+    public final static long DEFAULT_TIMEOUT_MS = 10000;
+
+    /**
+     * Creates a new {@link JedisPool}, with default database and timeout.
+     * 
+     * @param hostAndPort
+     * @param password
+     * @return
+     */
+    public static JedisPool newJedisPool(String hostAndPort, String password) {
+        return newJedisPool(hostAndPort, password, Protocol.DEFAULT_DATABASE, DEFAULT_TIMEOUT_MS);
+    }
+
+    /**
+     * Creates a new {@link JedisPool}, with specified database and default
+     * timeout.
+     * 
+     * @param hostAndPort
+     * @param password
+     * @param db
+     * @return
+     */
+    public static JedisPool newJedisPool(String hostAndPort, String password, int db) {
+        return newJedisPool(hostAndPort, password, db, DEFAULT_TIMEOUT_MS);
+    }
+
+    /**
+     * Creates a new {@link JedisPool} with default database and specified
+     * timeout.
+     * 
+     * @param hostAndPort
+     * @param password
+     * @param timeoutMs
+     * @return
+     */
+    public static JedisPool newJedisPool(String hostAndPort, String password, long timeoutMs) {
+        return newJedisPool(hostAndPort, password, Protocol.DEFAULT_DATABASE, timeoutMs);
+    }
+
+    /**
+     * Creates a new {@link JedisPool}.
+     * 
+     * @param hostAndPort
+     * @param password
+     * @param db
+     * @param timeoutMs
+     * @return
+     */
+    public static JedisPool newJedisPool(String hostAndPort, String password, int db,
+            long timeoutMs) {
+        final int maxTotal = Runtime.getRuntime().availableProcessors();
+        final int maxIdle = maxTotal / 2;
+
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(maxTotal);
+        poolConfig.setMinIdle(1);
+        poolConfig.setMaxIdle(maxIdle > 0 ? maxIdle : 1);
+        poolConfig.setMaxWaitMillis(timeoutMs);
+        // poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestWhileIdle(true);
+
+        String[] tokens = hostAndPort.split(":");
+        String host = tokens.length > 0 ? tokens[0] : Protocol.DEFAULT_HOST;
+        int port = tokens.length > 1 ? Integer.parseInt(tokens[1]) : Protocol.DEFAULT_PORT;
+        JedisPool jedisPool = new JedisPool(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT,
+                password, db);
+        return jedisPool;
+    }
+
+    private JedisPool jedisPool;
+    private boolean myOwnJedisPool = true;
+    private String redisHostAndPort = "localhost:6379";
+    private String redisPassword;
+
     private boolean compactMode = false;
 
-    public RedisClientFactory getRedisClientFactory() {
-        return redisClientFactory;
+    /**
+     * Redis' host and port scheme (format {@code host:port}).
+     * 
+     * @return
+     * @since 0.4.1
+     */
+    public String getRedisHostAndPort() {
+        return redisHostAndPort;
     }
 
-    public RedisCacheFactory setRedisClientFactory(RedisClientFactory redisClientFactory) {
-        if (myOwnRedisClientFactory && this.redisClientFactory != null
-                && this.redisClientFactory != redisClientFactory) {
-            this.redisClientFactory.destroy();
-        }
-        this.redisClientFactory = redisClientFactory;
-        myOwnRedisClientFactory = false;
+    /**
+     * Sets Redis' host and port scheme (format {@code host:port}).
+     * 
+     * @param redisHostAndPort
+     * @return
+     * @since 0.4.1
+     */
+    public RedisCacheFactory setRedisHostAndPort(String redisHostAndPort) {
+        this.redisHostAndPort = redisHostAndPort;
         return this;
     }
 
-    public String getRedisHost() {
-        return redisHost;
+    /**
+     * @return
+     * @since 0.4.1
+     */
+    protected JedisPool getJedisPool() {
+        return jedisPool;
     }
 
-    public RedisCacheFactory setRedisHost(String redisHost) {
-        this.redisHost = redisHost;
-        return this;
-    }
-
-    protected String getRedisUsername() {
-        return redisUsername;
-    }
-
-    public RedisCacheFactory setRedisUsername(String redisUsername) {
-        this.redisUsername = redisUsername;
+    /**
+     * @param jedisPool
+     * @return
+     * @since 0.4.1
+     */
+    public RedisCacheFactory setJedisPool(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
+        myOwnJedisPool = false;
         return this;
     }
 
@@ -60,24 +139,6 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
 
     public RedisCacheFactory setRedisPassword(String redisPassword) {
         this.redisPassword = redisPassword;
-        return this;
-    }
-
-    public int getRedisPort() {
-        return redisPort;
-    }
-
-    public RedisCacheFactory setRedisPort(int redisPort) {
-        this.redisPort = redisPort;
-        return this;
-    }
-
-    protected PoolConfig getPoolConfig() {
-        return poolConfig;
-    }
-
-    public RedisCacheFactory setPoolConfig(PoolConfig poolConfig) {
-        this.poolConfig = poolConfig;
         return this;
     }
 
@@ -140,10 +201,9 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
     @Override
     public RedisCacheFactory init() {
         super.init();
-        if (redisClientFactory == null) {
-            RedisClientFactory factory = RedisClientFactory.newFactory();
-            redisClientFactory = factory;
-            myOwnRedisClientFactory = true;
+        if (jedisPool == null) {
+            jedisPool = RedisCacheFactory.newJedisPool(redisHostAndPort, redisPassword);
+            myOwnJedisPool = true;
         }
         return this;
     }
@@ -153,13 +213,15 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
      */
     @Override
     public void destroy() {
-        try {
-            if (myOwnRedisClientFactory && redisClientFactory != null) {
-                redisClientFactory.destroy();
+        if (jedisPool != null && myOwnJedisPool) {
+            try {
+                jedisPool.destroy();
+            } catch (Exception e) {
+            } finally {
+                jedisPool = null;
             }
-        } finally {
-            super.destroy();
         }
+        super.destroy();
     }
 
     /**
@@ -171,10 +233,8 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
         RedisCache cache = new RedisCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
-        cache.setRedisHost(redisHost).setRedisPort(redisPort).setRedisUsername(redisUsername)
-                .setRedisPassword(redisPassword).setPoolConfig(poolConfig);
+        cache.setRedisHostsAndPorts(redisHostAndPort).setRedisPassword(redisPassword);
         cache.setCompactMode(getCompactMode());
-        cache.setCacheEntrySerializer(getCacheEntrySerializer());
         return cache;
     }
 

@@ -1,10 +1,24 @@
 ddth-cache-adapter release notes
 ================================
 
+0.4.1 - 2016-05-17
+------------------
+
+- Switch from `ddth-redis` to [`jedis`](https://github.com/xetorthio/jedis).
+- Move `*CacheEntrySerializer` classes to a separated package `com.github.ddth.cacheadapter.ces`, and
+change the default cache entry serializer to `KryoCacheEntrySerializer`.
+- New property `AbstractCacheEntrySerializer.compressor` and new interface `ICompressor` to support
+compression of serialized cache entries.
+- `ICompressor` implementation: `JdkDeflateCompressor`.
+- New (experimental) `ShardedRedisCache`.
+- New (experimental) `ClusteredRedisCache`.
+- Bug fixes & improvements.
+
+
 0.4.0 - 2015-11-07
 ------------------
 
-- Separate artifacts: `ddth-cache-adapter-core`, `ddth-cache-adapter-redis` and `ddth-cache-adapter-memcached`.
+- Separate artifacts: `ddth-cache-adapter-core`, `ddth-cache-adapter-redis` and `ddth-cache-adapter-serializing`.
 
 
 0.3.1.3 - 2015-11-03

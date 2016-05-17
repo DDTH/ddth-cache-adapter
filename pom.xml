@@ -1,135 +1,137 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.github.ddth</groupId>
-		<artifactId>ddth-parent</artifactId>
-		<version>5.1</version>
-	</parent>
+    <parent>
+        <groupId>com.github.ddth</groupId>
+        <artifactId>ddth-parent</artifactId>
+        <version>5.1</version>
+    </parent>
 
-	<groupId>com.github.ddth</groupId>
-	<artifactId>ddth-cache-adapter</artifactId>
-	<version>0.4.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>com.github.ddth</groupId>
+    <artifactId>ddth-cache-adapter</artifactId>
+    <version>0.4.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>ddth-cache-adapter</name>
-	<description>DDTH's adapter for various cache systems</description>
-	<url>https://github.com/DDTH/ddth-cache-adapter</url>
+    <name>ddth-cache-adapter</name>
+    <description>DDTH's adapter for various cache systems</description>
+    <url>https://github.com/DDTH/ddth-cache-adapter</url>
 
-	<modules>
-		<module>ddth-cache-adapter-core</module>
-		<module>ddth-cache-adapter-serializing</module>
-		<module>ddth-cache-adapter-redis</module>
-	</modules>
+    <modules>
+        <module>ddth-cache-adapter-core</module>
+        <module>ddth-cache-adapter-serializing</module>
+        <module>ddth-cache-adapter-redis</module>
+    </modules>
 
-	<licenses>
-		<license>
-			<name>The MIT License (MIT)</name>
-			<url>http://opensource.org/licenses/MIT</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<scm>
-		<url>git@github.com:DDTH/ddth-cache-adapter</url>
-		<connection>scm:git:git@github.com:DDTH/ddth-cache-adapter</connection>
-		<developerConnection>scm:git:git@github.com:DDTH/ddth-cache-adapter</developerConnection>
-	</scm>
-	<developers>
-		<developer>
-			<id>btnguyen2k</id>
-			<name>Thanh Ba Nguyen</name>
-			<email>btnguyen2k@gmail.com</email>
-		</developer>
-	</developers>
+    <scm>
+        <url>git@github.com:DDTH/ddth-cache-adapter</url>
+        <connection>scm:git:git@github.com:DDTH/ddth-cache-adapter</connection>
+        <developerConnection>scm:git:git@github.com:DDTH/ddth-cache-adapter</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>btnguyen2k</id>
+            <name>Thanh Ba Nguyen</name>
+            <email>btnguyen2k@gmail.com</email>
+        </developer>
+    </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<skipTests>true</skipTests>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <skipTests>true</skipTests>
 
-		<version.ddth_commons>0.4.0</version.ddth_commons>
-		<version.jboss_serialization>4.2.2.GA</version.jboss_serialization>
-		<version.ddth_redis>0.4.0</version.ddth_redis>
-	</properties>
+        <version.ddth_commons>0.4.0</version.ddth_commons>
+        <version.jedis>2.8.1</version.jedis>
+    </properties>
 
-	<repositories>
-		<repository>
-			<id>sonatype-org</id>
-			<name>Sonatype Releases</name>
-			<url>http://oss.sonatype.org/content/repositories/releases/</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>sonatype-org</id>
+            <name>Sonatype Releases</name>
+            <url>http://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-simple</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${version.log4j}</version>
-		</dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${version.log4j}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-core</artifactId>
-			<version>${version.ddth_commons}</version>
-		</dependency>
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-commons-core</artifactId>
+            <version>${version.ddth_commons}</version>
+        </dependency>
 
-		<!-- for Redis-based cache -->
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-redis</artifactId>
-			<version>${version.ddth_redis}</version>
-			<optional>true</optional>
-		</dependency>
+        <!-- for Redis-based cache -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${version.jedis}</version>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- for serializing cache -->
-		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>jboss-serialization</artifactId>
-			<version>${version.jboss_serialization}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-serialization</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-thrift</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-			<optional>true</optional>
-		</dependency>
-	</dependencies>
+        <!-- for serializing cache -->
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-commons-serialization</artifactId>
+            <version>${version.ddth_commons}</version>
+            <type>pom</type>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-commons-thrift</artifactId>
+            <version>${version.ddth_commons}</version>
+            <type>pom</type>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<forkMode>always</forkMode>
-					<skipTests>${skipTests}</skipTests>
-					<systemPropertyVariables>
-						<!-- <log4j.configuration>file:${basedir}/../etc/log4j.xml</log4j.configuration> -->
-					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkMode>always</forkMode>
+                    <skipTests>${skipTests}</skipTests>
+                    <systemPropertyVariables>
+                        <!-- <log4j.configuration>file:${basedir}/../etc/log4j.xml</log4j.configuration> -->
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

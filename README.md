@@ -1,35 +1,33 @@
 ddth-cache-adapter
 ==================
 
-DDTH's adapter for various cache systems.
+DDTH's adapter for various cache backends.
 
 Project home:
 [https://github.com/DDTH/ddth-cache-adapter](https://github.com/DDTH/ddth-cache-adapter)
 
-OSGi environment: `ddth-cache-adapter` is packaged as an OSGi bundle.
-
 
 ## License ##
 
-See LICENSE.txt for details. Copyright (c) 2014-2015 Thanh Ba Nguyen.
+See LICENSE.txt for details. Copyright (c) 2014-2016 Thanh Ba Nguyen.
 
 Third party libraries are distributed under their own licenses.
 
 
 ## Installation #
 
-Latest release version: `0.4.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.4.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
 
-*ddth-cache-adapter-core*: in-memory cache, all other dependencies *optional*.
+*ddth-cache-adapter-core*: in-memory cache, all other dependencies are *optional*.
 
 ```xml
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.4.0</version>
+	<version>0.4.1</version>
 </dependency>
 ```
 
@@ -39,7 +37,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
     <type>pom</type>
 </dependency>
 ```
@@ -53,31 +51,42 @@ dependency artifact(s) to reduce the number of unused jar files.
 // in-memory cache factory, with default settings
 ICacheFactory factory = new GuavaCacheFactory().init();
 
-// fache factory with some settings
+// cache factory with some settings
 ICacheFactory factory = new GuavaCacheFactory()
     .setDefaultCacheCapacity(1000)
     .setDefaultExpireAfterAccess(3600)
     .init();
 
 // Redis cache factory
-PoolConfig poolConfig = new PoolConfig()
-    .setMaxIdle(16).setMinIdle(4)
-    .setMaxActive(64).setMaxWaitTime(1000);
 ICacheFactory factory = new RedisCacheFactory()
-    .setRedisHost("localhost").setRedisPort(6379)
-    .setPoolConfig(poolConfig)
+    .setRedisHostAndPort("localhost:6379")
+    .setRedisPassword("secret")
     .init();
+
+// Sharded-Redis cache factory
+ICacheFactory factory = new ShardedRedisCacheFactory()
+    .setRedisHostsAndPorts("localhost:6379,host2:port2,host3:port3")
+    .setRedisPassword("secret")
+    .init();
+
+// Clustered-Redis cache factory
+ICacheFactory factory = new ClusteredRedisCacheFactory()
+    .setRedisHostsAndPorts("localhost:6379,host2:port2,host3:port3")
+    .init();
+
 
 // A cache factory with some specific cache settings.
 Map<String, Properties> cacheProps = new HashMap<String, Properties>();
 Properties propCache1 = new Properties();
 propCache1.put("cache.capacity", 1000);
 propCache1.put("cache.expireAfterWrite", 3600);
-cacheProps.put("cache1", propCache1);
+cacheProps.put("cacheName1", propCache1);
+
 Properties propCache2 = new Properties();
-propCache1.put("cache.capacity", 10000);
-propCache1.put("cache.expireAfterAccess", 3600);
-cacheProps.put("cache2", propCache1);
+propCache2.put("cache.capacity", 10000);
+propCache2.put("cache.expireAfterAccess", 3600);
+cacheProps.put("cacheName2", propCache2);
+
 ICacheFactory factory = new GuavaCacheFactory()
     .setCacheProperties(cacheProps)
     .setDefaultCacheCapacity(100)
@@ -126,4 +135,3 @@ Object value = cache.get("key1");
 > Note:
 > 
 > - `expireAfterWrite` and `expireAfterWrite` are in seconds.
-> - Argument value for `PoolConfig.setMaxWaitTime(...)` is in milliseconds.

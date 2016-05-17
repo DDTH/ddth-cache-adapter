@@ -1,6 +1,5 @@
 package com.github.ddth.cacheadapter.guava;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ddth.cacheadapter.AbstractCache;
@@ -14,9 +13,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * In-memory cache, use <a
- * href="http://code.google.com/p/guava-libraries/">Guava</a> as the underlying
- * cache engine.
+ * In-memory cache, use
+ * <a href="http://code.google.com/p/guava-libraries/">Guava</a> as the
+ * underlying cache engine.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
@@ -66,8 +65,8 @@ public class GuavaCache extends AbstractCache {
         }
 
         int numProcessores = Runtime.getRuntime().availableProcessors();
-        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().concurrencyLevel(
-                numProcessores * 2);
+        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder()
+                .concurrencyLevel(numProcessores * 2);
         if (capacity > 0) {
             cacheBuilder.maximumSize(capacity);
         }
@@ -183,7 +182,7 @@ public class GuavaCache extends AbstractCache {
                 }
             }
             return result;
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             Throwable t = e.getCause();
             if (t instanceof CacheException.CacheEntryNotFoundException) {
                 return null;

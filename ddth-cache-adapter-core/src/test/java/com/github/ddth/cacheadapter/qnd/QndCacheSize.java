@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.thrift.TException;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.utils.ThriftUtils;
@@ -12,60 +12,72 @@ import com.github.ddth.commons.utils.SerializationUtils;
 
 public class QndCacheSize {
 
-    private static byte[] serDDTHCommons(Object obj) {
-        return SerializationUtils.toByteArray(obj);
+    private static boolean compare(Object o1, Object o2) {
+        return new EqualsBuilder().append(o1, o2).isEquals();
     }
 
-    private static byte[] serKyro(Object obj) {
-        return SerializationUtils.toByteArrayKryo(obj);
-    }
+    private static void test(Object value) throws Exception {
+        System.out.println("========== TEST [" + value.getClass());
 
-    private static byte[] serThrift(CacheEntry ce) throws TException {
-        return ThriftUtils.serialize(ce);
-    }
+        CacheEntry ce = new CacheEntry("key", value, 3600, 0);
 
-    public static void main(String[] args) throws Exception {
-        String key = "key";
-        // String value = "Nguyễn Bá Thành";
-        Map<String, Object> value = new HashMap<String, Object>();
-        {
-            value.put("first_name", "Thành");
-            value.put("last_name", "Nguyễn");
-            value.put("email", "btnguyen2k@gmail.com");
-            value.put("dob", new Date());
-        }
-        CacheEntry ce = new CacheEntry(key, value, 3600, 0);
+        System.out.println("serDDTHCommons(raw): " + SerializationUtils.toByteArray(value).length);
+        System.out.println(
+                "serKyro(raw)       : " + SerializationUtils.toByteArrayKryo(value).length);
+        System.out.println("serDDTHCommons(ce) : " + SerializationUtils.toByteArray(ce).length);
+        System.out.println("serKyro(ce)        : " + SerializationUtils.toByteArrayKryo(ce).length);
+        System.out.println("serThrift(ce)      : " + ThriftUtils.serialize(ce).length);
 
-        // System.out.println("Raw                : " +
-        // value.getBytes("UTF-8").length);
-        System.out.println("serDDTHCommons(raw): " + serDDTHCommons(value).length);
-        System.out.println("serKyro(raw)       : " + serKyro(value).length);
-        System.out.println("========================================");
-        System.out.println("serDDTHCommons(ce) : " + serDDTHCommons(ce).length);
-        System.out.println("serKyro(ce)        : " + serKyro(ce).length);
-        System.out.println("serThrift(ce)      : " + serThrift(ce).length);
-
-        System.out.println("========================================");
+        System.out.println("==== Ser/Deser:");
         {
             byte[] dataRaw = SerializationUtils.toByteArrayKryo(value);
-            System.out.println(dataRaw.length);
-            Object obj = SerializationUtils.fromByteArrayKryo(dataRaw, HashMap.class);
-            System.out.println(obj);
+            System.out.println("Size (Kryo/raw) : " + dataRaw.length);
+            Object obj = SerializationUtils.fromByteArrayKryo(dataRaw, value.getClass());
+            System.out.println("Deserialize     : " + obj);
+            System.out.println("Compare         : ===>" + compare(value, obj));
+        }
+        {
+            byte[] dataCe = SerializationUtils.toByteArray(ce);
+            System.out.println("Size (Jboss/ce) : " + dataCe.length);
+            Object obj = SerializationUtils.fromByteArray(dataCe, CacheEntry.class);
+            System.out.println("Deserialize     : " + obj);
+            System.out.println("Compare         : ===>" + compare(ce, obj));
         }
         {
             byte[] dataCe = SerializationUtils.toByteArrayKryo(ce);
-            System.out.println(dataCe.length);
+            System.out.println("Size (Kryo/ce)  : " + dataCe.length);
             Object obj = SerializationUtils.fromByteArrayKryo(dataCe, CacheEntry.class);
-            System.out.println(obj);
+            System.out.println("Deserialize     : " + obj);
+            System.out.println("Compare         : ===>" + compare(ce, obj));
         }
-
-        System.out.println("========================================");
         {
             byte[] dataCe = ThriftUtils.serialize(ce);
-            System.out.println(dataCe.length);
+            System.out.println("Size (Thrift/ce): " + dataCe.length);
             Object obj = ThriftUtils.deserialize(dataCe);
-            System.out.println(obj);
+            System.out.println("Deserialize     : " + obj);
+            System.out.println("Compare         : ===>" + compare(ce, obj));
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        {
+            // bootstrap
+            CacheEntry ce = new CacheEntry();
+            SerializationUtils.toByteArray(ce);
+            SerializationUtils.toByteArrayKryo(ce);
+            ThriftUtils.serialize(ce);
         }
 
+        Map<String, Object> value1 = new HashMap<String, Object>();
+        {
+            value1.put("first_name", "Thành");
+            value1.put("last_name", "Nguyễn");
+            value1.put("email", "btnguyen2k@gmail.com");
+            value1.put("dob", new Date());
+        }
+        test(value1);
+        System.out.println("========================================");
+        Value value2 = new Value();
+        test(value2);
     }
 }

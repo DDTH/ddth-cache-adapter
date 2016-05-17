@@ -1,56 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.github.ddth</groupId>
-		<artifactId>ddth-cache-adapter</artifactId>
-		<version>0.4.1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>com.github.ddth</groupId>
+        <artifactId>ddth-cache-adapter</artifactId>
+        <version>0.4.1-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>ddth-cache-adapter-serializing</artifactId>
-	<version>0.4.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <artifactId>ddth-cache-adapter-serializing</artifactId>
+    <version>0.4.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>ddth-cache-adapter-serializing</name>
-	<description>DDTH's adapter for various cache systems</description>
-	<url>https://github.com/DDTH/ddth-cache-adapter</url>
+    <name>ddth-cache-adapter-serializing</name>
+    <description>DDTH's adapter for various cache systems</description>
+    <url>https://github.com/DDTH/ddth-cache-adapter</url>
 
-	<developers>
-		<developer>
-			<id>btnguyen2k</id>
-			<name>Thanh Ba Nguyen</name>
-			<email>btnguyen2k@gmail.com</email>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>btnguyen2k</id>
+            <name>Thanh Ba Nguyen</name>
+            <email>btnguyen2k@gmail.com</email>
+        </developer>
+    </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-cache-adapter-core</artifactId>
-			<version>0.4.1-SNAPSHOT</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-cache-adapter-core</artifactId>
+            <version>0.4.1-SNAPSHOT</version>
+        </dependency>
 
-		<!-- for serializing cache -->
-		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>jboss-serialization</artifactId>
-			<version>${version.jboss_serialization}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-serialization</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-thrift</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-		</dependency>
-	</dependencies>
+        <!-- for serializing cache -->
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-commons-serialization</artifactId>
+            <version>${version.ddth_commons}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ddth</groupId>
+            <artifactId>ddth-commons-thrift</artifactId>
+            <version>${version.ddth_commons}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
 </project>

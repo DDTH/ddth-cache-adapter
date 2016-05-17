@@ -1,13 +1,20 @@
 package com.github.ddth.cacheadapter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
+
 /**
  * Abstract cache implementation that requires cache entries to be
- * serilized/deserialized.
+ * serialized/de-serialized.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.3.0
  */
 public abstract class AbstractSerializingCache extends AbstractCache {
+
+    private Logger LOGGER = LoggerFactory.getLogger(AbstractSerializingCache.class);
 
     private ICacheEntrySerializer cacheEntrySerializer;
 
@@ -68,11 +75,21 @@ public abstract class AbstractSerializingCache extends AbstractCache {
     }
 
     protected byte[] serializeCacheEntry(CacheEntry ce) {
-        return ce != null ? cacheEntrySerializer.serialize(ce) : null;
+        try {
+            return ce != null ? cacheEntrySerializer.serialize(ce) : null;
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage(), e);
+            return null;
+        }
     }
 
     protected CacheEntry deserializeCacheEntry(byte[] data) {
-        return data != null ? cacheEntrySerializer.deserialize(data) : null;
+        try {
+            return data != null ? cacheEntrySerializer.deserialize(data) : null;
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -82,7 +99,7 @@ public abstract class AbstractSerializingCache extends AbstractCache {
     public void init() {
         super.init();
         if (cacheEntrySerializer == null) {
-            cacheEntrySerializer = new DefaultCacheEntrySerializer();
+            cacheEntrySerializer = KryoCacheEntrySerializer.instance;
         }
     }
 }

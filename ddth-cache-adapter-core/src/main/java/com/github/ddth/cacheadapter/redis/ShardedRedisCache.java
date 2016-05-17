@@ -7,108 +7,105 @@ import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.util.SafeEncoder;
 
 /**
- * <a href="http://redis.io">Redis</a> implementation of {@link ICache}.
+ * Sharded <a href="http://redis.io">Redis</a> implementation of {@link ICache}.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
- * @since 0.1.0
+ * @since 0.4.1
  */
-public class RedisCache extends AbstractSerializingCache {
+public class ShardedRedisCache extends AbstractSerializingCache {
 
-    private JedisPool jedisPool;
+    private ShardedJedisPool jedisPool;
     private boolean myOwnJedisPool = true;
-    private String redisHostAndPort = "localhost:6379";
+    private String redisHostsAndPorts = "localhost:6379";
     private String redisPassword;
 
     private long timeToLiveSeconds = -1;
-    private boolean compactMode = false;
 
-    public RedisCache() {
+    public ShardedRedisCache() {
         super();
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory,
             ICacheEntrySerializer cacheEntrySerializer) {
         super(name, cacheFactory, cacheEntrySerializer);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             ICacheEntrySerializer cacheEntrySerializer) {
         super(name, cacheFactory, capacity, cacheEntrySerializer);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess,
             ICacheEntrySerializer cacheEntrySerializer) {
         super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
                 cacheEntrySerializer);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
             ICacheEntrySerializer cacheEntrySerializer) {
         super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader,
                 cacheEntrySerializer);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
         super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
             long expireAfterWrite, long expireAfterAccess) {
         super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
         super(name, cacheFactory, capacity);
     }
 
-    public RedisCache(String name, AbstractCacheFactory cacheFactory) {
+    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory) {
         super(name, cacheFactory);
     }
 
     /**
-     * Redis' host and port scheme (format {@code host:port}).
+     * Redis' hosts and ports scheme (format
+     * {@code host1:port1,host2:port2,host3:port3}).
      * 
      * @return
-     * @since 0.4.1
      */
-    public String getRedisHostAndPort() {
-        return redisHostAndPort;
+    public String getRedisHostsAndPorts() {
+        return redisHostsAndPorts;
     }
 
     /**
-     * Sets Redis' host and port scheme (format {@code host:port}).
+     * Sets Redis' hosts and ports scheme (format
+     * {@code host1:port1,host2:port2,host3:port3}).
      * 
      * @param redisHostAndPort
      * @return
-     * @since 0.4.1
      */
-    public RedisCache setRedisHostsAndPorts(String redisHostAndPort) {
-        this.redisHostAndPort = redisHostAndPort;
+    public ShardedRedisCache setRedisHostsAndPorts(String redisHostAndPort) {
+        this.redisHostsAndPorts = redisHostAndPort;
         return this;
     }
 
     /**
      * @return
-     * @since 0.4.1
      */
-    protected JedisPool getJedisPool() {
+    protected ShardedJedisPool getJedisPool() {
         return jedisPool;
     }
 
     /**
      * @param jedisPool
      * @return
-     * @since 0.4.1
      */
-    public RedisCache setJedisPool(JedisPool jedisPool) {
+    public ShardedRedisCache setJedisPool(ShardedJedisPool jedisPool) {
         this.jedisPool = jedisPool;
         myOwnJedisPool = false;
         return this;
@@ -118,61 +115,8 @@ public class RedisCache extends AbstractSerializingCache {
         return redisPassword;
     }
 
-    public RedisCache setRedisPassword(String redisPassword) {
+    public ShardedRedisCache setRedisPassword(String redisPassword) {
         this.redisPassword = redisPassword;
-        return this;
-    }
-
-    /**
-     * Is compact mode on or off?
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @return
-     * @since 0.1.1
-     */
-    public boolean isCompactMode() {
-        return compactMode;
-    }
-
-    /**
-     * Is compact mode on or off?
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @return
-     * @since 0.1.1
-     */
-    public boolean getCompactMode() {
-        return compactMode;
-    }
-
-    /**
-     * Sets compact mode on/off.
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @param compactMode
-     * @return
-     * @since 0.1.1
-     */
-    public RedisCache setCompactMode(boolean compactMode) {
-        this.compactMode = compactMode;
         return this;
     }
 
@@ -191,7 +135,7 @@ public class RedisCache extends AbstractSerializingCache {
         }
 
         if (jedisPool == null) {
-            jedisPool = RedisCacheFactory.newJedisPool(redisHostAndPort, redisPassword);
+            jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts, redisPassword);
             myOwnJedisPool = true;
         }
     }
@@ -213,9 +157,8 @@ public class RedisCache extends AbstractSerializingCache {
 
     /**
      * @return
-     * @since 0.4.1
      */
-    protected Jedis getJedis() {
+    protected ShardedJedis getJedis() {
         return jedisPool.getResource();
     }
 
@@ -224,7 +167,6 @@ public class RedisCache extends AbstractSerializingCache {
      * 
      * @param key
      * @return
-     * @since 0.1.1
      */
     protected String genCacheKeyNonCompact(String key) {
         return getName() + "-" + key;
@@ -235,9 +177,7 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     public long getSize() {
-        try (Jedis jedis = getJedis()) {
-            return compactMode ? jedis.hlen(getName()) : -1;
-        }
+        return -1;
     }
 
     /**
@@ -261,8 +201,8 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
-        try (Jedis jedis = getJedis()) {
-            final String KEY = compactMode ? getName() : genCacheKeyNonCompact(key);
+        try (ShardedJedis jedis = getJedis()) {
+            final String KEY = genCacheKeyNonCompact(key);
             final long currentTTL = jedis.ttl(KEY);
             long ttl = TTL_NO_CHANGE;
             if (!(entry instanceof CacheEntry)) {
@@ -279,36 +219,20 @@ public class RedisCache extends AbstractSerializingCache {
 
             // TTL Rules:
             // 1. New item: TTL is calculated as formula(s) above.
-            // 2. Old item:
-            // 2.1. If [compactMode=true]: extends the current TTL
-            // 2.2. If [compactMode=false]: extends the current TTL only
+            // 2. Old item: extends the current TTL only
             // when expireAfterAccess > 0
-            if (compactMode && currentTTL >= -1) {
-                // old item, 2.1
-                ttl = currentTTL > 0 ? currentTTL : TTL_NO_CHANGE;
-            }
-            if (!compactMode && currentTTL >= -1) {
-                // old item, 2.2
+            if (currentTTL >= -1) {
+                // old item
                 ttl = expireAfterAccess > 0 ? expireAfterAccess : TTL_NO_CHANGE;
             }
-
-            if (compactMode) {
-                jedis.hset(SafeEncoder.encode(KEY), SafeEncoder.encode(key), data);
-                if (ttl > 0) {
-                    jedis.expire(KEY, (int) ttl);
-                } else if (ttl == TTL_FOREVER && currentTTL >= -1) {
-                    jedis.persist(KEY);
-                }
+            if (ttl > 0) {
+                jedis.setex(SafeEncoder.encode(KEY), (int) ttl, data);
             } else {
-                if (ttl > 0) {
-                    jedis.setex(SafeEncoder.encode(KEY), (int) ttl, data);
-                } else {
-                    jedis.set(SafeEncoder.encode(KEY), data);
-                    if (ttl == TTL_FOREVER) {
-                        jedis.persist(KEY);
-                    } else if (currentTTL > 0) {
-                        jedis.expire(KEY, (int) currentTTL);
-                    }
+                jedis.set(SafeEncoder.encode(KEY), data);
+                if (ttl == TTL_FOREVER) {
+                    jedis.persist(KEY);
+                } else if (currentTTL > 0) {
+                    jedis.expire(KEY, (int) currentTTL);
                 }
             }
         }
@@ -319,12 +243,8 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     public void delete(String key) {
-        try (Jedis jedis = getJedis()) {
-            if (compactMode) {
-                jedis.hdel(getName(), key);
-            } else {
-                jedis.del(genCacheKeyNonCompact(key));
-            }
+        try (ShardedJedis jedis = getJedis()) {
+            jedis.del(genCacheKeyNonCompact(key));
         }
     }
 
@@ -333,11 +253,7 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     public void deleteAll() {
-        try (Jedis jedis = getJedis()) {
-            if (compactMode) {
-                jedis.del(getName());
-            }
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -345,12 +261,8 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     public boolean exists(String key) {
-        try (Jedis jedis = getJedis()) {
-            if (compactMode) {
-                return jedis.hget(SafeEncoder.encode(getName()), SafeEncoder.encode(key)) != null;
-            } else {
-                return jedis.get(SafeEncoder.encode(genCacheKeyNonCompact(key))) != null;
-            }
+        try (ShardedJedis jedis = getJedis()) {
+            return jedis.get(SafeEncoder.encode(genCacheKeyNonCompact(key))) != null;
         }
     }
 
@@ -359,10 +271,9 @@ public class RedisCache extends AbstractSerializingCache {
      */
     @Override
     protected Object internalGet(String key) {
-        try (Jedis jedis = getJedis()) {
-            final String KEY = compactMode ? getName() : genCacheKeyNonCompact(key);
-            byte[] obj = compactMode ? jedis.hget(SafeEncoder.encode(KEY), SafeEncoder.encode(key))
-                    : jedis.get(SafeEncoder.encode(KEY));
+        try (ShardedJedis jedis = getJedis()) {
+            final String KEY = genCacheKeyNonCompact(key);
+            byte[] obj = jedis.get(SafeEncoder.encode(KEY));
             if (obj != null) {
                 CacheEntry ce = deserializeCacheEntry(obj);
                 if (ce.touch()) {
