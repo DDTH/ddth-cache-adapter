@@ -13,6 +13,42 @@ import com.github.ddth.cacheadapter.ICacheFactory;
  */
 public class GuavaCacheFactory extends AbstractCacheFactory {
 
+    private boolean cloneCacheEntries = false;
+
+    /**
+     * If {@code true}, cache entries are cloned before putting into cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean isCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned before putting into cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean getCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned before putting into cache.
+     * 
+     * @param cloneCacheEntries
+     * @return
+     * @since 0.4.1.1
+     */
+    public GuavaCacheFactory setCloneCacheEntries(boolean cloneCacheEntries) {
+        this.cloneCacheEntries = cloneCacheEntries;
+        return this;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -22,6 +58,7 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
         GuavaCache cache = new GuavaCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
+        cache.setCloneCacheEntries(cloneCacheEntries);
         return cache;
     }
 

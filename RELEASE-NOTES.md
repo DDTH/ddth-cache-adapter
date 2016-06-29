@@ -1,6 +1,12 @@
 ddth-cache-adapter release notes
 ================================
 
+0.4.1.1 - 2016-06-28
+--------------------
+
+- `GuavaCache`: option to clone cache entries before putting to cache.
+
+
 0.4.1 - 2016-05-17
 ------------------
 

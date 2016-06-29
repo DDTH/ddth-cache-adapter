@@ -1,5 +1,6 @@
 package com.github.ddth.cacheadapter.guava;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ddth.cacheadapter.AbstractCache;
@@ -23,6 +24,7 @@ import com.google.common.cache.LoadingCache;
 public class GuavaCache extends AbstractCache {
 
     private LoadingCache<String, Object> cache;
+    private boolean cloneCacheEntries = false;
 
     public GuavaCache() {
     }
@@ -116,6 +118,40 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
+     * If {@code true}, cache entries are cloned before putting into cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean isCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned before putting into cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean getCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned before putting into cache.
+     * 
+     * @param cloneCacheEntries
+     * @return
+     * @since 0.4.1.1
+     */
+    public GuavaCache setCloneCacheEntries(boolean cloneCacheEntries) {
+        this.cloneCacheEntries = cloneCacheEntries;
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -124,18 +160,55 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
-     * {@inheritDoc}
+     * Try cloning an object.
+     * 
+     * @param _obj
+     * @return
+     * @since 0.5.0.6
      */
-    @Override
-    public void set(String key, Object entry) {
-        cache.put(key, entry);
+    private Object tryCloneObject(Object _obj) {
+        if (_obj == null) {
+            return null;
+        }
+        Object obj = _obj instanceof CacheEntry ? obj = ((CacheEntry) _obj).getValue() : _obj;
+        Object clonedObj = null;
+        if (obj instanceof Cloneable) {
+            try {
+                Method method = Object.class.getDeclaredMethod("clone");
+                method.setAccessible(true);
+                clonedObj = method.invoke(obj);
+            } catch (Exception e) {
+                if (e instanceof CloneNotSupportedException) {
+                    clonedObj = obj;
+                } else {
+                    throw e instanceof RuntimeException ? (RuntimeException) e
+                            : new RuntimeException(e);
+                }
+            }
+        } else {
+            clonedObj = obj;
+        }
+        if (_obj instanceof CacheEntry) {
+            ((CacheEntry) _obj).setValue(clonedObj);
+            clonedObj = _obj;
+        }
+        return clonedObj;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
+    public void set(String key, Object entry) {
+        cache.put(key, cloneCacheEntries ? tryCloneObject(entry) : entry);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void set(String key, Object _entry, long expireAfterWrite, long expireAfterAccess) {
+        Object entry = cloneCacheEntries ? tryCloneObject(_entry) : _entry;
         if (!(entry instanceof CacheEntry)) {
             CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
             entry = ce;
