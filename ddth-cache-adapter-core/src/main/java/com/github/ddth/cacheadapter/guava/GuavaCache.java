@@ -118,7 +118,7 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache,
+     * If {@code true}, cache entries are cloned when fetching out of cache,
      * default value is {@code false}.
      * 
      * @return
@@ -129,7 +129,7 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache,
+     * If {@code true}, cache entries are cloned when fetching out of cache,
      * default value is {@code false}.
      * 
      * @return
@@ -140,7 +140,7 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache.
+     * If {@code true}, cache entries are cloned when fetching out of cache.
      * 
      * @param cloneCacheEntries
      * @return
@@ -200,15 +200,14 @@ public class GuavaCache extends AbstractCache {
      */
     @Override
     public void set(String key, Object entry) {
-        cache.put(key, cloneCacheEntries ? tryCloneObject(entry) : entry);
+        cache.put(key, entry);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void set(String key, Object _entry, long expireAfterWrite, long expireAfterAccess) {
-        Object entry = cloneCacheEntries ? tryCloneObject(_entry) : _entry;
+    public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
         if (!(entry instanceof CacheEntry)) {
             CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
             entry = ce;
@@ -254,7 +253,7 @@ public class GuavaCache extends AbstractCache {
                     set(key, ce);
                 }
             }
-            return result;
+            return cloneCacheEntries ? tryCloneObject(result) : result;
         } catch (Exception e) {
             Throwable t = e.getCause();
             if (t instanceof CacheException.CacheEntryNotFoundException) {

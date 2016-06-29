@@ -16,7 +16,7 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
     private boolean cloneCacheEntries = false;
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache,
+     * If {@code true}, cache entries are cloned when fetching out of cache,
      * default value is {@code false}.
      * 
      * @return
@@ -27,7 +27,7 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
     }
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache,
+     * If {@code true}, cache entries are cloned when fetching out of cache,
      * default value is {@code false}.
      * 
      * @return
@@ -38,7 +38,7 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
     }
 
     /**
-     * If {@code true}, cache entries are cloned before putting into cache.
+     * If {@code true}, cache entries are cloned when fetching out of cache.
      * 
      * @param cloneCacheEntries
      * @return
