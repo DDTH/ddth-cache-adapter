@@ -164,7 +164,7 @@ public class GuavaCache extends AbstractCache {
      */
     @Override
     public void set(String key, Object entry) {
-        cache.put(key, entry);
+        cache.put(key, CacheUtils.tryClone(entry));
     }
 
     /**
@@ -173,8 +173,11 @@ public class GuavaCache extends AbstractCache {
     @Override
     public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
         if (!(entry instanceof CacheEntry)) {
-            CacheEntry ce = new CacheEntry(key, entry, expireAfterWrite, expireAfterAccess);
+            CacheEntry ce = new CacheEntry(key, CacheUtils.tryClone(entry), expireAfterWrite,
+                    expireAfterAccess);
             entry = ce;
+        } else {
+            entry = CacheUtils.tryClone(entry);
         }
         cache.put(key, entry);
     }
