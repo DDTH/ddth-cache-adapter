@@ -1,6 +1,5 @@
 package com.github.ddth.cacheadapter.guava;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ddth.cacheadapter.AbstractCache;
@@ -9,6 +8,7 @@ import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.ICacheLoader;
+import com.github.ddth.cacheadapter.utils.CacheUtils;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -160,42 +160,6 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
-     * Try cloning an object.
-     * 
-     * @param _obj
-     * @return
-     * @since 0.5.0.6
-     */
-    private Object tryCloneObject(Object _obj) {
-        if (_obj == null) {
-            return null;
-        }
-        Object obj = _obj instanceof CacheEntry ? obj = ((CacheEntry) _obj).getValue() : _obj;
-        Object clonedObj = null;
-        if (obj instanceof Cloneable) {
-            try {
-                Method method = Object.class.getDeclaredMethod("clone");
-                method.setAccessible(true);
-                clonedObj = method.invoke(obj);
-            } catch (Exception e) {
-                if (e instanceof CloneNotSupportedException) {
-                    clonedObj = obj;
-                } else {
-                    throw e instanceof RuntimeException ? (RuntimeException) e
-                            : new RuntimeException(e);
-                }
-            }
-        } else {
-            clonedObj = obj;
-        }
-        if (_obj instanceof CacheEntry) {
-            ((CacheEntry) _obj).setValue(clonedObj);
-            clonedObj = _obj;
-        }
-        return clonedObj;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -253,7 +217,7 @@ public class GuavaCache extends AbstractCache {
                     set(key, ce);
                 }
             }
-            return cloneCacheEntries ? tryCloneObject(result) : result;
+            return cloneCacheEntries ? CacheUtils.tryClone(result) : result;
         } catch (Exception e) {
             Throwable t = e.getCause();
             if (t instanceof CacheException.CacheEntryNotFoundException) {

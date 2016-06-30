@@ -7,21 +7,36 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.github.ddth.cacheadapter.utils.CacheUtils;
+
 /**
  * Encapsulates a cache item with extra functionality.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class CacheEntry implements Serializable {
+public class CacheEntry implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = "0.4.1".hashCode();
+    private static final long serialVersionUID = "0.4.1.3".hashCode();
 
     private String key = "";
     private Object value = ArrayUtils.EMPTY_BYTE_ARRAY;
     private long creationTimestampMs = System.currentTimeMillis(),
             lastAccessTimestampMs = System.currentTimeMillis(), expireAfterWrite = -1,
             expireAfterAccess = -1;
+
+    /**
+     * {@inheritDoc}
+     */
+    public CacheEntry clone() {
+        try {
+            CacheEntry clone = (CacheEntry) super.clone();
+            clone.value = CacheUtils.tryClone(value);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void _init() {
         creationTimestampMs = System.currentTimeMillis();

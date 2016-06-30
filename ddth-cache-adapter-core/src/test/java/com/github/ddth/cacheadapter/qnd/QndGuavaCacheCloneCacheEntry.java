@@ -7,16 +7,14 @@ import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
 
 public class QndGuavaCacheCloneCacheEntry {
 
-    private static class ValueClass1 {
-        public String toString() {
-            return this.getClass().getName();
-        }
+    private static class ValueClass {
+        public int value = 0;
     }
 
-    private static class ValueClass2 implements Cloneable {
-        public String toString() {
-            return this.getClass().getName();
-        }
+    private static class ValueClass1 extends ValueClass {
+    }
+
+    private static class ValueClass2 extends ValueClass implements Cloneable {
     }
 
     public static void main(String[] args) {
@@ -25,10 +23,11 @@ public class QndGuavaCacheCloneCacheEntry {
                     .setDefaultExpireAfterAccess(3600).init();
             ICache cache = factory.createCache("cache");
             String key = "key";
-            Object entry = new ValueClass1();
+            ValueClass entry = new ValueClass1();
             cache.set(key, entry);
 
             Object _entry = cache.get(key);
+            entry.value++;
             System.out.println(_entry == entry);
         }
         {
@@ -36,10 +35,11 @@ public class QndGuavaCacheCloneCacheEntry {
                     .setDefaultCacheCapacity(1000).setDefaultExpireAfterAccess(3600).init();
             ICache cache = factory.createCache("cache");
             String key = "key";
-            Object entry = new ValueClass2();
+            ValueClass entry = new ValueClass2();
             cache.set(key, entry);
 
             Object _entry = cache.get(key);
+            entry.value++;
             System.out.println(_entry == entry);
         }
         {
@@ -47,10 +47,11 @@ public class QndGuavaCacheCloneCacheEntry {
                     .setDefaultExpireAfterAccess(3600).init();
             ICache cache = factory.createCache("cache");
             String key = "key";
-            Object entry = new ValueClass1();
+            ValueClass entry = new ValueClass1();
             cache.set(key, new CacheEntry(key, entry));
 
             Object _entry = cache.get(key);
+            entry.value++;
             System.out.println(_entry == entry);
         }
         {
@@ -58,10 +59,11 @@ public class QndGuavaCacheCloneCacheEntry {
                     .setDefaultCacheCapacity(1000).setDefaultExpireAfterAccess(3600).init();
             ICache cache = factory.createCache("cache");
             String key = "key";
-            Object entry = new ValueClass2();
+            ValueClass entry = new ValueClass2();
             cache.set(key, new CacheEntry(key, entry));
 
             Object _entry = cache.get(key);
+            entry.value++;
             System.out.println(_entry == entry);
         }
     }
