@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter;
 
+import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
+
 /**
  * Abstract implementation of {@link ICacheFactory} that creates
  * {@link AbstractSerializingCache} instances.
@@ -52,7 +54,8 @@ public abstract class AbstractSerializingCacheFactory extends AbstractCacheFacto
      * {@inheritDoc}
      */
     @Override
-    public AbstractSerializingCache createCache(String name, long capacity, ICacheLoader cacheLoader) {
+    public AbstractSerializingCache createCache(String name, long capacity,
+            ICacheLoader cacheLoader) {
         return (AbstractSerializingCache) super.createCache(name, capacity, cacheLoader);
     }
 
@@ -103,4 +106,16 @@ public abstract class AbstractSerializingCacheFactory extends AbstractCacheFacto
     @Override
     protected abstract AbstractSerializingCache createCacheInternal(String name, long capacity,
             long expireAfterWrite, long expireAfterAccess);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AbstractSerializingCacheFactory init() {
+        super.init();
+        if (cacheEntrySerializer == null) {
+            cacheEntrySerializer = KryoCacheEntrySerializer.instance;
+        }
+        return this;
+    }
 }

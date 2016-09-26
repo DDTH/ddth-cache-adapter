@@ -76,7 +76,8 @@ public abstract class AbstractSerializingCache extends AbstractCache {
 
     protected byte[] serializeCacheEntry(CacheEntry ce) {
         try {
-            return ce != null ? cacheEntrySerializer.serialize(ce) : null;
+            return ce != null && cacheEntrySerializer != null ? cacheEntrySerializer.serialize(ce)
+                    : null;
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
             return null;
@@ -85,7 +86,8 @@ public abstract class AbstractSerializingCache extends AbstractCache {
 
     protected CacheEntry deserializeCacheEntry(byte[] data) {
         try {
-            return data != null ? cacheEntrySerializer.deserialize(data) : null;
+            return data != null && cacheEntrySerializer != null
+                    ? cacheEntrySerializer.deserialize(data) : null;
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
             return null;

@@ -252,7 +252,7 @@ public class ClusteredRedisCache extends AbstractSerializingCache {
         byte[] obj = jedisCluster.get(SafeEncoder.encode(KEY));
         if (obj != null) {
             CacheEntry ce = deserializeCacheEntry(obj);
-            if (ce.touch()) {
+            if (ce != null && ce.touch()) {
                 set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
             }
             return ce;

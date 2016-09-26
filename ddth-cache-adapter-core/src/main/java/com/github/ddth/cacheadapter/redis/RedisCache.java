@@ -365,7 +365,7 @@ public class RedisCache extends AbstractSerializingCache {
                     : jedis.get(SafeEncoder.encode(KEY));
             if (obj != null) {
                 CacheEntry ce = deserializeCacheEntry(obj);
-                if (ce.touch()) {
+                if (ce != null && ce.touch()) {
                     set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
                 }
                 return ce;
