@@ -46,7 +46,7 @@
                     <instructions>
                         <!-- <Bundle-Activator></Bundle-Activator> -->
                         <Export-Package>com.github.ddth.cacheadapter,com.github.ddth.cacheadapter.ces,com.github.ddth.cacheadapter.compressor,com.github.ddth.cacheadapter.guava,com.github.ddth.cacheadapter.redis,com.github.ddth.cacheadapter.localremote,com.github.ddth.cacheadapter.threadlocal,com.github.ddth.cacheadapter.thrift,com.github.ddth.cacheadapter.utils</Export-Package>
-                        <Import-Package>com.google.common.*;version="${version.guava}",*</Import-Package>
+                        <!-- <Import-Package>com.google.common.*;version="${version.guava}",*</Import-Package> -->
                         <!-- <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> <Embed-Transitive>false</Embed-Transitive> 
                             <Embed-Directory>lib</Embed-Directory> -->
                     </instructions>
