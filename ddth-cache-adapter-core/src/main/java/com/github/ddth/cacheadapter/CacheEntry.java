@@ -1,13 +1,22 @@
 package com.github.ddth.cacheadapter;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.github.ddth.cacheadapter.utils.CacheUtils;
+import com.github.ddth.commons.serialization.DeserializationException;
+import com.github.ddth.commons.serialization.ISerializationSupport;
+import com.github.ddth.commons.serialization.SerializationException;
+import com.github.ddth.commons.utils.DPathUtils;
+import com.github.ddth.commons.utils.SerializationUtils;
 
 /**
  * Encapsulates a cache item with extra functionality.
@@ -15,15 +24,17 @@ import com.github.ddth.cacheadapter.utils.CacheUtils;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class CacheEntry implements Serializable, Cloneable {
+public class CacheEntry implements Serializable, Cloneable, ISerializationSupport {
 
     private static final long serialVersionUID = "0.4.1.3".hashCode();
 
     private String key = "";
     private Object value = ArrayUtils.EMPTY_BYTE_ARRAY;
-    private long creationTimestampMs = System.currentTimeMillis(),
-            lastAccessTimestampMs = System.currentTimeMillis(), expireAfterWrite = -1,
-            expireAfterAccess = -1;
+
+    private long creationTimestampMs = System.currentTimeMillis();
+    private long lastAccessTimestampMs = System.currentTimeMillis();
+    private long expireAfterWrite = -1;
+    private long expireAfterAccess = -1;
 
     /**
      * {@inheritDoc}
@@ -38,25 +49,15 @@ public class CacheEntry implements Serializable, Cloneable {
         }
     }
 
-    private void _init() {
-        creationTimestampMs = System.currentTimeMillis();
-        lastAccessTimestampMs = System.currentTimeMillis();
-        expireAfterWrite = -1;
-        expireAfterAccess = -1;
-    }
-
     public CacheEntry() {
-        _init();
     }
 
     public CacheEntry(String key, Object value) {
-        _init();
         setKey(key);
         setValue(value);
     }
 
     public CacheEntry(String key, Object value, long expireAfterWrite, long expireAfterAccess) {
-        _init();
         setKey(key);
         setValue(value);
         setExpireAfterAccess(expireAfterAccess);
@@ -80,6 +81,16 @@ public class CacheEntry implements Serializable, Cloneable {
     public CacheEntry setKey(String key) {
         this.key = key;
         return this;
+    }
+
+    /**
+     * Gets the wrapped value silently (do not check for expiry or update last
+     * access timestamp).
+     * 
+     * @return
+     */
+    public Object getValueSilent() {
+        return value;
     }
 
     public Object getValue() {
@@ -117,8 +128,18 @@ public class CacheEntry implements Serializable, Cloneable {
         return creationTimestampMs;
     }
 
+    public CacheEntry setCreationTimestamp(long creationTimestampMs) {
+        this.creationTimestampMs = creationTimestampMs;
+        return this;
+    }
+
     public long getLastAccessTimestamp() {
         return lastAccessTimestampMs;
+    }
+
+    public CacheEntry setLastAccessTimestamp(long lastAccessTimestampMs) {
+        this.lastAccessTimestampMs = lastAccessTimestampMs;
+        return this;
     }
 
     /**
@@ -142,7 +163,7 @@ public class CacheEntry implements Serializable, Cloneable {
      */
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(this);
+        ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
         tsb.append("key", this.key);
         tsb.append("value", this.value);
         tsb.append("timestampCreate", this.creationTimestampMs);
@@ -159,17 +180,19 @@ public class CacheEntry implements Serializable, Cloneable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CacheEntry)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        CacheEntry other = (CacheEntry) obj;
-        EqualsBuilder eq = new EqualsBuilder();
-        eq.append(this.key, other.key).append(this.value, other.value);
-        // .append(this.creationTimestampMs, other.creationTimestampMs)
-        // .append(this.lastAccessTimestampMs, other.lastAccessTimestampMs)
-        // .append(this.expireAfterAccess, other.expireAfterAccess)
-        // .append(this.expireAfterWrite, other.expireAfterWrite);
-        return eq.isEquals();
+        if (obj instanceof CacheEntry) {
+            CacheEntry other = (CacheEntry) obj;
+            EqualsBuilder eq = new EqualsBuilder();
+            eq.append(this.key, other.key).append(this.value, other.value)
+                    .append(this.creationTimestampMs, other.creationTimestampMs)
+                    .append(this.expireAfterAccess, other.expireAfterAccess)
+                    .append(this.expireAfterWrite, other.expireAfterWrite);
+            return eq.isEquals();
+        }
+        return false;
     }
 
     /**
@@ -180,7 +203,70 @@ public class CacheEntry implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder(19, 81);
-        hcb.append(this.key).append(this.value);
+        hcb.append(this.key).append(this.value).append(this.creationTimestampMs)
+                .append(this.expireAfterAccess).append(this.expireAfterWrite);
         return hcb.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.5.0
+     */
+    @Override
+    public byte[] toBytes() throws SerializationException {
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("k", this.key);
+        dataMap.put("tac", this.lastAccessTimestampMs);
+        dataMap.put("tcr", this.creationTimestampMs);
+        dataMap.put("eac", this.expireAfterAccess);
+        dataMap.put("ewr", this.expireAfterWrite);
+
+        if (value != null) {
+            dataMap.put("_c_", value.getClass().getName());
+            dataMap.put("v", SerializationUtils.toByteArray(this.value));
+        }
+
+        return SerializationUtils.toByteArrayJboss(dataMap);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.5.0
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public CacheEntry fromBytes(byte[] data) throws DeserializationException {
+        Map<String, Object> dataMap = SerializationUtils.fromByteArrayJboss(data, HashMap.class);
+
+        this.key = DPathUtils.getValue(dataMap, "k", String.class);
+
+        Long tAccess = DPathUtils.getValue(dataMap, "tac", Long.class);
+        this.lastAccessTimestampMs = tAccess != null ? tAccess.longValue()
+                : System.currentTimeMillis();
+
+        Long tCreate = DPathUtils.getValue(dataMap, "tcr", Long.class);
+        this.creationTimestampMs = tCreate != null ? tCreate.longValue()
+                : System.currentTimeMillis();
+
+        Long eAccess = DPathUtils.getValue(dataMap, "eac", Long.class);
+        this.expireAfterAccess = eAccess != null ? eAccess.longValue() : -1;
+
+        Long eWrite = DPathUtils.getValue(dataMap, "ewr", Long.class);
+        this.expireAfterWrite = eWrite != null ? eWrite.longValue() : -1;
+
+        String clazzName = DPathUtils.getValue(dataMap, "_c_", String.class);
+        if (!StringUtils.isBlank(clazzName)) {
+            try {
+                byte[] valueData = DPathUtils.getValue(dataMap, "v", byte[].class);
+                Class<?> clazz = Class.forName(clazzName);
+                this.value = SerializationUtils.fromByteArray(valueData, clazz);
+            } catch (ClassNotFoundException e) {
+                throw new DeserializationException(e);
+            }
+        }
+
+        return this;
     }
 }

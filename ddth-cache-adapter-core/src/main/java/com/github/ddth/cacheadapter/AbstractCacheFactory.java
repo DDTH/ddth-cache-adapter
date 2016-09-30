@@ -1,5 +1,6 @@
 package com.github.ddth.cacheadapter;
 
+import java.io.Closeable;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -18,7 +19,7 @@ import com.google.common.cache.RemovalNotification;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public abstract class AbstractCacheFactory implements ICacheFactory {
+public abstract class AbstractCacheFactory implements ICacheFactory, Closeable {
 
     public final static String CACHE_PROP_CAPACITY = "cache.capacity";
     public final static String CACHE_PROP_EXPIRE_AFTER_WRITE = "cache.expireAfterWrite";
@@ -50,6 +51,10 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
 
     public void destroy() {
         cacheInstances.invalidateAll();
+    }
+
+    public void close() {
+        destroy();
     }
 
     /**
@@ -195,20 +200,20 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
                     Properties cacheProps = getCacheProperties(name);
                     if (cacheProps != null) {
                         try {
-                            cacheCapacity = Long.parseLong(cacheProps
-                                    .getProperty(CACHE_PROP_CAPACITY));
+                            cacheCapacity = Long
+                                    .parseLong(cacheProps.getProperty(CACHE_PROP_CAPACITY));
                         } catch (Exception e) {
                             cacheCapacity = capacity;
                         }
                         try {
-                            cacheExpireAfterWrite = Long.parseLong(cacheProps
-                                    .getProperty(CACHE_PROP_EXPIRE_AFTER_WRITE));
+                            cacheExpireAfterWrite = Long.parseLong(
+                                    cacheProps.getProperty(CACHE_PROP_EXPIRE_AFTER_WRITE));
                         } catch (Exception e) {
                             cacheExpireAfterWrite = expireAfterWrite;
                         }
                         try {
-                            cacheExpireAfterAccess = Long.parseLong(cacheProps
-                                    .getProperty(CACHE_PROP_EXPIRE_AFTER_ACCESS));
+                            cacheExpireAfterAccess = Long.parseLong(
+                                    cacheProps.getProperty(CACHE_PROP_EXPIRE_AFTER_ACCESS));
                         } catch (Exception e) {
                             cacheExpireAfterAccess = expireAfterAccess;
                         }

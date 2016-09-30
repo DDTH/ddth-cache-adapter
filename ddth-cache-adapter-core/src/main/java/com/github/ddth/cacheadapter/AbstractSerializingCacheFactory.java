@@ -1,6 +1,6 @@
 package com.github.ddth.cacheadapter;
 
-import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
+import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 
 /**
  * Abstract implementation of {@link ICacheFactory} that creates
@@ -114,7 +114,7 @@ public abstract class AbstractSerializingCacheFactory extends AbstractCacheFacto
     public AbstractSerializingCacheFactory init() {
         super.init();
         if (cacheEntrySerializer == null) {
-            cacheEntrySerializer = KryoCacheEntrySerializer.instance;
+            cacheEntrySerializer = DefaultCacheEntrySerializer.instance;
         }
         return this;
     }

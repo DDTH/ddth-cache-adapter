@@ -20,8 +20,9 @@ public class ThriftUtils {
         if (ce == null) {
             return null;
         }
-        byte[] valueData = SerializationUtils.toByteArrayKryo(ce.getValue());
-        String valueClass = valueData != null ? ce.getValue().getClass().getName() : null;
+        Object value = ce.getValueSilent();
+        byte[] valueData = SerializationUtils.toByteArray(value);
+        String valueClass = valueData != null ? value.getClass().getName() : null;
         return new TCacheEntry(ce.getKey(), valueData != null ? ByteBuffer.wrap(valueData) : null,
                 valueClass, ce.getCreationTimestamp(), ce.getLastAccessTimestamp(),
                 ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
@@ -32,7 +33,6 @@ public class ThriftUtils {
         return com.github.ddth.commons.utils.ThriftUtils.toBytes(cacheEntry);
     }
 
-    @SuppressWarnings("unchecked")
     public static CacheEntry deserialize(byte[] data) throws TException {
         TCacheEntry cacheEntry = com.github.ddth.commons.utils.ThriftUtils.fromBytes(data,
                 TCacheEntry.class);
@@ -43,8 +43,12 @@ public class ThriftUtils {
             CacheEntry ce = new CacheEntry();
             ce.setExpireAfterAccess(cacheEntry.expireAfterAccess)
                     .setExpireAfterWrite(cacheEntry.expireAfterWrite).setKey(cacheEntry.key);
-            Class<CacheEntry> clazz = (Class<CacheEntry>) Class.forName(cacheEntry.valueClass);
-            ce.setValue(SerializationUtils.fromByteArrayKryo(cacheEntry.getValue(), clazz));
+            ce.setCreationTimestamp(cacheEntry.creationTimestampMs)
+                    .setLastAccessTimestamp(cacheEntry.lastAccessTimestampMs);
+            if (cacheEntry.valueClass != null) {
+                Class<?> clazz = (Class<?>) Class.forName(cacheEntry.valueClass);
+                ce.setValue(SerializationUtils.fromByteArray(cacheEntry.getValue(), clazz));
+            }
             return ce;
         } catch (ClassNotFoundException e) {
             throw new TException(e);

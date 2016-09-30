@@ -6,8 +6,7 @@ import com.github.ddth.cacheadapter.redis.ShardedRedisCacheFactory;
 public class QndShardedRedisCache {
 
     public static void main(String[] args) {
-        ShardedRedisCacheFactory cf = new ShardedRedisCacheFactory();
-        try {
+        try (ShardedRedisCacheFactory cf = new ShardedRedisCacheFactory()) {
             cf.setRedisHostsAndPorts("localhost:6379,localhost:6380");
             cf.init();
 
@@ -20,8 +19,6 @@ public class QndShardedRedisCache {
                 String key = "key-" + i;
                 System.out.println(cache.get(key));
             }
-        } finally {
-            cf.destroy();
         }
     }
 

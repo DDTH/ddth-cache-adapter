@@ -16,6 +16,8 @@ import com.github.ddth.cacheadapter.utils.ThriftUtils;
  */
 public class ThriftCacheEntrySerializer extends AbstractCacheEntrySerializer {
 
+    public final static ThriftCacheEntrySerializer instance = new ThriftCacheEntrySerializer();
+
     /**
      * {@inheritDoc}
      */

@@ -1,6 +1,15 @@
 ddth-cache-adapter release notes
 ================================
 
+0.5.0 - 2016-09-29
+------------------
+
+- Bump to `com.github.ddth:ddth-parent:6`, now requires Java 8+.
+- Bump to `com.github.ddth:ddth-commons:0.5.0`.
+- Update dependencies.
+- Minor fixes & enhancements.
+
+
 0.4.1.5 - 2016-09-26
 --------------------
 

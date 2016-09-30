@@ -77,7 +77,7 @@ public class QndCacheSize {
         }
         test(value1);
         System.out.println("========================================");
-        Value value2 = new Value();
+        TestValue.Value value2 = new TestValue.Value();
         test(value2);
     }
 }

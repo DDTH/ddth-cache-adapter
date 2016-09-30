@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.ces;
+package com.github.ddth.cacheadapter.compressor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +17,8 @@ import com.github.ddth.cacheadapter.ICompressor;
  * @since 0.4.1
  */
 public class JdkDeflateCompressor implements ICompressor {
+
+    public final static JdkDeflateCompressor instance = new JdkDeflateCompressor();
 
     private int compressionLevel = 1;
 

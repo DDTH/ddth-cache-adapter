@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
+import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 
 /**
  * Abstract cache implementation that requires cache entries to be
@@ -101,7 +101,7 @@ public abstract class AbstractSerializingCache extends AbstractCache {
     public void init() {
         super.init();
         if (cacheEntrySerializer == null) {
-            cacheEntrySerializer = KryoCacheEntrySerializer.instance;
+            cacheEntrySerializer = DefaultCacheEntrySerializer.instance;
         }
     }
 }

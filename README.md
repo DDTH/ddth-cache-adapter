@@ -6,6 +6,8 @@ DDTH's adapter for various cache backends.
 Project home:
 [https://github.com/DDTH/ddth-cache-adapter](https://github.com/DDTH/ddth-cache-adapter)
 
+**`ddth-cache-adapter` requires Java 8+ since v0.5.0**
+
 
 ## License ##
 
@@ -16,7 +18,7 @@ Third party libraries are distributed under their own licenses.
 
 ## Installation #
 
-Latest release version: `0.4.1.5`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.5.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -27,7 +29,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.4.1.5</version>
+	<version>0.5.0</version>
 </dependency>
 ```
 
@@ -37,7 +39,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.4.1.5</version>
+    <version>0.5.0</version>
     <type>pom</type>
 </dependency>
 ```

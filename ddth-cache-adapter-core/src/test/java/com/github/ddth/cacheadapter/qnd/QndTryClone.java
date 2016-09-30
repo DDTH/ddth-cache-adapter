@@ -7,6 +7,7 @@ import com.github.ddth.cacheadapter.utils.CacheUtils;
 
 public class QndTryClone {
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         {
             Object org = "Original";
@@ -26,9 +27,9 @@ public class QndTryClone {
         {
             Object org = new ArrayList<>();
             {
-                ((List) org).add("1");
-                ((List) org).add("2");
-                ((List) org).add("3");
+                ((List<String>) org).add("1");
+                ((List<String>) org).add("2");
+                ((List<String>) org).add("3");
             }
             Object cloned = CacheUtils.tryClone(org);
             System.out.println(org == cloned);

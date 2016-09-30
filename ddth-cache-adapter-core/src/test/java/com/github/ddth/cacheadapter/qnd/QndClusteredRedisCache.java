@@ -6,8 +6,7 @@ import com.github.ddth.cacheadapter.redis.ClusteredRedisCacheFactory;
 public class QndClusteredRedisCache {
 
     public static void main(String[] args) {
-        ClusteredRedisCacheFactory cf = new ClusteredRedisCacheFactory();
-        try {
+        try (ClusteredRedisCacheFactory cf = new ClusteredRedisCacheFactory()) {
             cf.setRedisHostsAndPorts("localhost:30001,localhost:30002,localhost:30003");
             cf.init();
 
@@ -20,8 +19,6 @@ public class QndClusteredRedisCache {
                 String key = "key-" + i;
                 System.out.println(cache.get(key));
             }
-        } finally {
-            cf.destroy();
         }
     }
 
