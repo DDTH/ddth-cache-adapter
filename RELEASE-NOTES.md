@@ -6,6 +6,7 @@ ddth-cache-adapter release notes
 
 - Bump to `com.github.ddth:ddth-parent:6`, now requires Java 8+.
 - Bump to `com.github.ddth:ddth-commons:0.5.0`.
+- New class `DefaultCacheEntrySerializer`.
 - Update dependencies.
 - Minor fixes & enhancements.
 
