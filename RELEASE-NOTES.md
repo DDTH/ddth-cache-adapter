@@ -1,6 +1,12 @@
 ddth-cache-adapter release notes
 ================================
 
+0.5.0.1 - 2016-10-03
+--------------------
+
+- Minor enhancement: use `Class.forName(String, boolean, ClassLoader)` instead of `Class.forName(String)`.
+
+
 0.5.0 - 2016-09-29
 ------------------
 

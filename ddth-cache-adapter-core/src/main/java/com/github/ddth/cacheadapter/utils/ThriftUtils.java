@@ -46,7 +46,8 @@ public class ThriftUtils {
             ce.setCreationTimestamp(cacheEntry.creationTimestampMs)
                     .setLastAccessTimestamp(cacheEntry.lastAccessTimestampMs);
             if (cacheEntry.valueClass != null) {
-                Class<?> clazz = (Class<?>) Class.forName(cacheEntry.valueClass);
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                Class<?> clazz = Class.forName(cacheEntry.valueClass, false, classLoader);
                 ce.setValue(SerializationUtils.fromByteArray(cacheEntry.getValue(), clazz));
             }
             return ce;

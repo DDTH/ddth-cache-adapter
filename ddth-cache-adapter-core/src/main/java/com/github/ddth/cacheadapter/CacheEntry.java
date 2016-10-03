@@ -260,7 +260,8 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
         if (!StringUtils.isBlank(clazzName)) {
             try {
                 byte[] valueData = DPathUtils.getValue(dataMap, "v", byte[].class);
-                Class<?> clazz = Class.forName(clazzName);
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                Class<?> clazz = Class.forName(clazzName, false, classLoader);
                 this.value = SerializationUtils.fromByteArray(valueData, clazz);
             } catch (ClassNotFoundException e) {
                 throw new DeserializationException(e);
