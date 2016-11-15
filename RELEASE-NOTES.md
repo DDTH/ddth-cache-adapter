@@ -1,6 +1,14 @@
 ddth-cache-adapter release notes
 ================================
 
+0.5.1 - 2016-11-15
+------------------
+
+- Update dependencies.
+- Jboss-serialization is now deprecated!
+- FST as the default serialization engine (replace the deprecated Jboss serialization).
+
+
 0.5.0.1 - 2016-10-03
 --------------------
 

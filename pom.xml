@@ -48,7 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <version.ddth_commons>0.5.0</version.ddth_commons>
+        <version.ddth_commons>0.6.0.1</version.ddth_commons>
         <version.jedis>2.9.0</version.jedis>
     </properties>
 

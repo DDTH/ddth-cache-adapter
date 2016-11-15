@@ -12,6 +12,7 @@ import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
 
 public class QndGuavaCache {
 
+    @SuppressWarnings({ "resource", "unused" })
     public static void main(String[] args) {
         ICacheFactory factory1 = new GuavaCacheFactory().setDefaultCacheCapacity(1000)
                 .setDefaultExpireAfterAccess(3600).init();

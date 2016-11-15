@@ -26,7 +26,7 @@ import com.github.ddth.commons.utils.SerializationUtils;
  */
 public class CacheEntry implements Serializable, Cloneable, ISerializationSupport {
 
-    private static final long serialVersionUID = "0.4.1.3".hashCode();
+    private static final long serialVersionUID = "0.5.1".hashCode();
 
     private String key = "";
     private Object value = ArrayUtils.EMPTY_BYTE_ARRAY;
@@ -227,7 +227,7 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
             dataMap.put("v", SerializationUtils.toByteArray(this.value));
         }
 
-        return SerializationUtils.toByteArrayJboss(dataMap);
+        return SerializationUtils.toByteArrayFst(dataMap);
     }
 
     /**
@@ -238,7 +238,7 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
     @SuppressWarnings("unchecked")
     @Override
     public CacheEntry fromBytes(byte[] data) throws DeserializationException {
-        Map<String, Object> dataMap = SerializationUtils.fromByteArrayJboss(data, HashMap.class);
+        Map<String, Object> dataMap = SerializationUtils.fromByteArrayFst(data, Map.class);
 
         this.key = DPathUtils.getValue(dataMap, "k", String.class);
 

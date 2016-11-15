@@ -6,24 +6,22 @@ import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.commons.utils.SerializationUtils;
 
 /**
- * This implementation of {@link ICacheEntrySerializer} uses
- * {@link SerializationUtils#toByteArray(Object)} and
- * {@link SerializationUtils#fromByteArray(byte[], Class)} for
- * serializing/deserializing.
+ * This implementation of {@link ICacheEntrySerializer} uses FST library
+ * (https://github.com/RuedigerMoeller/fast-serialization) to
+ * serialize/deserialize cache entries.
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
- * @since 0.5.0
+ * @since 0.5.1
  */
-public class DefaultCacheEntrySerializer extends AbstractCacheEntrySerializer {
+public class FstCacheEntrySerializer extends AbstractCacheEntrySerializer {
 
-    public final static DefaultCacheEntrySerializer instance = new DefaultCacheEntrySerializer()
-            .init();
+    public final static FstCacheEntrySerializer instance = new FstCacheEntrySerializer().init();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public DefaultCacheEntrySerializer init() {
+    public FstCacheEntrySerializer init() {
         super.init();
         return this;
     }
@@ -41,7 +39,7 @@ public class DefaultCacheEntrySerializer extends AbstractCacheEntrySerializer {
      */
     @Override
     protected byte[] doSerialize(CacheEntry ce) {
-        return SerializationUtils.toByteArray(ce);
+        return SerializationUtils.toByteArrayFst(ce);
     }
 
     /**
@@ -49,7 +47,7 @@ public class DefaultCacheEntrySerializer extends AbstractCacheEntrySerializer {
      */
     @Override
     protected CacheEntry doDeserialize(byte[] data) {
-        return SerializationUtils.fromByteArray(data, CacheEntry.class);
+        return SerializationUtils.fromByteArrayFst(data, CacheEntry.class);
     }
 
 }

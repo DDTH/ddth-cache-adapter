@@ -8,6 +8,7 @@ import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
 public class QndGuavaCacheCloneCacheEntry {
 
     private static class ValueClass {
+        @SuppressWarnings("unused")
         public int value = 0;
     }
 
@@ -17,6 +18,7 @@ public class QndGuavaCacheCloneCacheEntry {
     private static class ValueClass2 extends ValueClass implements Cloneable {
     }
 
+    @SuppressWarnings("resource")
     public static void main(String[] args) {
         {
             ICacheFactory factory = new GuavaCacheFactory().setDefaultCacheCapacity(1000)

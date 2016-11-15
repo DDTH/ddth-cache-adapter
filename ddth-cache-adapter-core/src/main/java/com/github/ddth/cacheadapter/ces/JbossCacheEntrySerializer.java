@@ -12,6 +12,7 @@ import com.github.ddth.commons.utils.SerializationUtils;
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.3.0
+ * @deprecated since 0.5.1
  */
 public class JbossCacheEntrySerializer extends AbstractCacheEntrySerializer {
 
