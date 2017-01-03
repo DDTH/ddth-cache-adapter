@@ -1,5 +1,6 @@
 package com.github.ddth.cacheadapter.qnd;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.ddth.commons.serialization.DeserializationException;
+import com.github.ddth.commons.serialization.ISerializationSupport;
+import com.github.ddth.commons.serialization.SerializationException;
 
 public class TestValue {
 
@@ -219,6 +224,57 @@ public class TestValue {
         @Override
         public int hashCode() {
             return new HashCodeBuilder(19, 81).append(obj).hashCode();
+        }
+    }
+
+    public static class CClass implements ISerializationSupport {
+        @JsonProperty
+        public int version = 0;
+
+        @JsonProperty
+        public String name = "base";
+
+        /**
+         * {@inheritDoc}
+         */
+        public String toString() {
+            ToStringBuilder tsb = new ToStringBuilder(this, STYLE);
+            tsb.append("version", version);
+            tsb.append("name", name);
+            return tsb.toString();
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof CClass) {
+                CClass another = (CClass) obj;
+                EqualsBuilder eq = new EqualsBuilder().append(version, another.version).append(name,
+                        another.name);
+                return eq.isEquals();
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(19, 81).append(version).append(name).toHashCode();
+        }
+
+        private final static char DELIM = '\u0001';
+        private final static Charset UTF8 = Charset.forName("UTF-8");
+
+        @Override
+        public byte[] toBytes() throws SerializationException {
+            String s = "" + version + DELIM + name;
+            byte[] data = s.getBytes(UTF8);
+            return data;
+        }
+
+        @Override
+        public ISerializationSupport fromBytes(byte[] data) throws DeserializationException {
+            String[] tokens = StringUtils.split(new String(data, UTF8), DELIM);
+            version = Integer.parseInt(tokens[0]);
+            name = tokens[1];
+            return this;
         }
     }
 }
