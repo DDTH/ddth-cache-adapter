@@ -11,14 +11,14 @@ Project home:
 
 ## License ##
 
-See LICENSE.txt for details. Copyright (c) 2014-2016 Thanh Ba Nguyen.
+See LICENSE.txt for details. Copyright (c) 2014-2017 Thanh Ba Nguyen.
 
 Third party libraries are distributed under their own licenses.
 
 
 ## Installation #
 
-Latest release version: `0.5.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.5.1.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -29,7 +29,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.5.1</version>
+	<version>0.5.1.1</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.1.1</version>
     <type>pom</type>
 </dependency>
 ```

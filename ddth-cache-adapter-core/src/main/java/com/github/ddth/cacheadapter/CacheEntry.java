@@ -222,12 +222,13 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
         dataMap.put("eac", this.expireAfterAccess);
         dataMap.put("ewr", this.expireAfterWrite);
 
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         if (value != null) {
             dataMap.put("_c_", value.getClass().getName());
-            dataMap.put("v", SerializationUtils.toByteArray(this.value));
+            dataMap.put("v", SerializationUtils.toByteArray(this.value, cl));
         }
 
-        return SerializationUtils.toByteArrayFst(dataMap);
+        return SerializationUtils.toByteArrayFst(dataMap, cl);
     }
 
     /**
@@ -238,7 +239,8 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
     @SuppressWarnings("unchecked")
     @Override
     public CacheEntry fromBytes(byte[] data) throws DeserializationException {
-        Map<String, Object> dataMap = SerializationUtils.fromByteArrayFst(data, Map.class);
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        Map<String, Object> dataMap = SerializationUtils.fromByteArrayFst(data, Map.class, cl);
 
         this.key = DPathUtils.getValue(dataMap, "k", String.class);
 
@@ -260,9 +262,8 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
         if (!StringUtils.isBlank(clazzName)) {
             try {
                 byte[] valueData = DPathUtils.getValue(dataMap, "v", byte[].class);
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                Class<?> clazz = Class.forName(clazzName, false, classLoader);
-                this.value = SerializationUtils.fromByteArray(valueData, clazz);
+                Class<?> clazz = Class.forName(clazzName, true, cl);
+                this.value = SerializationUtils.fromByteArray(valueData, clazz, cl);
             } catch (ClassNotFoundException e) {
                 throw new DeserializationException(e);
             }

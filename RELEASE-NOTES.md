@@ -1,6 +1,12 @@
 ddth-cache-adapter release notes
 ================================
 
+0.5.1.1 - 2017-01-04
+--------------------
+
+- `CacheEntry`: Pass along the ClassLoader when serializing/deserializing.
+
+
 0.5.1 - 2016-11-15
 ------------------
 
