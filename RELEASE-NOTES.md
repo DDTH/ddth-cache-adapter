@@ -1,7 +1,7 @@
 ddth-cache-adapter release notes
 ================================
 
-0.6.0.1 - 2017-04-20
+0.6.0.2 - 2017-04-20
 --------------------
 
 - Redis-based caches: general bug fixes and improvements.
