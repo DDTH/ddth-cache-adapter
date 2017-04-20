@@ -1,12 +1,14 @@
 package com.github.ddth.cacheadapter.redis;
 
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
-import com.github.ddth.cacheadapter.AbstractSerializingCache;
 import com.github.ddth.cacheadapter.CacheEntry;
+import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
+import com.github.ddth.cacheadapter.redis.BaseRedisCache.KeyMode;
 
+import redis.clients.jedis.Protocol;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.util.SafeEncoder;
@@ -14,62 +16,65 @@ import redis.clients.util.SafeEncoder;
 /**
  * Sharded <a href="http://redis.io">Redis</a> implementation of {@link ICache}.
  * 
+ * <p>
+ * This Redis-based cache implementation supports all types of {@link KeyMode}.
+ * </p>
+ * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.4.1
  */
-public class ShardedRedisCache extends AbstractSerializingCache {
+public class ShardedRedisCache extends BaseRedisCache {
 
     private ShardedJedisPool jedisPool;
-    private boolean myOwnJedisPool = true;
-    private String redisHostsAndPorts = "localhost:6379";
-    private String redisPassword;
+    private String redisHostsAndPorts = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;
 
-    private long timeToLiveSeconds = -1;
-
-    public ShardedRedisCache() {
-        super();
+    public ShardedRedisCache(KeyMode keyMode) {
+        super(keyMode);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory,
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
             ICacheEntrySerializer cacheEntrySerializer) {
-        super(name, cacheFactory, cacheEntrySerializer);
+        super(keyMode, name, cacheFactory, cacheEntrySerializer);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            ICacheEntrySerializer cacheEntrySerializer) {
-        super(name, cacheFactory, capacity, cacheEntrySerializer);
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity, ICacheEntrySerializer cacheEntrySerializer) {
+        super(keyMode, name, cacheFactory, capacity, cacheEntrySerializer);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            long expireAfterWrite, long expireAfterAccess,
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity, long expireAfterWrite, long expireAfterAccess,
             ICacheEntrySerializer cacheEntrySerializer) {
-        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
+        super(keyMode, name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
                 cacheEntrySerializer);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity, long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
             ICacheEntrySerializer cacheEntrySerializer) {
-        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader,
-                cacheEntrySerializer);
+        super(keyMode, name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
+                cacheLoader, cacheEntrySerializer);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
-        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity, long expireAfterWrite, long expireAfterAccess,
+            ICacheLoader cacheLoader) {
+        super(keyMode, name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess,
+                cacheLoader);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity,
-            long expireAfterWrite, long expireAfterAccess) {
-        super(name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity, long expireAfterWrite, long expireAfterAccess) {
+        super(keyMode, name, cacheFactory, capacity, expireAfterWrite, expireAfterAccess);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory, long capacity) {
-        super(name, cacheFactory, capacity);
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory,
+            long capacity) {
+        super(keyMode, name, cacheFactory, capacity);
     }
 
-    public ShardedRedisCache(String name, AbstractCacheFactory cacheFactory) {
-        super(name, cacheFactory);
+    public ShardedRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory) {
+        super(keyMode, name, cacheFactory);
     }
 
     /**
@@ -86,11 +91,11 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      * Sets Redis' hosts and ports scheme (format
      * {@code host1:port1,host2:port2,host3:port3}).
      * 
-     * @param redisHostAndPort
+     * @param redisHostsAndPorts
      * @return
      */
-    public ShardedRedisCache setRedisHostsAndPorts(String redisHostAndPort) {
-        this.redisHostsAndPorts = redisHostAndPort;
+    public ShardedRedisCache setRedisHostsAndPorts(String redisHostsAndPorts) {
+        this.redisHostsAndPorts = redisHostsAndPorts;
         return this;
     }
 
@@ -106,17 +111,11 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      * @return
      */
     public ShardedRedisCache setJedisPool(ShardedJedisPool jedisPool) {
+        if (myOwnRedis && this.jedisPool != null) {
+            this.jedisPool.close();
+        }
         this.jedisPool = jedisPool;
-        myOwnJedisPool = false;
-        return this;
-    }
-
-    public String getRedisPassword() {
-        return redisPassword;
-    }
-
-    public ShardedRedisCache setRedisPassword(String redisPassword) {
-        this.redisPassword = redisPassword;
+        myOwnRedis = false;
         return this;
     }
 
@@ -126,17 +125,10 @@ public class ShardedRedisCache extends AbstractSerializingCache {
     @Override
     public void init() {
         super.init();
-        long expireAfterWrite = getExpireAfterWrite();
-        long expireAfterAccess = getExpireAfterAccess();
-        if (expireAfterAccess > 0 || expireAfterWrite > 0) {
-            timeToLiveSeconds = expireAfterAccess > 0 ? expireAfterAccess : expireAfterWrite;
-        } else {
-            timeToLiveSeconds = -1;
-        }
-
         if (jedisPool == null) {
-            jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts, redisPassword);
-            myOwnJedisPool = true;
+            jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts,
+                    getRedisPassword());
+            myOwnRedis = true;
         }
     }
 
@@ -145,7 +137,7 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      */
     @Override
     public void destroy() {
-        if (jedisPool != null && myOwnJedisPool) {
+        if (jedisPool != null && myOwnRedis) {
             try {
                 jedisPool.destroy();
             } catch (Exception e) {
@@ -163,46 +155,34 @@ public class ShardedRedisCache extends AbstractSerializingCache {
     }
 
     /**
-     * Generates "flat" cachekey for non-compact mode.
-     * 
-     * @param key
-     * @return
-     */
-    protected String genCacheKeyNonCompact(String key) {
-        return getName() + "-" + key;
-    }
-
-    /**
      * {@inheritDoc}
+     * 
+     * <p>
+     * Only {@link KeyMode#HASH} is supported. This method returns {@code -1} for other key modes.
+     * </p>
      */
     @Override
     public long getSize() {
-        return -1;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void set(String key, Object entry) {
-        if (entry instanceof CacheEntry) {
-            CacheEntry ce = (CacheEntry) entry;
-            set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
-        } else {
-            set(key, entry, getExpireAfterWrite(), getExpireAfterAccess());
+        switch (keyMode) {
+        case HASH:
+            try (ShardedJedis jedis = getJedis()) {
+                return jedis.hlen(getName());
+            }
+        default:
+            return -1;
         }
     }
-
-    public final static long TTL_NO_CHANGE = 0;
-    public final static long TTL_FOREVER = -1;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
+        final String KEY = calcCacheKey(key);
         try (ShardedJedis jedis = getJedis()) {
-            final String KEY = genCacheKeyNonCompact(key);
+            /*
+             * Returns -1 if no expiry, -2 if key does not exist.
+             */
             final long currentTTL = jedis.ttl(KEY);
             long ttl = TTL_NO_CHANGE;
             if (!(entry instanceof CacheEntry)) {
@@ -219,20 +199,36 @@ public class ShardedRedisCache extends AbstractSerializingCache {
 
             // TTL Rules:
             // 1. New item: TTL is calculated as formula(s) above.
-            // 2. Old item: extends the current TTL only
-            // when expireAfterAccess > 0
+            // 2. Existing item:
+            // 2.1. If [keyMode=HASH]: extends the current TTL,
+            // 2.2. Otherwise, extends the current TTL only when expireAfterAccess > 0
             if (currentTTL >= -1) {
-                // old item
-                ttl = expireAfterAccess > 0 ? expireAfterAccess : TTL_NO_CHANGE;
+                // existing item
+                if (keyMode == KeyMode.HASH)
+                    // rule 2.1
+                    ttl = currentTTL > 0 ? currentTTL : TTL_NO_CHANGE;
+                else
+                    // rule 2.2
+                    ttl = expireAfterAccess > 0 ? expireAfterAccess : TTL_NO_CHANGE;
             }
-            if (ttl > 0) {
-                jedis.setex(SafeEncoder.encode(KEY), (int) ttl, data);
+
+            if (keyMode == KeyMode.HASH) {
+                jedis.hset(SafeEncoder.encode(getName()), SafeEncoder.encode(KEY), data);
+                if (ttl > 0) {
+                    jedis.expire(getName(), (int) ttl);
+                } else if (ttl == TTL_FOREVER && currentTTL >= -1) {
+                    jedis.persist(getName());
+                }
             } else {
-                jedis.set(SafeEncoder.encode(KEY), data);
-                if (ttl == TTL_FOREVER) {
-                    jedis.persist(KEY);
-                } else if (currentTTL > 0) {
-                    jedis.expire(KEY, (int) currentTTL);
+                if (ttl > 0) {
+                    jedis.setex(SafeEncoder.encode(KEY), (int) ttl, data);
+                } else {
+                    jedis.set(SafeEncoder.encode(KEY), data);
+                    if (ttl == TTL_FOREVER) {
+                        jedis.persist(KEY);
+                    } else if (currentTTL > 0) {
+                        jedis.expire(KEY, (int) currentTTL);
+                    }
                 }
             }
         }
@@ -243,8 +239,13 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      */
     @Override
     public void delete(String key) {
+        final String KEY = calcCacheKey(key);
         try (ShardedJedis jedis = getJedis()) {
-            jedis.del(genCacheKeyNonCompact(key));
+            if (keyMode == KeyMode.HASH) {
+                jedis.hdel(getName(), KEY);
+            } else {
+                jedis.del(KEY);
+            }
         }
     }
 
@@ -253,7 +254,19 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      */
     @Override
     public void deleteAll() {
-        throw new UnsupportedOperationException();
+        switch (keyMode) {
+        case NAMESPACE:
+        case MONOPOLISTIC:
+            throw new CacheException.OperationNotSupportedException(
+                    "Key mode[" + keyMode + "] does not support flushall operation.");
+        case HASH:
+            try (ShardedJedis jedis = getJedis()) {
+                jedis.del(getName());
+            }
+            break;
+        default:
+            throw new IllegalStateException("Invalid key mode: " + keyMode);
+        }
     }
 
     /**
@@ -261,8 +274,13 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      */
     @Override
     public boolean exists(String key) {
+        final String KEY = calcCacheKey(key);
         try (ShardedJedis jedis = getJedis()) {
-            return jedis.get(SafeEncoder.encode(genCacheKeyNonCompact(key))) != null;
+            if (keyMode == KeyMode.HASH) {
+                return jedis.hget(SafeEncoder.encode(getName()), SafeEncoder.encode(KEY)) != null;
+            } else {
+                return jedis.get(SafeEncoder.encode(KEY)) != null;
+            }
         }
     }
 
@@ -271,11 +289,13 @@ public class ShardedRedisCache extends AbstractSerializingCache {
      */
     @Override
     protected Object internalGet(String key) {
+        final String KEY = calcCacheKey(key);
         try (ShardedJedis jedis = getJedis()) {
-            final String KEY = genCacheKeyNonCompact(key);
-            byte[] obj = jedis.get(SafeEncoder.encode(KEY));
-            if (obj != null) {
-                CacheEntry ce = deserializeCacheEntry(obj);
+            byte[] data = keyMode == KeyMode.HASH
+                    ? jedis.hget(SafeEncoder.encode(getName()), SafeEncoder.encode(KEY))
+                    : jedis.get(SafeEncoder.encode(KEY));
+            if (data != null) {
+                CacheEntry ce = deserializeCacheEntry(data);
                 if (ce != null && ce.touch()) {
                     set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
                 }

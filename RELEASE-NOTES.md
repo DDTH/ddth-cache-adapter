@@ -1,6 +1,14 @@
 ddth-cache-adapter release notes
 ================================
 
+0.6.0 - 2017-04-20
+------------------
+
+- Redis-based caches: general bug fixes and improvements.
+- Memcached-based cache using XMemcached lib.
+- New exception class `CacheException.OperationNotSupportedException`.
+
+
 0.5.1.1 - 2017-01-04
 --------------------
 

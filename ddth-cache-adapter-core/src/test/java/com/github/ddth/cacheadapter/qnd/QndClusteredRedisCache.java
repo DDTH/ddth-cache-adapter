@@ -7,7 +7,8 @@ public class QndClusteredRedisCache {
 
     public static void main(String[] args) {
         try (ClusteredRedisCacheFactory cf = new ClusteredRedisCacheFactory()) {
-            cf.setRedisHostsAndPorts("localhost:30001,localhost:30002,localhost:30003");
+            // cf.setRedisHostsAndPorts("localhost:30001,localhost:30002,localhost:30003");
+            cf.setRedisHostsAndPorts("localhost:6379");
             cf.init();
 
             ICache cache = cf.createCache("demo");

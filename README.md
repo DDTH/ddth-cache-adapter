@@ -18,18 +18,29 @@ Third party libraries are distributed under their own licenses.
 
 ## Installation #
 
-Latest release version: `0.5.1.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.6.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
 
-*ddth-cache-adapter-core*: in-memory cache, all other dependencies are *optional*.
+*ddth-cache-adapter-core*: in-memory caches, all other dependencies are *optional*.
 
 ```xml
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.5.1.1</version>
+	<version>0.6.0</version>
+</dependency>
+```
+
+*ddth-cache-adapter-memcached*: include all *ddth-cache-adapter-core* and Memcached dependencies.
+
+```xml
+<dependency>
+    <groupId>com.github.ddth</groupId>
+    <artifactId>ddth-cache-adapter-memcached</artifactId>
+    <version>0.6.0</version>
+    <type>pom</type>
 </dependency>
 ```
 
@@ -39,7 +50,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.5.1.1</version>
+    <version>0.6.0</version>
     <type>pom</type>
 </dependency>
 ```
@@ -76,6 +87,11 @@ ICacheFactory factory = new ClusteredRedisCacheFactory()
     .setRedisHostsAndPorts("localhost:6379,host2:port2,host3:port3")
     .init();
 
+//Memcache cache factory
+ICacheFactory factory = new XMemcachedCacheFactory()
+    .setMemcachedHostsAndPorts("localhost:11211,host2:port3,host3:port3")
+    .init();
+
 
 // A cache factory with some specific cache settings.
 Map<String, Properties> cacheProps = new HashMap<String, Properties>();
@@ -97,16 +113,17 @@ ICacheFactory factory = new GuavaCacheFactory()
     .init();
 ```
 
-> Compact mode for Redis cache:
-> 
-> With compact-mode=on, each cache is a Redis hash; cache entries are stored with in the hash.
-> 
-> Witn compact-mode=off, each cache entry is prefixed by cache-name and store to Redis' top-level key:value storage.
->
->
-> Compact-mode can be set via `RedisCacheFactory.setCompactMode(boolean)`
->
-> Default behavior: compact-mode=off.
+**Key modes for Redis caches:**
+
+- **NAMESPACE** (default): Cache entries are grouped into namespaces. Cache keys are prefixed with cache's name. So more than one Redis-based cache instances can share one same Redis server/cluster.
+- **MONOPOLISTIC**: Assuming the whole Redis server/cluster is dedicated to the Redis-based cache instance.
+- **HASH**: Each cache is a Redis hash specified by cache's name, cache entries are stored within the hash. More than one Redis-based cache instances can share one Redis server/cluster.
+
+**Key modes for Memcached caches:**
+
+- **NAMESPACE** (default): Cache entries are grouped into namespaces. Cache keys are prefixed with cache's name. So more than one Memcached-based cache instances can share one  Memcached server.
+- **MONOPOLISTIC**: Assuming the whole Memcached server is dedicated to the Memcached-based cache instance.
+- **XNAMESPACE**: Cache entries are grouped into namespaces using XMemcached's namespace mechanism.
 
 
 2. Obtain the cache object

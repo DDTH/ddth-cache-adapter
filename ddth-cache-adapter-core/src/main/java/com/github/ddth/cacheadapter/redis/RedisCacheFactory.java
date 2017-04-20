@@ -1,6 +1,5 @@
 package com.github.ddth.cacheadapter.redis;
 
-import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
 
 import redis.clients.jedis.JedisPool;
@@ -14,9 +13,7 @@ import redis.clients.jedis.Protocol;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class RedisCacheFactory extends AbstractSerializingCacheFactory {
-
-    public final static long DEFAULT_TIMEOUT_MS = 10000;
+public class RedisCacheFactory extends BaseRedisCacheFactory {
 
     /**
      * Creates a new {@link JedisPool}, with default database and timeout.
@@ -26,7 +23,8 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
      * @return
      */
     public static JedisPool newJedisPool(String hostAndPort, String password) {
-        return newJedisPool(hostAndPort, password, Protocol.DEFAULT_DATABASE, DEFAULT_TIMEOUT_MS);
+        return newJedisPool(hostAndPort, password, Protocol.DEFAULT_DATABASE,
+                Protocol.DEFAULT_TIMEOUT);
     }
 
     /**
@@ -39,7 +37,7 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
      * @return
      */
     public static JedisPool newJedisPool(String hostAndPort, String password, int db) {
-        return newJedisPool(hostAndPort, password, db, DEFAULT_TIMEOUT_MS);
+        return newJedisPool(hostAndPort, password, db, Protocol.DEFAULT_TIMEOUT);
     }
 
     /**
@@ -73,24 +71,19 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
         poolConfig.setMaxTotal(maxTotal);
         poolConfig.setMinIdle(1);
         poolConfig.setMaxIdle(maxIdle > 0 ? maxIdle : 1);
-        poolConfig.setMaxWaitMillis(timeoutMs);
+        poolConfig.setMaxWaitMillis(timeoutMs + 1000);
         // poolConfig.setTestOnBorrow(true);
         poolConfig.setTestWhileIdle(true);
 
         String[] tokens = hostAndPort.split(":");
         String host = tokens.length > 0 ? tokens[0] : Protocol.DEFAULT_HOST;
         int port = tokens.length > 1 ? Integer.parseInt(tokens[1]) : Protocol.DEFAULT_PORT;
-        JedisPool jedisPool = new JedisPool(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT,
-                password, db);
+        JedisPool jedisPool = new JedisPool(poolConfig, host, port, (int) timeoutMs, password, db);
         return jedisPool;
     }
 
     private JedisPool jedisPool;
-    private boolean myOwnJedisPool = true;
-    private String redisHostAndPort = "localhost:6379";
-    private String redisPassword;
-
-    private boolean compactMode = false;
+    private String redisHostAndPort = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;
 
     /**
      * Redis' host and port scheme (format {@code host:port}).
@@ -128,70 +121,11 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
      * @since 0.4.1
      */
     public RedisCacheFactory setJedisPool(JedisPool jedisPool) {
+        if (myOwnRedis && this.jedisPool != null) {
+            this.jedisPool.close();
+        }
         this.jedisPool = jedisPool;
-        myOwnJedisPool = false;
-        return this;
-    }
-
-    protected String getRedisPassword() {
-        return redisPassword;
-    }
-
-    public RedisCacheFactory setRedisPassword(String redisPassword) {
-        this.redisPassword = redisPassword;
-        return this;
-    }
-
-    /**
-     * Is compact mode on or off?
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @return
-     * @since 0.1.1
-     */
-    public boolean isCompactMode() {
-        return compactMode;
-    }
-
-    /**
-     * Is compact mode on or off?
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @return
-     * @since 0.1.1
-     */
-    public boolean getCompactMode() {
-        return compactMode;
-    }
-
-    /**
-     * Sets compact mode on/off.
-     * 
-     * <p>
-     * Compact mode: each cache is a Redis hash; cache entries are stored within
-     * the hash. When compact mode is off, each cache entry is prefixed by
-     * cache-name and store to Redis' top-level key:value storage (default:
-     * compact-mode=off).
-     * </p>
-     * 
-     * @param compactMode
-     * @return
-     * @since 0.1.1
-     */
-    public RedisCacheFactory setCompactMode(boolean compactMode) {
-        this.compactMode = compactMode;
+        myOwnRedis = false;
         return this;
     }
 
@@ -201,9 +135,9 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
     @Override
     public RedisCacheFactory init() {
         super.init();
-        if (jedisPool == null) {
-            jedisPool = RedisCacheFactory.newJedisPool(redisHostAndPort, redisPassword);
-            myOwnJedisPool = true;
+        if (jedisPool == null && isBuildGlobalRedis()) {
+            jedisPool = RedisCacheFactory.newJedisPool(redisHostAndPort, getRedisPassword());
+            myOwnRedis = true;
         }
         return this;
     }
@@ -213,7 +147,7 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
      */
     @Override
     public void destroy() {
-        if (jedisPool != null && myOwnJedisPool) {
+        if (jedisPool != null && myOwnRedis) {
             try {
                 jedisPool.destroy();
             } catch (Exception e) {
@@ -230,11 +164,13 @@ public class RedisCacheFactory extends AbstractSerializingCacheFactory {
     @Override
     protected RedisCache createCacheInternal(String name, long capacity, long expireAfterWrite,
             long expireAfterAccess) {
-        RedisCache cache = new RedisCache();
+        RedisCache cache = new RedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
-        cache.setRedisHostsAndPorts(redisHostAndPort).setRedisPassword(redisPassword);
-        cache.setCompactMode(getCompactMode());
+        cache.setRedisHostAndPort(redisHostAndPort).setRedisPassword(getRedisPassword());
+        if (jedisPool == null) {
+            cache.setJedisPool(jedisPool);
+        }
         return cache;
     }
 

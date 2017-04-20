@@ -8,11 +8,11 @@
 		<version>0.5.1.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>ddth-cache-adapter-serializing</artifactId>
+	<artifactId>ddth-cache-adapter-memcached</artifactId>
 	<version>0.5.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>ddth-cache-adapter-serializing</name>
+	<name>ddth-cache-adapter-memcached</name>
 	<description>DDTH's adapter for various cache systems</description>
 	<url>https://github.com/DDTH/ddth-cache-adapter</url>
 
@@ -31,27 +31,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-cache-adapter-core</artifactId>
+			<artifactId>ddth-cache-adapter-serializing</artifactId>
 			<version>0.5.1.2-SNAPSHOT</version>
+			<type>pom</type>
 		</dependency>
 
-		<!-- for serializing cache -->
+		<!-- for Memcached-based cache -->
 		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-serialization</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ddth</groupId>
-			<artifactId>ddth-commons-thrift</artifactId>
-			<version>${version.ddth_commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${version.commons_codec}</version>
+			<groupId>com.googlecode.xmemcached</groupId>
+			<artifactId>xmemcached</artifactId>
+			<version>${version.xmemcached}</version>
 		</dependency>
 	</dependencies>
 </project>

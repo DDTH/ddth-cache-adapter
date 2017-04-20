@@ -3,7 +3,6 @@ package com.github.ddth.cacheadapter.redis;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
 
 import redis.clients.jedis.JedisPoolConfig;
@@ -18,9 +17,7 @@ import redis.clients.jedis.ShardedJedisPool;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.4.1
  */
-public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
-
-    public final static long DEFAULT_TIMEOUT_MS = 10000;
+public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
 
     /**
      * Creates a new {@link ShardedJedisPool}, with default timeout.
@@ -31,7 +28,7 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
      * @return
      */
     public static ShardedJedisPool newJedisPool(String hostsAndPorts, String password) {
-        return newJedisPool(hostsAndPorts, password, DEFAULT_TIMEOUT_MS);
+        return newJedisPool(hostsAndPorts, password, Protocol.DEFAULT_TIMEOUT);
     }
 
     /**
@@ -52,7 +49,7 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
         poolConfig.setMaxTotal(maxTotal);
         poolConfig.setMinIdle(1);
         poolConfig.setMaxIdle(maxIdle > 0 ? maxIdle : 1);
-        poolConfig.setMaxWaitMillis(timeoutMs);
+        poolConfig.setMaxWaitMillis(timeoutMs + 1000);
         // poolConfig.setTestOnBorrow(true);
         poolConfig.setTestWhileIdle(true);
 
@@ -62,19 +59,16 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
             String[] tokens = hostAndPort.split(":");
             String host = tokens.length > 0 ? tokens[0] : Protocol.DEFAULT_HOST;
             int port = tokens.length > 1 ? Integer.parseInt(tokens[1]) : Protocol.DEFAULT_PORT;
-            JedisShardInfo shardInfo = new JedisShardInfo(host, port);
+            JedisShardInfo shardInfo = new JedisShardInfo(host, port, (int) timeoutMs);
             shardInfo.setPassword(password);
             shards.add(shardInfo);
         }
         ShardedJedisPool jedisPool = new ShardedJedisPool(poolConfig, shards);
-
         return jedisPool;
     }
 
     private ShardedJedisPool jedisPool;
-    private boolean myOwnJedisPool = true;
-    private String redisHostsAndPorts = "localhost:6379";
-    private String redisPassword;
+    private String redisHostsAndPorts = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;;
 
     /**
      * Redis' hosts and ports scheme (format
@@ -110,17 +104,11 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
      * @return
      */
     public ShardedRedisCacheFactory setJedisPool(ShardedJedisPool jedisPool) {
+        if (myOwnRedis && this.jedisPool != null) {
+            this.jedisPool.close();
+        }
         this.jedisPool = jedisPool;
-        myOwnJedisPool = false;
-        return this;
-    }
-
-    protected String getRedisPassword() {
-        return redisPassword;
-    }
-
-    public ShardedRedisCacheFactory setRedisPassword(String redisPassword) {
-        this.redisPassword = redisPassword;
+        myOwnRedis = false;
         return this;
     }
 
@@ -130,9 +118,10 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
     @Override
     public ShardedRedisCacheFactory init() {
         super.init();
-        if (jedisPool == null) {
-            jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts, redisPassword);
-            myOwnJedisPool = true;
+        if (jedisPool == null && isBuildGlobalRedis()) {
+            jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts,
+                    getRedisPassword());
+            myOwnRedis = true;
         }
         return this;
     }
@@ -142,7 +131,7 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
      */
     @Override
     public void destroy() {
-        if (jedisPool != null && myOwnJedisPool) {
+        if (jedisPool != null && myOwnRedis) {
             try {
                 jedisPool.destroy();
             } catch (Exception e) {
@@ -159,10 +148,13 @@ public class ShardedRedisCacheFactory extends AbstractSerializingCacheFactory {
     @Override
     protected ShardedRedisCache createCacheInternal(String name, long capacity,
             long expireAfterWrite, long expireAfterAccess) {
-        ShardedRedisCache cache = new ShardedRedisCache();
+        ShardedRedisCache cache = new ShardedRedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
-        cache.setRedisHostsAndPorts(redisHostsAndPorts).setRedisPassword(redisPassword);
+        cache.setRedisHostsAndPorts(redisHostsAndPorts).setRedisPassword(getRedisPassword());
+        if (jedisPool == null) {
+            cache.setJedisPool(jedisPool);
+        }
         return cache;
     }
 

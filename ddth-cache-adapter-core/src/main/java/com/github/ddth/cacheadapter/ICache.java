@@ -114,8 +114,10 @@ public interface ICache {
 
     /**
      * Deletes all entries in cache.
+     * 
+     * @throws CacheException.OperationNotSupportedException
      */
-    public void deleteAll();
+    public void deleteAll() throws CacheException.OperationNotSupportedException;
 
     /**
      * Checks if an entry exists in the cache.

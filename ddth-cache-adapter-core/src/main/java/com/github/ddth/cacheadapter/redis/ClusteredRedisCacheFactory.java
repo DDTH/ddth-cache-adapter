@@ -1,9 +1,10 @@
 package com.github.ddth.cacheadapter.redis;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
+import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICacheFactory;
 
 import redis.clients.jedis.HostAndPort;
@@ -18,9 +19,9 @@ import redis.clients.jedis.Protocol;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.4.1
  */
-public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory {
+public class ClusteredRedisCacheFactory extends BaseRedisCacheFactory {
 
-    public final static long DEFAULT_TIMEOUT_MS = 10000;
+    public final static int DEFAULT_MAX_ATTEMPTS = 3;
 
     /**
      * Creates a new {@link JedisCluster}, with default timeout.
@@ -30,8 +31,8 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
      * @param password
      * @return
      */
-    public static JedisCluster newJedisCluster(String hostsAndPorts) {
-        return newJedisCluster(hostsAndPorts, DEFAULT_TIMEOUT_MS);
+    public static JedisCluster newJedisCluster(String hostsAndPorts, String password) {
+        return newJedisCluster(hostsAndPorts, password, Protocol.DEFAULT_TIMEOUT);
     }
 
     /**
@@ -43,7 +44,8 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
      * @param timeoutMs
      * @return
      */
-    public static JedisCluster newJedisCluster(String hostsAndPorts, long timeoutMs) {
+    public static JedisCluster newJedisCluster(String hostsAndPorts, String password,
+            long timeoutMs) {
         final int maxTotal = Runtime.getRuntime().availableProcessors();
         final int maxIdle = maxTotal / 2;
 
@@ -51,7 +53,7 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
         poolConfig.setMaxTotal(maxTotal);
         poolConfig.setMinIdle(1);
         poolConfig.setMaxIdle(maxIdle > 0 ? maxIdle : 1);
-        poolConfig.setMaxWaitMillis(timeoutMs);
+        poolConfig.setMaxWaitMillis(timeoutMs + 1000);
         // poolConfig.setTestOnBorrow(true);
         poolConfig.setTestWhileIdle(true);
 
@@ -64,13 +66,13 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
             clusterNodes.add(new HostAndPort(host, port));
         }
 
-        JedisCluster jedisCluster = new JedisCluster(clusterNodes, (int) timeoutMs, poolConfig);
+        JedisCluster jedisCluster = new JedisCluster(clusterNodes, (int) timeoutMs, (int) timeoutMs,
+                DEFAULT_MAX_ATTEMPTS, password, poolConfig);
         return jedisCluster;
     }
 
     private JedisCluster jedisCluster;
-    private boolean myOwnJedisCluster = true;
-    private String redisHostsAndPorts = "localhost:6379";
+    private String redisHostsAndPorts = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;
 
     /**
      * Redis' hosts and ports scheme (format
@@ -106,8 +108,15 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
      * @return
      */
     public ClusteredRedisCacheFactory setJedisCluster(JedisCluster jedisCluster) {
+        if (myOwnRedis && this.jedisCluster != null) {
+            try {
+                this.jedisCluster.close();
+            } catch (IOException e) {
+                throw new CacheException(e);
+            }
+        }
         this.jedisCluster = jedisCluster;
-        myOwnJedisCluster = false;
+        myOwnRedis = false;
         return this;
     }
 
@@ -117,9 +126,10 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
     @Override
     public ClusteredRedisCacheFactory init() {
         super.init();
-        if (jedisCluster == null) {
-            jedisCluster = ClusteredRedisCacheFactory.newJedisCluster(redisHostsAndPorts);
-            myOwnJedisCluster = true;
+        if (jedisCluster == null && isBuildGlobalRedis()) {
+            jedisCluster = ClusteredRedisCacheFactory.newJedisCluster(redisHostsAndPorts,
+                    getRedisPassword());
+            myOwnRedis = true;
         }
         return this;
     }
@@ -129,7 +139,7 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
      */
     @Override
     public void destroy() {
-        if (jedisCluster != null && myOwnJedisCluster) {
+        if (jedisCluster != null && myOwnRedis) {
             try {
                 jedisCluster.close();
             } catch (Exception e) {
@@ -146,10 +156,13 @@ public class ClusteredRedisCacheFactory extends AbstractSerializingCacheFactory 
     @Override
     protected ClusteredRedisCache createCacheInternal(String name, long capacity,
             long expireAfterWrite, long expireAfterAccess) {
-        ClusteredRedisCache cache = new ClusteredRedisCache();
+        ClusteredRedisCache cache = new ClusteredRedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
                 .setExpireAfterWrite(expireAfterWrite);
-        cache.setRedisHostsAndPorts(redisHostsAndPorts);
+        cache.setRedisHostsAndPorts(redisHostsAndPorts).setRedisPassword(getRedisPassword());
+        if (jedisCluster == null) {
+            cache.setJedisCluster(jedisCluster);
+        }
         return cache;
     }
 
