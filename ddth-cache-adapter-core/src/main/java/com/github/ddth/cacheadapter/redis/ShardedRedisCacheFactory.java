@@ -2,6 +2,7 @@ package com.github.ddth.cacheadapter.redis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.github.ddth.cacheadapter.ICacheFactory;
 
@@ -147,10 +148,10 @@ public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
      */
     @Override
     protected ShardedRedisCache createCacheInternal(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess) {
+            long expireAfterWrite, long expireAfterAccess, Properties cacheProps) {
         ShardedRedisCache cache = new ShardedRedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setRedisHostsAndPorts(redisHostsAndPorts).setRedisPassword(getRedisPassword());
         if (jedisPool == null) {
             cache.setJedisPool(jedisPool);

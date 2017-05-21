@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter;
 
+import java.util.Properties;
+
 import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 
 /**
@@ -81,19 +83,14 @@ public abstract class AbstractSerializingCacheFactory extends AbstractCacheFacto
     }
 
     /**
-     * Creates and initializes an {@link ICache} instance, ready for use.
-     * 
-     * @param name
-     * @param capacity
-     * @param expireAfterWrite
-     * @param expireAfterAccess
-     * @param cacheLoader
-     * @return
+     * {@inheritDoc}
      */
+    @Override
     protected AbstractSerializingCache createAndInitCacheInstance(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
+            Properties cacheProps) {
         AbstractSerializingCache cache = createCacheInternal(name, capacity, expireAfterWrite,
-                expireAfterAccess);
+                expireAfterAccess, cacheProps);
         cache.setCacheEntrySerializer(cacheEntrySerializer).setCacheLoader(cacheLoader)
                 .setCacheFactory(this);
         cache.init();
@@ -105,7 +102,7 @@ public abstract class AbstractSerializingCacheFactory extends AbstractCacheFacto
      */
     @Override
     protected abstract AbstractSerializingCache createCacheInternal(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess);
+            long expireAfterWrite, long expireAfterAccess, Properties cacheProps);
 
     /**
      * {@inheritDoc}

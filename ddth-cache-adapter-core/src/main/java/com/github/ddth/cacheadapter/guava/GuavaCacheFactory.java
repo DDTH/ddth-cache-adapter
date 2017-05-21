@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter.guava;
 
+import java.util.Properties;
+
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
@@ -54,10 +56,10 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
      */
     @Override
     protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess) {
+            long expireAfterAccess, Properties cacheProps) {
         GuavaCache cache = new GuavaCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setCloneCacheEntries(cloneCacheEntries);
         return cache;
     }

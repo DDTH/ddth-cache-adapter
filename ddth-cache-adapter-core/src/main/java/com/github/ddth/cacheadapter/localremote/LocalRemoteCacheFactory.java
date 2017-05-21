@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter.localremote;
 
+import java.util.Properties;
+
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICache;
@@ -39,14 +41,15 @@ public class LocalRemoteCacheFactory extends AbstractCacheFactory {
      */
     @Override
     protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess) {
-        ICache localCache = localCacheFactory != null ? localCacheFactory.createCache(name,
-                capacity, expireAfterWrite, expireAfterAccess) : null;
+            long expireAfterAccess, Properties cacheProps) {
+        ICache localCache = localCacheFactory != null
+                ? localCacheFactory.createCache(name, capacity, expireAfterWrite, expireAfterAccess)
+                : null;
         ICache remoteCache = remoteCacheFactory != null ? remoteCacheFactory.createCache(name,
                 capacity, expireAfterWrite, expireAfterAccess) : null;
         LocalRemoteCache cache = new LocalRemoteCache();
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setLocalCache(localCache).setRemoteCache(remoteCache);
         return cache;
     }

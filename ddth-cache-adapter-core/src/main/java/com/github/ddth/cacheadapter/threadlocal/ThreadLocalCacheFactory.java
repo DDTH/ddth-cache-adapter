@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter.threadlocal;
 
+import java.util.Properties;
+
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
@@ -32,7 +34,7 @@ public class ThreadLocalCacheFactory extends AbstractCacheFactory {
      */
     @Override
     protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess) {
+            long expireAfterAccess, Properties cacheProps) {
         ICacheFactory cacheFactory = caches.get();
         return (AbstractCache) cacheFactory.createCache(name);
     }

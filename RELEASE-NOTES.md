@@ -1,6 +1,14 @@
 ddth-cache-adapter release notes
 ================================
 
+0.6.1 - 2017-05-21
+------------------
+
+- Pass custom cache properties from factory to cache instance:
+  - `AbstractCache`: new attributes `cacheProperties`
+- `GuavaCache`: change default value for `cloneCacheEntries` to `true`.
+
+
 0.6.0.2 - 2017-04-20
 --------------------
 

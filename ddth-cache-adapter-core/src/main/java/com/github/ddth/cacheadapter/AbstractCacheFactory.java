@@ -182,10 +182,9 @@ public abstract class AbstractCacheFactory implements ICacheFactory, Closeable {
      * {@inheritDoc}
      */
     @Override
-    public AbstractCache createCache(final String name, final long capacity,
-            final long expireAfterWrite, final long expireAfterAccess,
-            final ICacheLoader cacheLoader) {
-        final String cacheName = buildCacheName(name);
+    public AbstractCache createCache(String name, long capacity, long expireAfterWrite,
+            long expireAfterAccess, ICacheLoader cacheLoader) {
+        String cacheName = buildCacheName(name);
         try {
             AbstractCache cache = cacheInstances.get(cacheName, new Callable<AbstractCache>() {
                 @Override
@@ -219,7 +218,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, Closeable {
                         }
                     }
                     return createAndInitCacheInstance(cacheName, cacheCapacity,
-                            cacheExpireAfterWrite, cacheExpireAfterAccess, cacheLoader);
+                            cacheExpireAfterWrite, cacheExpireAfterAccess, cacheLoader, cacheProps);
                 }
             });
             return cache;
@@ -236,12 +235,14 @@ public abstract class AbstractCacheFactory implements ICacheFactory, Closeable {
      * @param expireAfterWrite
      * @param expireAfterAccess
      * @param cacheLoader
+     * @param cacheProps
      * @return
      */
     protected AbstractCache createAndInitCacheInstance(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader) {
+            long expireAfterWrite, long expireAfterAccess, ICacheLoader cacheLoader,
+            Properties cacheProps) {
         AbstractCache cache = createCacheInternal(name, capacity, expireAfterWrite,
-                expireAfterAccess);
+                expireAfterAccess, cacheProps);
         cache.setCacheLoader(cacheLoader).setCacheFactory(this);
         cache.init();
         return cache;
@@ -255,10 +256,11 @@ public abstract class AbstractCacheFactory implements ICacheFactory, Closeable {
      * @param capacity
      * @param expireAfterWrite
      * @param expireAfterAccess
+     * @param cacheProps
      * @return
      */
     protected abstract AbstractCache createCacheInternal(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess);
+            long expireAfterWrite, long expireAfterAccess, Properties cacheProps);
 
     /**
      * {@inheritDoc}

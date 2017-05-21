@@ -9,16 +9,16 @@ Project home:
 **`ddth-cache-adapter` requires Java 8+ since v0.5.0**
 
 
-## License ##
+## License
 
 See LICENSE.txt for details. Copyright (c) 2014-2017 Thanh Ba Nguyen.
 
 Third party libraries are distributed under their own licenses.
 
 
-## Installation #
+## Installation
 
-Latest release version: `0.6.0.2`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.6.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -29,7 +29,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.6.0.2</version>
+	<version>0.6.1</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-memcached</artifactId>
-    <version>0.6.0.2</version>
+    <version>0.6.1</version>
     <type>pom</type>
 </dependency>
 ```
@@ -50,15 +50,15 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.6.0.2</version>
+    <version>0.6.1</version>
     <type>pom</type>
 </dependency>
 ```
 
 
-## Usage ##
+## Usage
 
-1. Obtain the cache factory
+### 1. Obtain the cache factory
 
 ```java
 // in-memory cache factory, with default settings
@@ -87,7 +87,7 @@ ICacheFactory factory = new ClusteredRedisCacheFactory()
     .setRedisHostsAndPorts("localhost:6379,host2:port2,host3:port3")
     .init();
 
-//Memcache cache factory
+//Memcached cache factory
 ICacheFactory factory = new XMemcachedCacheFactory()
     .setMemcachedHostsAndPorts("localhost:11211,host2:port3,host3:port3")
     .init();
@@ -113,6 +113,39 @@ ICacheFactory factory = new GuavaCacheFactory()
     .init();
 ```
 
+**Cache Settings & Custom Properties:**
+
+Common custom cache properties:
+
+- `cache.capacity`         : (int) cache's maximum number of entries (only applied to in-memory caches, e.g. `GuavaCache`).
+- `cache.expireAfterWrite` : (int) number of seconds cache entry will expire after first write.
+- `cache.expireAfterAccess`: (int) number of seconds cache entry will expire after last read.
+
+Custom cache properties for `GuavaCache`:
+
+- `cache.clone_cache_entries`: (true/false) since cache entries are in memory and _not immutable_, their attributes can be changed outside cache's routines. If `cache.clone_cache_entries` is `true`, cache entry is cloned upon fetching from cache (hence cache entries' attributes cannot be changed outside cache scope). Default value is `true`.
+
+Custom cache properties for `XMemcachedCache`:
+
+- `cache.key_mode`       : (string) see section _Key modes for Memcached caches_
+- `cache.hosts_and_ports`: (string) Memcached's hosts and ports in format `host1:port1,host2:port2,host3:port3`
+- `cache.ttl_seconds`    : (int) default time-to-live (in seconds) setting
+
+Custom cache properties for Redis-based caches:
+
+- `cache.key_mode`       : (string) see section _Key modes for Redis caches_
+- `cache.redis_password` : (string) password to connect to Redis server
+- `cache.ttl_seconds`    : (int) default time-to-live (in seconds) setting
+
+Custom cache properties for `ClusteredRedisCache` and `ShardedRedisCache`:
+
+- `cache.hosts_and_ports`: (string) Redis cluster's hosts and ports in format `host1:port1,host2:port2,host3:port3`
+
+Custom cache properties for `RedisCache`:
+
+- `cache.host_and_port`  : (string) Redis server's host and port in format `host:port`
+
+
 **Key modes for Redis caches:**
 
 - **NAMESPACE** (default): Cache entries are grouped into namespaces. Cache keys are prefixed with cache's name. So more than one Redis-based cache instances can share one same Redis server/cluster.
@@ -126,7 +159,7 @@ ICacheFactory factory = new GuavaCacheFactory()
 - **XNAMESPACE**: Cache entries are grouped into namespaces using XMemcached's namespace mechanism.
 
 
-2. Obtain the cache object
+### 2. Obtain the cache object
 
 ```java
 // get (or create) a cache with default (or pre-defined) settings
@@ -137,7 +170,8 @@ ICache cache = factory.createCache("cache2", capacity);
 ICache cache = factory.createCache("cache2", capacity, expireAfterWrite, expireAfterAccess, cacheLoader);
 ```
 
-3. Do something with the cache
+
+### 3. Do something with the cache
 
 ```java
 cache.set("key1", "value1");
@@ -145,7 +179,8 @@ Object value = cache.get("key1");
 ...
 ```
 
-4. Destroy the factory when done
+
+### 4. Destroy the factory when done
 
 ```java
 ((AbstractCacheFactory)factory).destroy();

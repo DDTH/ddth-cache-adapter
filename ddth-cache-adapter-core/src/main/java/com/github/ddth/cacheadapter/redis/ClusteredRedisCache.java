@@ -2,6 +2,8 @@ package com.github.ddth.cacheadapter.redis;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.CacheException;
@@ -25,6 +27,13 @@ import redis.clients.util.SafeEncoder;
  * @since 0.4.1
  */
 public class ClusteredRedisCache extends BaseRedisCache {
+
+    /**
+     * To override the {@link #setRedisHostsAndPorts(String)} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_REDIS_HOSTS_AND_PORTS = "cache.hosts_and_ports";
 
     private JedisCluster jedisCluster;
     private String redisHostsAndPorts = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;
@@ -130,6 +139,15 @@ public class ClusteredRedisCache extends BaseRedisCache {
     @Override
     public void init() {
         super.init();
+
+        /*
+         * Parse custom property: redis-hosts-and-ports
+         */
+        String hostsAndPorts = getCacheProperty(CACHE_PROP_REDIS_HOSTS_AND_PORTS);
+        if (!StringUtils.isBlank(hostsAndPorts)) {
+            this.redisHostsAndPorts = hostsAndPorts;
+        }
+
         if (jedisCluster == null) {
             jedisCluster = ClusteredRedisCacheFactory.newJedisCluster(redisHostsAndPorts,
                     getRedisPassword());

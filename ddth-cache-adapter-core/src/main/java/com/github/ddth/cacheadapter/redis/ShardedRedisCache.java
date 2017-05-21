@@ -1,12 +1,13 @@
 package com.github.ddth.cacheadapter.redis;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
-import com.github.ddth.cacheadapter.redis.BaseRedisCache.KeyMode;
 
 import redis.clients.jedis.Protocol;
 import redis.clients.jedis.ShardedJedis;
@@ -24,6 +25,13 @@ import redis.clients.util.SafeEncoder;
  * @since 0.4.1
  */
 public class ShardedRedisCache extends BaseRedisCache {
+
+    /**
+     * To override the {@link #setRedisHostsAndPorts(String)} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_REDIS_HOSTS_AND_PORTS = "cache.hosts_and_ports";
 
     private ShardedJedisPool jedisPool;
     private String redisHostsAndPorts = Protocol.DEFAULT_HOST + ":" + Protocol.DEFAULT_PORT;
@@ -125,6 +133,15 @@ public class ShardedRedisCache extends BaseRedisCache {
     @Override
     public void init() {
         super.init();
+
+        /*
+         * Parse custom property: redis-hosts-and-ports
+         */
+        String hostsAndPorts = getCacheProperty(CACHE_PROP_REDIS_HOSTS_AND_PORTS);
+        if (!StringUtils.isBlank(hostsAndPorts)) {
+            this.redisHostsAndPorts = hostsAndPorts;
+        }
+
         if (jedisPool == null) {
             jedisPool = ShardedRedisCacheFactory.newJedisPool(redisHostsAndPorts,
                     getRedisPassword());

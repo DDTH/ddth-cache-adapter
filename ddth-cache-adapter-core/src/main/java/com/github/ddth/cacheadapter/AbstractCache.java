@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter;
 
+import java.util.Properties;
+
 /**
  * Abstract implementation of {@link ICache}.
  * 
@@ -15,6 +17,7 @@ public abstract class AbstractCache implements ICache {
     private CacheStats stats = new CacheStats();
     private ICacheLoader cacheLoader;
     private AbstractCacheFactory cacheFactory;
+    private Properties cacheProps;
 
     public AbstractCache() {
     }
@@ -154,6 +157,39 @@ public abstract class AbstractCache implements ICache {
     }
 
     /**
+     * Cache's custom properties.
+     * 
+     * @param cacheProps
+     * @return
+     * @since 0.6.1
+     */
+    public AbstractCache setCacheProperties(Properties cacheProps) {
+        this.cacheProps = cacheProps != null ? new Properties(cacheProps) : new Properties();
+        return this;
+    }
+
+    /**
+     * Get cache's custom properties.
+     * 
+     * @return
+     * @since 0.6.1
+     */
+    protected Properties getCacheProperties() {
+        return cacheProps;
+    }
+
+    /**
+     * Get cache's custom property.
+     * 
+     * @param key
+     * @return
+     * @since 0.6.1
+     */
+    protected String getCacheProperty(String key) {
+        return cacheProps != null ? cacheProps.getProperty(key) : null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -163,7 +199,8 @@ public abstract class AbstractCache implements ICache {
      * {@inheritDoc}
      */
     @Override
-    public abstract void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess);
+    public abstract void set(String key, Object entry, long expireAfterWrite,
+            long expireAfterAccess);
 
     /**
      * {@inheritDoc}
@@ -203,10 +240,7 @@ public abstract class AbstractCache implements ICache {
                 value = cacheLoader.load(key);
                 fromCacheLoader = true;
             } catch (Exception e) {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                }
-                throw new RuntimeException(e);
+                throw e instanceof CacheException ? (CacheException) e : new CacheException(e);
             }
         }
         if (value instanceof CacheEntry) {

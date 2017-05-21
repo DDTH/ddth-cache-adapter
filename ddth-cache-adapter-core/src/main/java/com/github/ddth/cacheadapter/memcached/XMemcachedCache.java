@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.AbstractSerializingCache;
@@ -26,6 +29,8 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  * @since 0.6.0
  */
 public class XMemcachedCache extends AbstractSerializingCache {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(XMemcachedCache.class);
 
     /**
      * Defines how cache key/entries are grouped together.
@@ -57,7 +62,28 @@ public class XMemcachedCache extends AbstractSerializingCache {
         }
     }
 
-    private final KeyMode keyMode;
+    /**
+     * To override the {@link #keyMode} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_KEY_MODE = "cache.key_mode";
+
+    /**
+     * To override the {@link #setMemcachedHostsAndPorts(String)} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_MEMCACHED_HOSTS_AND_PORTS = "cache.hosts_and_ports";
+
+    /**
+     * To override the {@link #timeToLiveSeconds} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_TTL_SECONDS = "cache.ttl_seconds";
+
+    private KeyMode keyMode;
 
     private MemcachedClient memcachedClient;
     private boolean myOwnMemcachedClient = true;
@@ -188,6 +214,40 @@ public class XMemcachedCache extends AbstractSerializingCache {
             timeToLiveSeconds = expireAfterAccess > 0 ? expireAfterAccess : expireAfterWrite;
         } else {
             timeToLiveSeconds = -1;
+        }
+
+        /*
+         * Parse custom property: key-mode
+         */
+        KeyMode oldKeyMode = this.keyMode;
+        try {
+            this.keyMode = KeyMode.valueOf(getCacheProperty(CACHE_PROP_KEY_MODE).toUpperCase());
+        } catch (Exception e) {
+            this.keyMode = oldKeyMode;
+            if (getCacheProperty(CACHE_PROP_KEY_MODE) != null) {
+                LOGGER.warn(e.getMessage(), e);
+            }
+        }
+
+        /*
+         * Parse custom property: ttl-seconds
+         */
+        long oldTTL = this.timeToLiveSeconds;
+        try {
+            this.timeToLiveSeconds = Long.parseLong(getCacheProperty(CACHE_PROP_TTL_SECONDS));
+        } catch (Exception e) {
+            this.timeToLiveSeconds = oldTTL;
+            if (getCacheProperty(CACHE_PROP_TTL_SECONDS) != null) {
+                LOGGER.warn(e.getMessage(), e);
+            }
+        }
+
+        /*
+         * Parse custom property: memcached-hosts-and-ports
+         */
+        String hostsAndPorts = getCacheProperty(CACHE_PROP_MEMCACHED_HOSTS_AND_PORTS);
+        if (!StringUtils.isBlank(hostsAndPorts)) {
+            this.memcachedHostsAndPorts = hostsAndPorts;
         }
 
         if (memcachedClient == null) {
@@ -434,5 +494,11 @@ public class XMemcachedCache extends AbstractSerializingCache {
             return ce;
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(KeyMode.valueOf("NAMESPACE"));
+        System.out.println(KeyMode.valueOf("namespace"));
+        System.out.println(KeyMode.valueOf("error"));
     }
 }

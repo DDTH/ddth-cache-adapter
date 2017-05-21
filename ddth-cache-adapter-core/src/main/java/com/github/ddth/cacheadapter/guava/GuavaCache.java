@@ -2,6 +2,9 @@ package com.github.ddth.cacheadapter.guava;
 
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
@@ -23,8 +26,17 @@ import com.google.common.cache.LoadingCache;
  */
 public class GuavaCache extends AbstractCache {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(GuavaCache.class);
+
+    /**
+     * To override the {@link #setCloneCacheEntries(boolean)} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_CLONE_CACHE_ENTRIES = "cache.clone_cache_entries";
+
     private LoadingCache<String, Object> cache;
-    private boolean cloneCacheEntries = false;
+    private boolean cloneCacheEntries = true;
 
     public GuavaCache() {
     }
@@ -63,6 +75,20 @@ public class GuavaCache extends AbstractCache {
             if (capacity == 0) {
                 capacity = ICacheFactory.DEFAULT_CACHE_CAPACITY;
                 setCapacity(capacity);
+            }
+        }
+
+        /*
+         * Parse custom property: clone-cache-entries
+         */
+        boolean oldCloneCacheEntries = this.cloneCacheEntries;
+        try {
+            this.cloneCacheEntries = Boolean
+                    .parseBoolean(getCacheProperty(CACHE_PROP_CLONE_CACHE_ENTRIES));
+        } catch (Exception e) {
+            this.cloneCacheEntries = oldCloneCacheEntries;
+            if (getCacheProperty(CACHE_PROP_CLONE_CACHE_ENTRIES) != null) {
+                LOGGER.warn(e.getMessage(), e);
             }
         }
 
@@ -130,7 +156,7 @@ public class GuavaCache extends AbstractCache {
 
     /**
      * If {@code true}, cache entries are cloned when fetching out of cache,
-     * default value is {@code false}.
+     * default value is {@code true}.
      * 
      * @return
      * @since 0.4.1.1

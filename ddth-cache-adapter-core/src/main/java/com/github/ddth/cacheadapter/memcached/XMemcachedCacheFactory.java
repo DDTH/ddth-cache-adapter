@@ -1,6 +1,7 @@
 package com.github.ddth.cacheadapter.memcached;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -159,10 +160,10 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
      */
     @Override
     protected XMemcachedCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess) {
+            long expireAfterAccess, Properties cacheProps) {
         XMemcachedCache cache = new XMemcachedCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setMemcachedHostsAndPorts(memcachedHostsAndPorts);
         return cache;
     }

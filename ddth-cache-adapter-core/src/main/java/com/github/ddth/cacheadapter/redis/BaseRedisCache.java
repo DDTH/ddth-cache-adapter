@@ -1,5 +1,9 @@
 package com.github.ddth.cacheadapter.redis;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.AbstractSerializingCache;
 import com.github.ddth.cacheadapter.CacheEntry;
@@ -15,6 +19,8 @@ import com.github.ddth.cacheadapter.ICacheLoader;
  * @since 0.6.0
  */
 public abstract class BaseRedisCache extends AbstractSerializingCache {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(BaseRedisCache.class);
 
     /**
      * Defines how cache key/entries are grouped together.
@@ -52,13 +58,34 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     public final static long TTL_FOREVER = -1;
 
     /**
+     * To override the {@link #keyMode} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_KEY_MODE = "cache.key_mode";
+
+    /**
+     * To override the {@link #setRedisPassword(String)} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_REDIS_PASSWORD = "cache.redis_password";
+
+    /**
+     * To override the {@link #timeToLiveSeconds} setting.
+     * 
+     * @since 0.6.1
+     */
+    public final static String CACHE_PROP_TTL_SECONDS = "cache.ttl_seconds";
+
+    /**
      * Flag to mark if the Redis resource (e.g. Redis client pool) is created and handled by the
      * cache instance.
      */
     protected boolean myOwnRedis = true;
     private String redisPassword;
     protected long timeToLiveSeconds = -1;
-    protected final KeyMode keyMode;
+    protected KeyMode keyMode;
 
     public BaseRedisCache(KeyMode keyMode) {
         super();
@@ -151,6 +178,40 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
             timeToLiveSeconds = expireAfterAccess > 0 ? expireAfterAccess : expireAfterWrite;
         } else {
             timeToLiveSeconds = -1;
+        }
+
+        /*
+         * Parse custom property: key-mode
+         */
+        KeyMode oldKeyMode = this.keyMode;
+        try {
+            this.keyMode = KeyMode.valueOf(getCacheProperty(CACHE_PROP_KEY_MODE).toUpperCase());
+        } catch (Exception e) {
+            this.keyMode = oldKeyMode;
+            if (getCacheProperty(CACHE_PROP_KEY_MODE) != null) {
+                LOGGER.warn(e.getMessage(), e);
+            }
+        }
+
+        /*
+         * Parse custom property: ttl-seconds
+         */
+        long oldTTL = this.timeToLiveSeconds;
+        try {
+            this.timeToLiveSeconds = Long.parseLong(getCacheProperty(CACHE_PROP_TTL_SECONDS));
+        } catch (Exception e) {
+            this.timeToLiveSeconds = oldTTL;
+            if (getCacheProperty(CACHE_PROP_TTL_SECONDS) != null) {
+                LOGGER.warn(e.getMessage(), e);
+            }
+        }
+
+        /*
+         * Parse custom property: redis-password
+         */
+        String password = getCacheProperty(CACHE_PROP_REDIS_PASSWORD);
+        if (!StringUtils.isBlank(password)) {
+            this.redisPassword = password;
         }
     }
 

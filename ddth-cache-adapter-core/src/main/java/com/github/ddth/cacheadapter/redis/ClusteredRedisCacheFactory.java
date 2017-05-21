@@ -2,6 +2,7 @@ package com.github.ddth.cacheadapter.redis;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import com.github.ddth.cacheadapter.CacheException;
@@ -155,10 +156,10 @@ public class ClusteredRedisCacheFactory extends BaseRedisCacheFactory {
      */
     @Override
     protected ClusteredRedisCache createCacheInternal(String name, long capacity,
-            long expireAfterWrite, long expireAfterAccess) {
+            long expireAfterWrite, long expireAfterAccess, Properties cacheProps) {
         ClusteredRedisCache cache = new ClusteredRedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setRedisHostsAndPorts(redisHostsAndPorts).setRedisPassword(getRedisPassword());
         if (jedisCluster == null) {
             cache.setJedisCluster(jedisCluster);

@@ -8,7 +8,7 @@ package com.github.ddth.cacheadapter;
  */
 public interface ICacheFactory {
 
-    public final static long DEFAULT_CACHE_CAPACITY = 1000;
+    public final static long DEFAULT_CACHE_CAPACITY = 10000;
     public final static long DEFAULT_EXPIRE_AFTER_WRITE = 1800;
     public final static long DEFAULT_EXPIRE_AFTER_ACCESS = 1800;
 

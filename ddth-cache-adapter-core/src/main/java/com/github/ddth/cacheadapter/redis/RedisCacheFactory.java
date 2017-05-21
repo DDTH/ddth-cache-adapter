@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter.redis;
 
+import java.util.Properties;
+
 import com.github.ddth.cacheadapter.ICacheFactory;
 
 import redis.clients.jedis.JedisPool;
@@ -163,10 +165,10 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
      */
     @Override
     protected RedisCache createCacheInternal(String name, long capacity, long expireAfterWrite,
-            long expireAfterAccess) {
+            long expireAfterAccess, Properties cacheProps) {
         RedisCache cache = new RedisCache(keyMode);
         cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
-                .setExpireAfterWrite(expireAfterWrite);
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
         cache.setRedisHostAndPort(redisHostAndPort).setRedisPassword(getRedisPassword());
         if (jedisPool == null) {
             cache.setJedisPool(jedisPool);
