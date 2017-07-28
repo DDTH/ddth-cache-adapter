@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/DDTH/ddth-cache-adapter.svg?branch=master)](https://travis-ci.org/DDTH/ddth-cache-adapter)
+
 ddth-cache-adapter
 ==================
 
