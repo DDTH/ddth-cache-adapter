@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test;
+package com.github.ddth.cacheadapter.test.ceserializer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -8,7 +8,7 @@ import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class DefaultCacheEntrySerializerTest extends BaseTest {
+public class DefaultCacheEntrySerializerTest extends BaseCacheEntrySerializerTest {
 
     public DefaultCacheEntrySerializerTest(String testName) {
         super(testName);

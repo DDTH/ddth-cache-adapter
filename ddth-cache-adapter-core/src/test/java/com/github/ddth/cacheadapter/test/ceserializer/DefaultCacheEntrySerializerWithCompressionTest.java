@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test;
+package com.github.ddth.cacheadapter.test.ceserializer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ import com.github.ddth.cacheadapter.compressor.JdkDeflateCompressor;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class DefaultCacheEntrySerializerWithCompressionTest extends BaseTest {
+public class DefaultCacheEntrySerializerWithCompressionTest extends BaseCacheEntrySerializerTest {
 
     public DefaultCacheEntrySerializerWithCompressionTest(String testName) {
         super(testName);

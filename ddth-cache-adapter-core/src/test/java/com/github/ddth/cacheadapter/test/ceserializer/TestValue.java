@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test;
+package com.github.ddth.cacheadapter.test.ceserializer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +15,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Value class used for testing.
+ * 
+ * @author Thanh Nguyen <btnguyen2k@gmail.com>
+ */
 public class TestValue {
 
     private final static ToStringStyle STYLE = ToStringStyle.SHORT_PREFIX_STYLE;
