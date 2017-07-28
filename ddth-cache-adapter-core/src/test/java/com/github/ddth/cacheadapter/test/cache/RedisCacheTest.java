@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
-import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
+import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -18,25 +18,27 @@ import junit.framework.TestSuite;
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.7.0
  */
-public class GuavaCacheTest extends BaseCacheTest {
+public class RedisCacheTest extends BaseCacheTest {
 
-    public GuavaCacheTest(String testName) {
+    public RedisCacheTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(GuavaCacheTest.class);
+        return new TestSuite(RedisCacheTest.class);
     }
 
     @Before
     public void setUp() {
         Map<String, Properties> cacheProperties = new HashMap<>();
 
-        GuavaCacheFactory cf = new GuavaCacheFactory();
+        RedisCacheFactory cf = new RedisCacheFactory();
         cf.setCacheProperties(cacheProperties);
         cf.setDefaultCacheCapacity(DEFAULT_CACHE_CAPACITY);
         cf.setDefaultExpireAfterAccess(DEFAULT_EXPIRE_AFTER_ACCESS);
         cf.setDefaultExpireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE);
+
+        cf.setRedisHostAndPort("localhost:6379");
         cf.init();
         cacheFactory = cf;
     }
