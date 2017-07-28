@@ -2,6 +2,9 @@ package com.github.ddth.cacheadapter;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Abstract implementation of {@link ICache}.
  * 
@@ -9,6 +12,29 @@ import java.util.Properties;
  * @since 0.1.0
  */
 public abstract class AbstractCache implements ICache {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(AbstractCache.class);
+
+    /**
+     * To override the {@link #setCapacity(long)} setting.
+     * 
+     * @since 0.7.0
+     */
+    public final static String CACHE_PROP_CAPACITY = "cache.capacity";
+
+    /**
+     * To override the {@link #setExpireAfterAccess(long)} setting.
+     * 
+     * @since 0.7.0
+     */
+    public final static String CACHE_PROP_EXPIRE_AFTER_ACCESS = "cache.expire_after_access";
+
+    /**
+     * To override the {@link #setExpireAfterWrite(long)} setting.
+     * 
+     * @since 0.7.0
+     */
+    public final static String CACHE_PROP_EXPIRE_AFTER_WRITE = "cache.expire_after_write";
 
     private String name;
     private long capacity;
@@ -56,6 +82,47 @@ public abstract class AbstractCache implements ICache {
      * Initializes the cache before use.
      */
     public void init() {
+        /*
+         * Parse custom property: capacity
+         */
+        long oldCapacity = this.capacity;
+        try {
+            String entry = getCacheProperty(CACHE_PROP_CAPACITY);
+            if (entry != null) {
+                this.capacity = Long.parseLong(entry);
+            }
+        } catch (Exception e) {
+            this.capacity = oldCapacity;
+            LOGGER.warn(e.getMessage(), e);
+        }
+
+        /*
+         * Parse custom property: expire-after-access
+         */
+        long oldExpireAfterAccess = this.expireAfterAccess;
+        try {
+            String entry = getCacheProperty(CACHE_PROP_EXPIRE_AFTER_ACCESS);
+            if (entry != null) {
+                this.expireAfterAccess = Long.parseLong(entry);
+            }
+        } catch (Exception e) {
+            this.expireAfterAccess = oldExpireAfterAccess;
+            LOGGER.warn(e.getMessage(), e);
+        }
+
+        /*
+         * Parse custom property: expire-after-write
+         */
+        long oldExpireAfterWrite = this.expireAfterWrite;
+        try {
+            String entry = getCacheProperty(CACHE_PROP_EXPIRE_AFTER_WRITE);
+            if (entry != null) {
+                this.expireAfterWrite = Long.parseLong(entry);
+            }
+        } catch (Exception e) {
+            this.expireAfterWrite = oldExpireAfterWrite;
+            LOGGER.warn(e.getMessage(), e);
+        }
     }
 
     /**

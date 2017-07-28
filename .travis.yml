@@ -9,5 +9,5 @@ cache:
   - $HOME/.m2
 
 service:
-  - redis
+  - redis-server
   - memcached

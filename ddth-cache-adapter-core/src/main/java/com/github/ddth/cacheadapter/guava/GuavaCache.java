@@ -9,7 +9,6 @@ import com.github.ddth.cacheadapter.AbstractCache;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.CacheException;
-import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.ICacheLoader;
 import com.github.ddth.cacheadapter.utils.CacheUtils;
 import com.google.common.cache.CacheBuilder;
@@ -70,14 +69,6 @@ public class GuavaCache extends AbstractCache {
 
         super.init();
 
-        long capacity = getCapacity();
-        if (capacity >= 0) {
-            if (capacity == 0) {
-                capacity = ICacheFactory.DEFAULT_CACHE_CAPACITY;
-                setCapacity(capacity);
-            }
-        }
-
         /*
          * Parse custom property: clone-cache-entries
          */
@@ -95,8 +86,8 @@ public class GuavaCache extends AbstractCache {
         int numProcessores = Runtime.getRuntime().availableProcessors();
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder()
                 .concurrencyLevel(numProcessores * 2);
-        if (capacity > 0) {
-            cacheBuilder.maximumSize(capacity);
+        if (getCapacity() > 0) {
+            cacheBuilder.maximumSize(getCapacity());
         }
 
         long expireAfterAccess = getExpireAfterAccess();
@@ -105,10 +96,10 @@ public class GuavaCache extends AbstractCache {
             cacheBuilder.expireAfterAccess(expireAfterAccess, TimeUnit.SECONDS);
         } else if (expireAfterWrite > 0) {
             cacheBuilder.expireAfterWrite(expireAfterWrite, TimeUnit.SECONDS);
-        } else {
-            cacheBuilder.expireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS,
-                    TimeUnit.SECONDS);
-            setExpireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS);
+            // } else {
+            // cacheBuilder.expireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS,
+            // TimeUnit.SECONDS);
+            // setExpireAfterAccess(ICacheFactory.DEFAULT_EXPIRE_AFTER_ACCESS);
         }
 
         CacheLoader<String, Object> guavaCacheLoader = new CacheLoader<String, Object>() {
