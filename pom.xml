@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -47,11 +48,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<skipTests>true</skipTests>
+		<!-- <skipTests>true</skipTests> -->
 
-		<version.ddth_commons>0.6.1.1</version.ddth_commons>
+		<version.ddth_commons>0.6.3.2</version.ddth_commons>
 		<version.jedis>2.9.0</version.jedis>
-		<version.xmemcached>2.3.1</version.xmemcached>
+		<version.xmemcached>2.3.2</version.xmemcached>
 		<version.commons_codec>1.10</version.commons_codec>
 	</properties>
 
@@ -75,12 +76,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 			<scope>test</scope>
 		</dependency>
 

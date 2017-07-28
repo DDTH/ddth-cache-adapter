@@ -23,14 +23,10 @@ public class QndCacheSize {
 
         System.out.println("serDDTHCommons(raw): " + SerializationUtils.toByteArray(value).length);
         System.out.println(
-                "serJboss(raw)      : " + SerializationUtils.toByteArrayJboss(value).length);
-        System.out.println(
                 "serKyro(raw)       : " + SerializationUtils.toByteArrayKryo(value).length);
         System.out
                 .println("serFst(raw)        : " + SerializationUtils.toByteArrayFst(value).length);
         System.out.println("serDDTHCommons(ce) : " + SerializationUtils.toByteArray(ce).length);
-        System.out
-                .println("serJboss(ce)       : " + SerializationUtils.toByteArrayJboss(ce).length);
         System.out.println("serKyro(ce)        : " + SerializationUtils.toByteArrayKryo(ce).length);
         System.out.println("serFst(ce)         : " + SerializationUtils.toByteArrayFst(ce).length);
         System.out.println("serThrift(ce)      : " + ThriftUtils.serialize(ce).length);
@@ -40,13 +36,6 @@ public class QndCacheSize {
             byte[] dataRaw = SerializationUtils.toByteArray(value);
             System.out.println("Size (Deft/raw) : " + dataRaw.length);
             Object obj = SerializationUtils.fromByteArray(dataRaw, value.getClass());
-            System.out.println("Deserialize     : " + obj);
-            System.out.println("Compare         : ===>" + compare(value, obj));
-        }
-        {
-            byte[] dataRaw = SerializationUtils.toByteArrayJboss(value);
-            System.out.println("Size (Jboss/raw): " + dataRaw.length);
-            Object obj = SerializationUtils.fromByteArrayJboss(dataRaw, value.getClass());
             System.out.println("Deserialize     : " + obj);
             System.out.println("Compare         : ===>" + compare(value, obj));
         }
@@ -70,13 +59,6 @@ public class QndCacheSize {
             byte[] dataCe = SerializationUtils.toByteArray(ce);
             System.out.println("Size (Deft/ce)  : " + dataCe.length);
             Object obj = SerializationUtils.fromByteArray(dataCe, CacheEntry.class);
-            System.out.println("Deserialize     : " + obj);
-            System.out.println("Compare         : ===>" + compare(ce, obj));
-        }
-        {
-            byte[] dataCe = SerializationUtils.toByteArrayJboss(ce);
-            System.out.println("Size (Jboss/ce) : " + dataCe.length);
-            Object obj = SerializationUtils.fromByteArrayJboss(dataCe, CacheEntry.class);
             System.out.println("Deserialize     : " + obj);
             System.out.println("Compare         : ===>" + compare(ce, obj));
         }

@@ -7,7 +7,6 @@ import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICompressor;
 import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 import com.github.ddth.cacheadapter.ces.FstCacheEntrySerializer;
-import com.github.ddth.cacheadapter.ces.JbossCacheEntrySerializer;
 import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
 import com.github.ddth.cacheadapter.ces.ThriftCacheEntrySerializer;
 import com.github.ddth.cacheadapter.compressor.JdkDeflateCompressor;
@@ -38,7 +37,6 @@ public class QndCacheEntrySize {
             // bootstrap
             CacheEntry ce = new CacheEntry();
             SerializationUtils.toByteArray(ce);
-            SerializationUtils.toByteArrayJboss(ce);
             SerializationUtils.toByteArrayKryo(ce);
             SerializationUtils.toByteArrayFst(ce);
             ThriftUtils.serialize(ce);
@@ -50,7 +48,6 @@ public class QndCacheEntrySize {
 
         System.out.println("===== No Compression =======================================");
         test(new DefaultCacheEntrySerializer().init(), value);
-        test(new JbossCacheEntrySerializer().init(), value);
         test(new KryoCacheEntrySerializer().init(), value);
         test(new FstCacheEntrySerializer().init(), value);
         test(new ThriftCacheEntrySerializer().init(), value);
@@ -58,7 +55,6 @@ public class QndCacheEntrySize {
 
         System.out.println("===== Compression [1] ======================================");
         test(new DefaultCacheEntrySerializer().setCompressor(compressor1).init(), value);
-        test(new JbossCacheEntrySerializer().setCompressor(compressor1).init(), value);
         test(new KryoCacheEntrySerializer().setCompressor(compressor1).init(), value);
         test(new FstCacheEntrySerializer().setCompressor(compressor1).init(), value);
         test(new ThriftCacheEntrySerializer().setCompressor(compressor1).init(), value);
@@ -66,7 +62,6 @@ public class QndCacheEntrySize {
 
         System.out.println("===== Compression [9] ======================================");
         test(new DefaultCacheEntrySerializer().setCompressor(compressor9).init(), value);
-        test(new JbossCacheEntrySerializer().setCompressor(compressor9).init(), value);
         test(new KryoCacheEntrySerializer().setCompressor(compressor9).init(), value);
         test(new FstCacheEntrySerializer().setCompressor(compressor9).init(), value);
         test(new ThriftCacheEntrySerializer().setCompressor(compressor9).init(), value);
