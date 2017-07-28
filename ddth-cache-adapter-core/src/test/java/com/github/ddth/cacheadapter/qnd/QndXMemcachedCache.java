@@ -2,6 +2,7 @@ package com.github.ddth.cacheadapter.qnd;
 
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.memcached.XMemcachedCacheFactory;
+import com.github.ddth.cacheadapter.test.TestValue;
 
 public class QndXMemcachedCache {
     public static void main(String[] args) {

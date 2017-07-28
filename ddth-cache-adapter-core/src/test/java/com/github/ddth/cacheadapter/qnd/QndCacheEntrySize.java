@@ -10,6 +10,7 @@ import com.github.ddth.cacheadapter.ces.FstCacheEntrySerializer;
 import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
 import com.github.ddth.cacheadapter.ces.ThriftCacheEntrySerializer;
 import com.github.ddth.cacheadapter.compressor.JdkDeflateCompressor;
+import com.github.ddth.cacheadapter.test.TestValue;
 import com.github.ddth.cacheadapter.utils.ThriftUtils;
 import com.github.ddth.commons.utils.SerializationUtils;
 

@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test.ceserializer;
+package com.github.ddth.cacheadapter.test.cache;
 
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
@@ -13,14 +13,14 @@ import junit.framework.TestSuite;
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  */
-public abstract class BaseCacheEntrySerializerTest extends TestCase {
+public abstract class BaseCacheTest extends TestCase {
 
-    public BaseCacheEntrySerializerTest(String testName) {
+    public BaseCacheTest(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(BaseCacheEntrySerializerTest.class);
+        return new TestSuite(BaseCacheTest.class);
     }
 
     protected static ICacheEntrySerializer cacheEntrySerializer;

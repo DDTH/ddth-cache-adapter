@@ -1,6 +1,7 @@
 package com.github.ddth.cacheadapter.qnd;
 
 import com.github.ddth.cacheadapter.CacheEntry;
+import com.github.ddth.cacheadapter.test.TestValue;
 import com.github.ddth.commons.utils.SerializationUtils;
 
 public class QndArraySerializationKryo {

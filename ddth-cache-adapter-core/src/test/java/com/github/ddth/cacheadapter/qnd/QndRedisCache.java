@@ -2,6 +2,7 @@ package com.github.ddth.cacheadapter.qnd;
 
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.test.TestValue;
 
 public class QndRedisCache {
     public static void main(String[] args) {
