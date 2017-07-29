@@ -226,7 +226,7 @@ public class RedisCache extends BaseRedisCache {
                 // existing item
                 if (keyMode == KeyMode.HASH)
                     // rule 2.1
-                    ttl = currentTTL > 0 ? currentTTL : TTL_NO_CHANGE;
+                    ttl = currentTTL > 0 ? ttl : TTL_NO_CHANGE;
                 else
                     // rule 2.2
                     ttl = expireAfterAccess > 0 ? expireAfterAccess : TTL_NO_CHANGE;
@@ -308,6 +308,20 @@ public class RedisCache extends BaseRedisCache {
         }
     }
 
+    protected void refreshTTL(String key, CacheEntry ce) {
+        final String KEY = calcCacheKey(key);
+        final long TTL = ce.getExpireAfterAccess();
+        try (Jedis jedis = getJedis()) {
+            if (TTL > 0) {
+                if (keyMode == KeyMode.HASH) {
+                    jedis.expire(getName(), (int) TTL);
+                } else {
+                    jedis.expire(SafeEncoder.encode(KEY), (int) TTL);
+                }
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -321,7 +335,8 @@ public class RedisCache extends BaseRedisCache {
             if (data != null) {
                 CacheEntry ce = deserializeCacheEntry(data);
                 if (ce != null && ce.touch()) {
-                    set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
+                    // set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
+                    refreshTTL(key, ce);
                 }
                 return ce;
             }

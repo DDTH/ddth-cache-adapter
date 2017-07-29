@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.After;
 import org.junit.Before;
 
-import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
 
 import junit.framework.Test;
@@ -41,8 +39,4 @@ public class GuavaCacheTest extends BaseCacheTest {
         cacheFactory = cf;
     }
 
-    @After
-    public void tearDown() {
-        ((AbstractCacheFactory) cacheFactory).destroy();
-    }
 }

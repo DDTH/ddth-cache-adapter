@@ -95,6 +95,9 @@ public abstract class AbstractCache implements ICache {
             this.capacity = oldCapacity;
             LOGGER.warn(e.getMessage(), e);
         }
+        if (capacity < -1) {
+            setCapacity(-1);
+        }
 
         /*
          * Parse custom property: expire-after-access
@@ -109,6 +112,9 @@ public abstract class AbstractCache implements ICache {
             this.expireAfterAccess = oldExpireAfterAccess;
             LOGGER.warn(e.getMessage(), e);
         }
+        if (expireAfterAccess < -1) {
+            setExpireAfterAccess(-1);
+        }
 
         /*
          * Parse custom property: expire-after-write
@@ -122,6 +128,9 @@ public abstract class AbstractCache implements ICache {
         } catch (Exception e) {
             this.expireAfterWrite = oldExpireAfterWrite;
             LOGGER.warn(e.getMessage(), e);
+        }
+        if (expireAfterWrite < -1) {
+            setExpireAfterWrite(-1);
         }
     }
 

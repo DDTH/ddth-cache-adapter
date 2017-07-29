@@ -150,8 +150,11 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
      */
     public boolean touch() {
         if (expireAfterAccess > 0) {
-            lastAccessTimestampMs = System.currentTimeMillis();
-            return true;
+            long t = System.currentTimeMillis();
+            if (lastAccessTimestampMs + 1000 < t) {
+                lastAccessTimestampMs = t;
+                return true;
+            }
         }
         return false;
     }

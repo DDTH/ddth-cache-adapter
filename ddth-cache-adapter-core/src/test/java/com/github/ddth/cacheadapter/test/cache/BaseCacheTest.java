@@ -1,5 +1,8 @@
 package com.github.ddth.cacheadapter.test.cache;
 
+import org.junit.After;
+
+import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.test.TestValue;
@@ -21,6 +24,11 @@ public abstract class BaseCacheTest extends TestCase {
 
     public static Test suite() {
         return new TestSuite(BaseCacheTest.class);
+    }
+
+    @After
+    public void tearDown() {
+        ((AbstractCacheFactory) cacheFactory).destroy();
     }
 
     protected static ICacheFactory cacheFactory;
