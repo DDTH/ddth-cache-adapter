@@ -18,21 +18,21 @@ public abstract class AbstractCache implements ICache {
     /**
      * To override the {@link #setCapacity(long)} setting.
      * 
-     * @since 0.7.0
+     * @since 0.6.2
      */
     public final static String CACHE_PROP_CAPACITY = "cache.capacity";
 
     /**
      * To override the {@link #setExpireAfterAccess(long)} setting.
      * 
-     * @since 0.7.0
+     * @since 0.6.2
      */
     public final static String CACHE_PROP_EXPIRE_AFTER_ACCESS = "cache.expire_after_access";
 
     /**
      * To override the {@link #setExpireAfterWrite(long)} setting.
      * 
-     * @since 0.7.0
+     * @since 0.6.2
      */
     public final static String CACHE_PROP_EXPIRE_AFTER_WRITE = "cache.expire_after_write";
 

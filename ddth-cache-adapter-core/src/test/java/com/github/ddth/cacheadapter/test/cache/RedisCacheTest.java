@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
- * @since 0.7.0
+ * @since 0.6.2
  */
 public class RedisCacheTest extends BaseCacheTest {
 
