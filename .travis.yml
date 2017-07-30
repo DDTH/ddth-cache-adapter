@@ -8,7 +8,7 @@ cache:
   directories:
   - $HOME/.m2
 
-after_install:
+before_install:
   # start 2 additional Redis instances for sharded-redis cache tests
   - redis-server --port 7379 &
   - redis-server --port 7380 &
