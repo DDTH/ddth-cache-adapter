@@ -1,26 +1,43 @@
 package com.github.ddth.cacheadapter.qnd;
 
+import java.util.Random;
+
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.redis.ShardedRedisCacheFactory;
 
+import redis.clients.jedis.ShardedJedis;
+
 public class QndShardedRedisCache {
 
-    public static void main(String[] args) {
-        try (ShardedRedisCacheFactory cf = new ShardedRedisCacheFactory()) {
-            // cf.setRedisHostsAndPorts("localhost:6379,localhost:6380");
-            cf.setRedisHostsAndPorts("localhost:6379");
-            cf.init();
+    private static class MyRedisCacheFactory extends ShardedRedisCacheFactory {
+        public MyRedisCacheFactory init() {
+            super.init();
 
-            ICache cache = cf.createCache("demo");
-            for (int i = 0; i < 4; i++) {
-                cache.set("key-" + i, String.valueOf(i));
+            try (ShardedJedis jedis = getJedisPool().getResource()) {
+                jedis.getAllShards().forEach(j -> j.flushAll());
             }
 
-            for (int i = 2; i < 6; i++) {
-                String key = "key-" + i;
-                System.out.println(cache.get(key));
-            }
+            return this;
         }
     }
 
+    public static void main(String[] args) throws Exception {
+        Random RAND = new Random(System.currentTimeMillis());
+        try (ShardedRedisCacheFactory cf = new MyRedisCacheFactory()) {
+            cf.setRedisHostsAndPorts("localhost:7379,localhost:7380").init();
+
+            ICache cache = cf.createCache("demo");
+
+            for (int i = 0; i < 10; i++) {
+                cache.set("KEY" + i, i, -1, 10);
+            }
+
+            for (long t = System.currentTimeMillis(); t + 10000 >= System.currentTimeMillis();) {
+                String KEY = "KEY" + RAND.nextInt(10);
+                Object value = cache.get(KEY);
+                System.out.println(value + "\t" + System.currentTimeMillis());
+                Thread.sleep(RAND.nextInt(1000));
+            }
+        }
+    }
 }

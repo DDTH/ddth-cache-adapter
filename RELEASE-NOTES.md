@@ -1,6 +1,15 @@
 ddth-cache-adapter release notes
 ================================
 
+0.6.2 - 2017-07-30
+------------------
+
+- More unit test cases.
+- Test case refactoring: run test cases in parallel.
+- TravisCI integrated.
+- Minor bug fixes  & enhancements.
+
+
 0.6.1 - 2017-05-21
 ------------------
 

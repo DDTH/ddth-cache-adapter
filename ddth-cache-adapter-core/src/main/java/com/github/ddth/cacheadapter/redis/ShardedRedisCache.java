@@ -308,6 +308,27 @@ public class ShardedRedisCache extends BaseRedisCache {
     }
 
     /**
+     * Refresh TTL of a cache entry.
+     * 
+     * @param key
+     * @param ce
+     * @since 0.6.2
+     */
+    protected void refreshTTL(String key, CacheEntry ce) {
+        final String KEY = calcCacheKey(key);
+        final long TTL = ce.getExpireAfterAccess();
+        try (ShardedJedis jedis = getJedis()) {
+            if (TTL > 0) {
+                if (keyMode == KeyMode.HASH) {
+                    jedis.expire(getName(), (int) TTL);
+                } else {
+                    jedis.expire(SafeEncoder.encode(KEY), (int) TTL);
+                }
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -320,7 +341,13 @@ public class ShardedRedisCache extends BaseRedisCache {
             if (data != null) {
                 CacheEntry ce = deserializeCacheEntry(data);
                 if (ce != null && ce.touch()) {
-                    set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
+                    /*
+                     * Since v0.6.2: use refreshTTL() instead of set() to save
+                     * traffic between client & Redis server
+                     */
+                    // set(key, ce, ce.getExpireAfterWrite(),
+                    // ce.getExpireAfterAccess());
+                    refreshTTL(key, ce);
                 }
                 return ce;
             }
