@@ -178,7 +178,8 @@ public class RedisCache extends BaseRedisCache {
      * {@inheritDoc}
      * 
      * <p>
-     * Only {@link KeyMode#HASH} is supported. This method returns {@code -1} for other key modes.
+     * Only {@link KeyMode#HASH} is supported. This method returns {@code -1}
+     * for other key modes.
      * </p>
      */
     @Override
@@ -221,7 +222,8 @@ public class RedisCache extends BaseRedisCache {
             // 1. New item: TTL is calculated as formula(s) above.
             // 2. Existing item:
             // 2.1. If [keyMode=HASH]: extends the current TTL,
-            // 2.2. Otherwise, extends the current TTL only when expireAfterAccess > 0
+            // 2.2. Otherwise, extends the current TTL only when
+            // expireAfterAccess > 0
             if (currentTTL >= -1) {
                 // existing item
                 if (keyMode == KeyMode.HASH)
@@ -239,6 +241,7 @@ public class RedisCache extends BaseRedisCache {
                 } else if (ttl == TTL_FOREVER && currentTTL >= -1) {
                     jedis.persist(getName());
                 }
+                // jedis.hscan(key, cursor)
             } else {
                 if (ttl > 0) {
                     jedis.setex(SafeEncoder.encode(KEY), (int) ttl, data);
@@ -335,8 +338,8 @@ public class RedisCache extends BaseRedisCache {
             if (data != null) {
                 CacheEntry ce = deserializeCacheEntry(data);
                 if (ce != null && ce.touch()) {
-                    // set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
-                    refreshTTL(key, ce);
+                    set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
+                    // refreshTTL(key, ce);
                 }
                 return ce;
             }

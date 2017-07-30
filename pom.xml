@@ -144,6 +144,8 @@
 					<systemPropertyVariables>
 						<!-- <log4j.configuration>file:${basedir}/../etc/log4j.xml</log4j.configuration> -->
 					</systemPropertyVariables>
+					<!-- <parallel>classes</parallel> <useUnlimitedThreads>true</useUnlimitedThreads> 
+						<threadCount>80</threadCount> <perCoreThreadCount>true</perCoreThreadCount> -->
 				</configuration>
 			</plugin>
 			<plugin>

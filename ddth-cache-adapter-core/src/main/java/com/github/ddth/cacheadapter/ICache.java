@@ -1,5 +1,7 @@
 package com.github.ddth.cacheadapter;
 
+import com.github.ddth.cacheadapter.redis.RedisCache;
+
 /**
  * Represents a cache.
  * 
@@ -11,21 +13,21 @@ public interface ICache {
     public final static byte[] NULL_VALUE = new byte[0];
 
     /**
-     * Gets cache's name.
+     * Get cache's name.
      * 
      * @return
      */
     public String getName();
 
     /**
-     * Gets cache's entry loader.
+     * Get cache's entry loader.
      * 
      * @return
      */
     public ICacheLoader getCacheLoader();
 
     /**
-     * Sets cache's entry loader.
+     * Set cache's entry loader.
      * 
      * @param cacheLoader
      * @return
@@ -33,28 +35,41 @@ public interface ICache {
     public ICache setCacheLoader(ICacheLoader cacheLoader);
 
     /**
-     * Gets cache's size (number of current entries).
+     * Get cache's size (number of current entries).
      * 
      * @return
      */
     public long getSize();
 
     /**
-     * Gets cache's capacity (maximum number of entries).
+     * Get cache's capacity (maximum number of entries).
      * 
      * @return
      */
     public long getCapacity();
 
     /**
-     * Gets cache's stats.
+     * Return {@code true} if cache supports capacity (i.e. max number of items cache can contain is
+     * {@link #getCapacity()}, {@code false} otherwise.
+     * 
+     * <p>
+     * Some cache implementations such as {@link RedisCache} does not support capacity.
+     * </p>
+     * 
+     * @return
+     * @since 0.6.2
+     */
+    public boolean isCapacitySupported();
+
+    /**
+     * Get cache's stats.
      * 
      * @return
      */
     public CacheStats getStats();
 
     /**
-     * Gets number of seconds before entries to be expired since the last read
+     * Get number of seconds before entries to be expired since the last read
      * or write.
      * 
      * @return
@@ -62,14 +77,14 @@ public interface ICache {
     public long getExpireAfterAccess();
 
     /**
-     * Gets number of seconds before entries to be expired since the last write.
+     * Get number of seconds before entries to be expired since the last write.
      * 
      * @return
      */
     public long getExpireAfterWrite();
 
     /**
-     * Puts an entry to cache, with default expiry.
+     * Put an entry to cache, with default expiry.
      * 
      * @param key
      * @param entry
@@ -77,7 +92,7 @@ public interface ICache {
     public void set(String key, Object entry);
 
     /**
-     * Puts an entry to cache, with specified expiries.
+     * Put an entry to cache, with specified expiries.
      * 
      * @param key
      * @param entry
@@ -87,7 +102,7 @@ public interface ICache {
     public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess);
 
     /**
-     * Gets an entry from cache.
+     * Get an entry from cache.
      * 
      * @param key
      * @return
@@ -95,7 +110,7 @@ public interface ICache {
     public Object get(String key);
 
     /**
-     * Gets an entry from cache. If the entry does not exist in the cache, it
+     * Get an entry from cache. If the entry does not exist in the cache, it
      * will be loaded into cache via the supplied {@link ICacheLoader}.
      * 
      * @param key
@@ -106,21 +121,21 @@ public interface ICache {
     public Object get(String key, ICacheLoader cacheLoader);
 
     /**
-     * Deletes an entry from cache.
+     * Delete an entry from cache.
      * 
      * @param key
      */
     public void delete(String key);
 
     /**
-     * Deletes all entries in cache.
+     * Delete all entries in cache.
      * 
      * @throws CacheException.OperationNotSupportedException
      */
     public void deleteAll() throws CacheException.OperationNotSupportedException;
 
     /**
-     * Checks if an entry exists in the cache.
+     * Check if an entry exists in the cache.
      * 
      * @param key
      * @return

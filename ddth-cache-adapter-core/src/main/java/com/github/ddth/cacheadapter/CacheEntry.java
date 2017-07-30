@@ -26,7 +26,8 @@ import com.github.ddth.commons.utils.SerializationUtils;
  */
 public class CacheEntry implements Serializable, Cloneable, ISerializationSupport {
 
-    private static final long serialVersionUID = "0.5.1".hashCode();
+    private final static long serialVersionUID = "0.5.1".hashCode();
+    private final static long LAST_ACCESS_THRESHOLD_MS = 1000;
 
     private String key = "";
     private Object value = ArrayUtils.EMPTY_BYTE_ARRAY;
@@ -65,13 +66,10 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
     }
 
     public boolean isExpired() {
-        if (expireAfterWrite > 0) {
-            return creationTimestampMs + expireAfterWrite * 1000L <= System.currentTimeMillis();
-        }
-        if (expireAfterAccess > 0) {
-            return lastAccessTimestampMs + expireAfterAccess * 1000L <= System.currentTimeMillis();
-        }
-        return false;
+        long now = System.currentTimeMillis();
+        return expireAfterAccess > 0 ? lastAccessTimestampMs + expireAfterAccess * 1000L < now
+                : expireAfterWrite > 0 ? creationTimestampMs + expireAfterWrite * 1000L < now
+                        : false;
     }
 
     public String getKey() {
@@ -146,13 +144,13 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
      * "Touch" the cache entry.
      * 
      * @return
-     * @since 0.2.1 entry can be touched only if {@code expireAfterAccess >0}.
+     * @since 0.2.1 entry can be touched only if {@code expireAfterAccess > 0}.
      */
     public boolean touch() {
         if (expireAfterAccess > 0) {
-            long t = System.currentTimeMillis();
-            if (lastAccessTimestampMs + 1000 < t) {
-                lastAccessTimestampMs = t;
+            long now = System.currentTimeMillis();
+            if (lastAccessTimestampMs + LAST_ACCESS_THRESHOLD_MS < now) {
+                lastAccessTimestampMs = now;
                 return true;
             }
         }

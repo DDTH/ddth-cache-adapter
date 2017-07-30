@@ -34,16 +34,16 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
         NAMESPACE(0),
 
         /**
-         * Assuming the whole Redis server/cluster is dedicated to the Redis-based
-         * cache instance. Cache keys are kept as-is.
+         * Assuming the whole Redis server/cluster is dedicated to the
+         * Redis-based cache instance. Cache keys are kept as-is.
          */
         MONOPOLISTIC(1),
 
         /**
          * Cache entries are grouped into namespaces, each namespace is a Redis
          * hash specified by cache's name. More than one Redis-based cache
-         * instances can share one Redis server/cluster. Cache keys are
-         * kept as-is.
+         * instances can share one Redis server/cluster. Cache keys are kept
+         * as-is.
          */
         HASH(2);
 
@@ -79,8 +79,8 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     public final static String CACHE_PROP_TTL_SECONDS = "cache.ttl_seconds";
 
     /**
-     * Flag to mark if the Redis resource (e.g. Redis client pool) is created and handled by the
-     * cache instance.
+     * Flag to mark if the Redis resource (e.g. Redis client pool) is created
+     * and handled by the cache instance.
      */
     protected boolean myOwnRedis = true;
     private String redisPassword;
@@ -142,6 +142,14 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     public BaseRedisCache(KeyMode keyMode, String name, AbstractCacheFactory cacheFactory) {
         super(name, cacheFactory);
         this.keyMode = keyMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCapacitySupported() {
+        return false;
     }
 
     public String getRedisPassword() {

@@ -135,6 +135,14 @@ public class GuavaCache extends AbstractCache {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCapacitySupported() {
+        return true;
+    }
+
+    /**
      * If {@code true}, cache entries are cloned when fetching out of cache,
      * default value is {@code false}.
      * 

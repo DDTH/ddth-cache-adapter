@@ -29,6 +29,14 @@ public class LocalRemoteCache extends AbstractCache {
         this.remoteCache = remoteCache;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCapacitySupported() {
+        return localCache.isCapacitySupported() && remoteCache.isCapacitySupported();
+    }
+
     public ICache getLocalCache() {
         return localCache;
     }

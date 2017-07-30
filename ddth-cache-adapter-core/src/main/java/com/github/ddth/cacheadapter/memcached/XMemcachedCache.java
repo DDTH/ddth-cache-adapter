@@ -148,6 +148,14 @@ public class XMemcachedCache extends AbstractSerializingCache {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCapacitySupported() {
+        return false;
+    }
+
+    /**
      * 
      * @return
      * @see KeyMode

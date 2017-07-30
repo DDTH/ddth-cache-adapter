@@ -92,7 +92,7 @@ public abstract class BaseCacheTest extends TestCase {
 
         ICache cache = cacheFactory.createCache("cache1default", maxCapacity);
         assertNotNull(cache);
-        if (cache.getSize() >= 0) {
+        if (cache.isCapacitySupported()) {
             for (int i = 0; i < numEntries; i++) {
                 cache.set("key" + i, "value" + i);
             }
