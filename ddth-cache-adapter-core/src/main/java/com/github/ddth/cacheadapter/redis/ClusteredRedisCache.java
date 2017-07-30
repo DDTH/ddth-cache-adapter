@@ -174,7 +174,8 @@ public class ClusteredRedisCache extends BaseRedisCache {
      * {@inheritDoc}
      * 
      * <p>
-     * Only {@link KeyMode#HASH} is supported. This method returns {@code -1} for other key modes.
+     * Only {@link KeyMode#HASH} is supported. This method returns {@code -1}
+     * for other key modes.
      * </p>
      */
     @Override
@@ -214,7 +215,8 @@ public class ClusteredRedisCache extends BaseRedisCache {
         // 1. New item: TTL is calculated as formula(s) above.
         // 2. Existing item:
         // 2.1. If [keyMode=HASH]: extends the current TTL,
-        // 2.2. Otherwise, extends the current TTL only when expireAfterAccess > 0
+        // 2.2. Otherwise, extends the current TTL only when expireAfterAccess >
+        // 0
         if (currentTTL >= -1) {
             // existing item
             if (keyMode == KeyMode.HASH)
@@ -266,9 +268,15 @@ public class ClusteredRedisCache extends BaseRedisCache {
     public void deleteAll() {
         switch (keyMode) {
         case NAMESPACE:
-        case MONOPOLISTIC:
             throw new CacheException.OperationNotSupportedException(
-                    "Key mode[" + keyMode + "] does not support flushall operation.");
+                    "Key mode[" + keyMode + "] does not support 'deleteAll' operation.");
+        case MONOPOLISTIC:
+            // try (JedisCluster jedisCluster = getJedisCluster()) {
+            // } catch (IOException e) {
+            // throw new CacheException(e);
+            // }
+            throw new CacheException.OperationNotSupportedException(
+                    "Key mode[" + keyMode + "] does not support 'deleteAll' operation.");
         case HASH:
             jedisCluster.del(getName());
             break;

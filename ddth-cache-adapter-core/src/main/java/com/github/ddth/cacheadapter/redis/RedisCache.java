@@ -280,7 +280,7 @@ public class RedisCache extends BaseRedisCache {
         switch (keyMode) {
         case NAMESPACE:
             throw new CacheException.OperationNotSupportedException(
-                    "Key mode[" + keyMode + "] does not support flushall operation.");
+                    "Key mode[" + keyMode + "] does not support 'deleteAll' operation.");
         case MONOPOLISTIC:
             try (Jedis jedis = getJedis()) {
                 jedis.flushAll();
