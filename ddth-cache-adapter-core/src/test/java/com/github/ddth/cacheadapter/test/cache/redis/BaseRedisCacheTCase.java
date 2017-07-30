@@ -1,13 +1,12 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.cache.redis;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -15,15 +14,7 @@ import redis.clients.jedis.Jedis;
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public abstract class BaseRedisCacheTest extends BaseCacheTest {
-
-    public BaseRedisCacheTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(BaseRedisCacheTest.class);
-    }
+public abstract class BaseRedisCacheTCase extends BaseCacheTCase {
 
     protected static class MyRedisCacheFactory extends RedisCacheFactory {
         public RedisCacheFactory init() {

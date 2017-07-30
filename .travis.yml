@@ -13,6 +13,10 @@ before_install:
   - redis-server --port 7379 &
   - redis-server --port 7380 &
 
+after_script:
+  - redis-cli -p 7379 SHUTDOWN
+  - redis-cli -p 7380 SHUTDOWN
+
 services:
   - redis-server
   - memcached

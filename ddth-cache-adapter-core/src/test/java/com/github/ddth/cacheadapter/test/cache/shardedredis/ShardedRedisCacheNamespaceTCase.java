@@ -1,27 +1,16 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.cache.shardedredis;
 
 import org.junit.Before;
 
 import com.github.ddth.cacheadapter.redis.BaseRedisCache.KeyMode;
 import com.github.ddth.cacheadapter.redis.ShardedRedisCacheFactory;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public class ShardedRedisCacheNamespaceTest extends BaseShardedRedisCacheTest {
-
-    public ShardedRedisCacheNamespaceTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(ShardedRedisCacheNamespaceTest.class);
-    }
+public class ShardedRedisCacheNamespaceTCase extends BaseShardedRedisCacheTCase {
 
     @Before
     public void setUp() {

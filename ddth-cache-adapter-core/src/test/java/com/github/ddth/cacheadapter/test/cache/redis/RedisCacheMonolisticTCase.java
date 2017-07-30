@@ -1,27 +1,16 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.cache.redis;
 
 import org.junit.Before;
 
 import com.github.ddth.cacheadapter.redis.BaseRedisCache.KeyMode;
 import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public class RedisCacheMonolisticTest extends BaseRedisCacheTest {
-
-    public RedisCacheMonolisticTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(RedisCacheMonolisticTest.class);
-    }
+public class RedisCacheMonolisticTCase extends BaseRedisCacheTCase {
 
     @Before
     public void setUp() {

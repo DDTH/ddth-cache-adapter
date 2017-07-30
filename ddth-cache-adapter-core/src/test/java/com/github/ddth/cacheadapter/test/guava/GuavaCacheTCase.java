@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.guava;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,24 +7,14 @@ import java.util.Properties;
 import org.junit.Before;
 
 import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
 /**
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public class GuavaCacheTest extends BaseCacheTest {
-
-    public GuavaCacheTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(GuavaCacheTest.class);
-    }
+public class GuavaCacheTCase extends BaseCacheTCase {
 
     @Before
     public void setUp() {

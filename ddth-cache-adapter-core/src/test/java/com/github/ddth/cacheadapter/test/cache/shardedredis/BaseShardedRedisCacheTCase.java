@@ -1,13 +1,12 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.cache.shardedredis;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import com.github.ddth.cacheadapter.redis.ShardedRedisCacheFactory;
+import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import redis.clients.jedis.ShardedJedis;
 
 /**
@@ -15,15 +14,7 @@ import redis.clients.jedis.ShardedJedis;
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public abstract class BaseShardedRedisCacheTest extends BaseCacheTest {
-
-    public BaseShardedRedisCacheTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(BaseShardedRedisCacheTest.class);
-    }
+public abstract class BaseShardedRedisCacheTCase extends BaseCacheTCase {
 
     protected static class MyRedisCacheFactory extends ShardedRedisCacheFactory {
         public ShardedRedisCacheFactory init() {

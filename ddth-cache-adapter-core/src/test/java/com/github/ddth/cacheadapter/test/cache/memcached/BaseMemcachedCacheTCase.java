@@ -1,4 +1,4 @@
-package com.github.ddth.cacheadapter.test.cache;
+package com.github.ddth.cacheadapter.test.cache.memcached;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,9 +6,8 @@ import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import com.github.ddth.cacheadapter.memcached.XMemcachedCacheFactory;
+import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 
 /**
@@ -16,15 +15,7 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.2
  */
-public abstract class BaseMemcachedCacheTest extends BaseCacheTest {
-
-    public BaseMemcachedCacheTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(BaseMemcachedCacheTest.class);
-    }
+public abstract class BaseMemcachedCacheTCase extends BaseCacheTCase {
 
     protected static class MyMemcachedCacheFactory extends XMemcachedCacheFactory {
         public XMemcachedCacheFactory init() {

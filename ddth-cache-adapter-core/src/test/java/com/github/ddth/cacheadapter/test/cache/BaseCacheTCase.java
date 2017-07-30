@@ -1,5 +1,9 @@
 package com.github.ddth.cacheadapter.test.cache;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.After;
 
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
@@ -7,24 +11,12 @@ import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.test.TestValue;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Base class for cache-entry serializer test cases.
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  */
-public abstract class BaseCacheTest extends TestCase {
-
-    public BaseCacheTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(BaseCacheTest.class);
-    }
+public abstract class BaseCacheTCase {
 
     @After
     public void tearDown() {
