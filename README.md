@@ -20,7 +20,7 @@ Third party libraries are distributed under their own licenses.
 
 ## Installation
 
-Latest release version: `0.6.3`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.6.3.1`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -31,7 +31,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.6.3</version>
+	<version>0.6.3.1</version>
 </dependency>
 ```
 
@@ -41,7 +41,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-memcached</artifactId>
-    <version>0.6.3</version>
+    <version>0.6.3.1</version>
     <type>pom</type>
 </dependency>
 ```
@@ -52,7 +52,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.6.3</version>
+    <version>0.6.3.1</version>
     <type>pom</type>
 </dependency>
 ```
