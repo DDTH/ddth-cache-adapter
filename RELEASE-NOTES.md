@@ -1,6 +1,6 @@
 # ddth-cache-adapter release notes
 
-## 0.6.3.1 - 2017-12-24
+## 0.6.3.2 - 2017-12-24
 
 - Fail-safe:
   - Lazy-connect: Cache should not fail because of connecting to backend system during initializing.
