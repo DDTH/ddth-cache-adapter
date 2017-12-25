@@ -7,8 +7,8 @@ import java.util.Properties;
 import com.github.ddth.cacheadapter.AbstractCacheFactory;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheFactory;
-import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
-import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.guava.GuavaCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.redis.RedisCacheFactory;
 
 public class QndGuavaCache {
 

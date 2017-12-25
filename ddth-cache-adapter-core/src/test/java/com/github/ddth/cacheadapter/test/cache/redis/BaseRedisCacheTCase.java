@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.redis.RedisCacheFactory;
 import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
 import redis.clients.jedis.Jedis;
@@ -20,7 +20,7 @@ public abstract class BaseRedisCacheTCase extends BaseCacheTCase {
         public RedisCacheFactory init() {
             super.init();
 
-            try (Jedis jedis = getJedisPool().getResource()) {
+            try (Jedis jedis = getJedisConnector().getJedis()) {
                 jedis.flushAll();
             }
 

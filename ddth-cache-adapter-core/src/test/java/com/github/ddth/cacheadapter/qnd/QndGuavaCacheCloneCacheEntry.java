@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter.qnd;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheFactory;
-import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.guava.GuavaCacheFactory;
 
 public class QndGuavaCacheCloneCacheEntry {
 

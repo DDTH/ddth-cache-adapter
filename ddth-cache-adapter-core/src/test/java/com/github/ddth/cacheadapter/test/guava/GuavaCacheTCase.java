@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.junit.Before;
 
-import com.github.ddth.cacheadapter.guava.GuavaCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.guava.GuavaCacheFactory;
 import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
 /**

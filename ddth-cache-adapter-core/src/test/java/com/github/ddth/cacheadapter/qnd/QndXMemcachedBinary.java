@@ -5,8 +5,8 @@ import java.util.concurrent.TimeoutException;
 
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
-import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
 import com.github.ddth.cacheadapter.test.TestValue;
+import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.MemcachedClientBuilder;

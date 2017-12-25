@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import org.apache.thrift.TException;
 
 import com.github.ddth.cacheadapter.CacheEntry;
-import com.github.ddth.cacheadapter.thrift.TCacheEntry;
+import com.github.ddth.cacheadapter.utils.thrift.TCacheEntry;
 import com.github.ddth.commons.utils.SerializationUtils;
 
 /**

@@ -1,6 +1,19 @@
 ddth-cache-adapter release notes
 ================================
 
+0.6.3 - 2017-12-24
+------------------
+
+- Fail-safe:
+  - Lazy-connect: Cache should not fail because of connecting to backend system during initializing.
+  - Cache operation should throw only `CacheException` when failed, underlying exception should be wrapped into `CacheEception`.
+- Refactor:
+  - Fewer top-level packages: `com.github.ddth.cacheadapter`, `com.github.ddth.cacheadapter.utils` and `com.github.ddth.cacheadapter.cacheimpl`.
+- Bug fixes and Enhancements:
+  - `ClusteredRedisCache`: `deleteAll()` support `MONOPOLISTIC` key mode.
+  - Other fixes and enhancements
+
+
 0.6.2 - 2017-07-30
 ------------------
 

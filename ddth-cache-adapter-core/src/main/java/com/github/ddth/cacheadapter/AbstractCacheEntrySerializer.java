@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.ddth.cacheadapter.compressor.JdkDeflateCompressor;
+import com.github.ddth.cacheadapter.utils.compressor.JdkDeflateCompressor;
 
 /**
  * Abstract implementation of {@link ICacheEntrySerializer}.

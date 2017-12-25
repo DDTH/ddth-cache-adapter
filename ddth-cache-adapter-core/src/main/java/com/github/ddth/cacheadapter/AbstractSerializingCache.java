@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
 
 /**
  * Abstract cache implementation that requires cache entries to be

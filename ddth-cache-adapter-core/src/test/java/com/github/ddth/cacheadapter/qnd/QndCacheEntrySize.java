@@ -5,13 +5,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICompressor;
-import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
-import com.github.ddth.cacheadapter.ces.FstCacheEntrySerializer;
-import com.github.ddth.cacheadapter.ces.KryoCacheEntrySerializer;
-import com.github.ddth.cacheadapter.ces.ThriftCacheEntrySerializer;
-import com.github.ddth.cacheadapter.compressor.JdkDeflateCompressor;
 import com.github.ddth.cacheadapter.test.TestValue;
 import com.github.ddth.cacheadapter.utils.ThriftUtils;
+import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.FstCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.KryoCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.ThriftCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.compressor.JdkDeflateCompressor;
 import com.github.ddth.commons.utils.SerializationUtils;
 
 public class QndCacheEntrySize {

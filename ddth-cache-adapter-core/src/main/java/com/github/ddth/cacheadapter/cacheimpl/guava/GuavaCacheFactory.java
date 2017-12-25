@@ -1,0 +1,67 @@
+package com.github.ddth.cacheadapter.cacheimpl.guava;
+
+import java.util.Properties;
+
+import com.github.ddth.cacheadapter.AbstractCache;
+import com.github.ddth.cacheadapter.AbstractCacheFactory;
+import com.github.ddth.cacheadapter.ICacheFactory;
+
+/**
+ * <a href="http://code.google.com/p/guava-libraries/">Guava</a> implementation
+ * of {@link ICacheFactory}.
+ * 
+ * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
+ * @since 0.1.0
+ */
+public class GuavaCacheFactory extends AbstractCacheFactory {
+
+    private boolean cloneCacheEntries = false;
+
+    /**
+     * If {@code true}, cache entries are cloned when fetching out of cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean isCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned when fetching out of cache,
+     * default value is {@code false}.
+     * 
+     * @return
+     * @since 0.4.1.1
+     */
+    public boolean getCloneCacheEntries() {
+        return cloneCacheEntries;
+    }
+
+    /**
+     * If {@code true}, cache entries are cloned when fetching out of cache.
+     * 
+     * @param cloneCacheEntries
+     * @return
+     * @since 0.4.1.1
+     */
+    public GuavaCacheFactory setCloneCacheEntries(boolean cloneCacheEntries) {
+        this.cloneCacheEntries = cloneCacheEntries;
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected AbstractCache createCacheInternal(String name, long capacity, long expireAfterWrite,
+            long expireAfterAccess, Properties cacheProps) {
+        GuavaCache cache = new GuavaCache();
+        cache.setName(name).setCapacity(capacity).setExpireAfterAccess(expireAfterAccess)
+                .setExpireAfterWrite(expireAfterWrite).setCacheProperties(cacheProps);
+        cache.setCloneCacheEntries(cloneCacheEntries);
+        return cache;
+    }
+
+}

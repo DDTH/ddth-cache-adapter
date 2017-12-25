@@ -1,6 +1,6 @@
 package com.github.ddth.cacheadapter;
 
-import com.github.ddth.cacheadapter.redis.RedisCache;
+import com.github.ddth.cacheadapter.cacheimpl.redis.RedisCache;
 
 /**
  * Represents a cache.
@@ -49,11 +49,12 @@ public interface ICache {
     public long getCapacity();
 
     /**
-     * Return {@code true} if cache supports capacity (i.e. max number of items cache can contain is
-     * {@link #getCapacity()}, {@code false} otherwise.
+     * Return {@code true} if cache supports capacity (i.e. max number of items
+     * cache can contain is {@link #getCapacity()}, {@code false} otherwise.
      * 
      * <p>
-     * Some cache implementations such as {@link RedisCache} does not support capacity.
+     * Some cache implementations such as {@link RedisCache} does not support
+     * capacity.
      * </p>
      * 
      * @return
@@ -69,8 +70,8 @@ public interface ICache {
     public CacheStats getStats();
 
     /**
-     * Get number of seconds before entries to be expired since the last read
-     * or write.
+     * Get number of seconds before entries to be expired since the last read or
+     * write.
      * 
      * @return
      */

@@ -2,7 +2,7 @@ package com.github.ddth.cacheadapter;
 
 import java.util.Properties;
 
-import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
 
 /**
  * Abstract implementation of {@link ICacheFactory} that creates

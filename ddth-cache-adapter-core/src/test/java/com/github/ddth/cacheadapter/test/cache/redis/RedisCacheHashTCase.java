@@ -2,8 +2,8 @@ package com.github.ddth.cacheadapter.test.cache.redis;
 
 import org.junit.Before;
 
-import com.github.ddth.cacheadapter.redis.BaseRedisCache.KeyMode;
-import com.github.ddth.cacheadapter.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.redis.RedisCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.redis.BaseRedisCache.KeyMode;
 
 /**
  * 

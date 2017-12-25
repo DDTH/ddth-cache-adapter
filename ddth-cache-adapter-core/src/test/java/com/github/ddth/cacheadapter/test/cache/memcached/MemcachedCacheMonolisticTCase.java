@@ -2,8 +2,8 @@ package com.github.ddth.cacheadapter.test.cache.memcached;
 
 import org.junit.Before;
 
-import com.github.ddth.cacheadapter.memcached.XMemcachedCache.KeyMode;
-import com.github.ddth.cacheadapter.memcached.XMemcachedCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.memcached.XMemcachedCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.memcached.XMemcachedCache.KeyMode;
 
 /**
  * 

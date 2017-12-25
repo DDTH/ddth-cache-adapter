@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter.test.ceserializer;
 import org.junit.After;
 import org.junit.Before;
 
-import com.github.ddth.cacheadapter.ces.DefaultCacheEntrySerializer;
+import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

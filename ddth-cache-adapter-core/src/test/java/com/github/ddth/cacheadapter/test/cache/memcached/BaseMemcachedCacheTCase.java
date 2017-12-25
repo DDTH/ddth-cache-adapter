@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
-import com.github.ddth.cacheadapter.memcached.XMemcachedCacheFactory;
+import com.github.ddth.cacheadapter.cacheimpl.memcached.XMemcachedCacheFactory;
 import com.github.ddth.cacheadapter.test.cache.BaseCacheTCase;
 
 import net.rubyeye.xmemcached.exception.MemcachedException;
@@ -21,7 +21,7 @@ public abstract class BaseMemcachedCacheTCase extends BaseCacheTCase {
         public XMemcachedCacheFactory init() {
             super.init();
             try {
-                getMemcachedClient().flushAll();
+                getMemcachedConnector().getMemcachedClient().flushAll();
             } catch (TimeoutException | InterruptedException | MemcachedException e) {
                 e.printStackTrace();
             }
