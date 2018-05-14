@@ -49,9 +49,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<skipTests>true</skipTests>
 
-		<version.ddth_commons>0.7.1.1</version.ddth_commons>
+		<version.ddth_commons>0.9.1.3</version.ddth_commons>
 		<version.jedis>2.9.0</version.jedis>
-		<version.xmemcached>2.4.0</version.xmemcached>
+		<version.xmemcached>2.4.3</version.xmemcached>
 		<version.commons_codec>1.11</version.commons_codec>
 	</properties>
 

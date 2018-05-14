@@ -1,5 +1,11 @@
 # ddth-cache-adapter release notes
 
+## 0.6.3.3 - 2018-05-14
+
+- Update dependency libs.
+- Bug fixes and enhancements.
+
+
 ## 0.6.3.2 - 2017-12-24
 
 - Fail-safe:

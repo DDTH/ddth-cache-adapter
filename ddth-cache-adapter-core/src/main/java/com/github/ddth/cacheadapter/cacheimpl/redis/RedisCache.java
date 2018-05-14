@@ -10,6 +10,7 @@ import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
+import com.github.ddth.commons.redis.JedisConnector;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Protocol;
@@ -113,7 +114,7 @@ public class RedisCache extends BaseRedisCache {
      * {@inheritDoc}
      */
     @Override
-    public void init() {
+    public RedisCache init() {
         super.init();
 
         /*
@@ -128,11 +129,13 @@ public class RedisCache extends BaseRedisCache {
             try {
                 JedisConnector jedisConnector = new JedisConnector();
                 jedisConnector.setRedisHostsAndPorts(redisHostAndPort).init();
-                setJedisConnector(jedisConnector);
+                setJedisConnector(jedisConnector, true);
             } catch (Exception e) {
                 LOGGER.warn(e.getMessage(), e);
             }
         }
+
+        return this;
     }
 
     /**

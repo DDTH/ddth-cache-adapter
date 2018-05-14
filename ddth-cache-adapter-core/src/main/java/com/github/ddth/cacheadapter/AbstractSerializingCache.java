@@ -98,10 +98,11 @@ public abstract class AbstractSerializingCache extends AbstractCache {
      * {@inheritDoc}
      */
     @Override
-    public void init() {
+    public AbstractSerializingCache init() {
         super.init();
         if (cacheEntrySerializer == null) {
             cacheEntrySerializer = DefaultCacheEntrySerializer.instance;
         }
+        return this;
     }
 }

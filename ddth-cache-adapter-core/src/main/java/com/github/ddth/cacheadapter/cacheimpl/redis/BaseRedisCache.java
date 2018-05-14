@@ -10,6 +10,7 @@ import com.github.ddth.cacheadapter.CacheEntry;
 import com.github.ddth.cacheadapter.ICache;
 import com.github.ddth.cacheadapter.ICacheEntrySerializer;
 import com.github.ddth.cacheadapter.ICacheLoader;
+import com.github.ddth.commons.redis.JedisConnector;
 
 /**
  * Base class for <a href="http://redis.io">Redis</a>-based implementations of
@@ -163,17 +164,30 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     }
 
     /**
-     * 
      * @param jedisConnector
      * @return
      * @since 0.6.3
      */
     public BaseRedisCache setJedisConnector(JedisConnector jedisConnector) {
+        return setJedisConnector(jedisConnector, false);
+    }
+
+    /**
+     * Attach a {@link JedisConnector} to this cache.
+     * 
+     * @param jedisConnector
+     * @param setMyOwnRedis
+     *            set {@link #myOwnRedis} to {@code true} or not.
+     * @return
+     * @since 0.6.3.3
+     */
+    protected BaseRedisCache setJedisConnector(JedisConnector jedisConnector,
+            boolean setMyOwnRedis) {
         if (myOwnRedis && this.jedisConnector != null) {
-            this.jedisConnector.destroy();
+            this.jedisConnector.close();
         }
         this.jedisConnector = jedisConnector;
-        myOwnRedis = false;
+        myOwnRedis = setMyOwnRedis;
         return this;
     }
 
@@ -203,7 +217,7 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
      * {@inheritDoc}
      */
     @Override
-    public void init() {
+    public BaseRedisCache init() {
         super.init();
 
         long expireAfterWrite = getExpireAfterWrite();
@@ -247,6 +261,8 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
         if (!StringUtils.isBlank(password)) {
             this.redisPassword = password;
         }
+
+        return this;
     }
 
     /**
@@ -256,17 +272,19 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
      */
     @Override
     public void destroy() {
-        if (jedisConnector != null && myOwnRedis) {
-            try {
-                jedisConnector.destroy();
-            } catch (Exception e) {
-                LOGGER.warn(e.getMessage(), e);
-            } finally {
-                jedisConnector = null;
+        try {
+            super.destroy();
+        } finally {
+            if (jedisConnector != null && myOwnRedis) {
+                try {
+                    jedisConnector.destroy();
+                } catch (Exception e) {
+                    LOGGER.warn(e.getMessage(), e);
+                } finally {
+                    jedisConnector = null;
+                }
             }
         }
-
-        super.destroy();
     }
 
     /**

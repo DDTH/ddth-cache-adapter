@@ -62,7 +62,7 @@ public class GuavaCache extends AbstractCache {
      * {@inheritDoc}
      */
     @Override
-    public void init() {
+    public GuavaCache init() {
         super.init();
 
         /*
@@ -107,6 +107,8 @@ public class GuavaCache extends AbstractCache {
             }
         };
         cache = cacheBuilder.build(guavaCacheLoader);
+
+        return this;
     }
 
     /**
@@ -115,15 +117,17 @@ public class GuavaCache extends AbstractCache {
     @Override
     public void destroy() {
         try {
-            if (cache != null) {
-                cache.invalidateAll();
-                cache = null;
+            super.destroy();
+        } finally {
+            try {
+                if (cache != null) {
+                    cache.invalidateAll();
+                    cache = null;
+                }
+            } catch (Exception e) {
+                // EMPTY
             }
-        } catch (Exception e) {
-            // EMPTY
         }
-
-        super.destroy();
     }
 
     /**

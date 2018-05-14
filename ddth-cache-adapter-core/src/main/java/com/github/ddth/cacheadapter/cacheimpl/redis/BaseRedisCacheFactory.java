@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.github.ddth.cacheadapter.AbstractSerializingCacheFactory;
 import com.github.ddth.cacheadapter.ICacheFactory;
 import com.github.ddth.cacheadapter.cacheimpl.redis.BaseRedisCache.KeyMode;
+import com.github.ddth.commons.redis.JedisConnector;
 
 /**
  * Base class for <a href="http://redis.io">Redis</a>-based implementations of
@@ -50,16 +51,30 @@ public abstract class BaseRedisCacheFactory extends AbstractSerializingCacheFact
     }
 
     /**
-     * @param jedisPool
+     * @param jedisConnector
      * @return
      * @since 0.6.3
      */
     public BaseRedisCacheFactory setJedisConnector(JedisConnector jedisConnector) {
+        return setJedisConnector(jedisConnector, false);
+    }
+
+    /**
+     * Attach a {@link JedisConnector} to this cache.
+     * 
+     * @param jedisConnector
+     * @param setMyOwnRedis
+     *            set {@link #myOwnRedis} to {@code true} or not.
+     * @return
+     * @since 0.6.3.3
+     */
+    protected BaseRedisCacheFactory setJedisConnector(JedisConnector jedisConnector,
+            boolean setMyOwnRedis) {
         if (myOwnRedis && this.jedisConnector != null) {
             this.jedisConnector.close();
         }
         this.jedisConnector = jedisConnector;
-        myOwnRedis = false;
+        myOwnRedis = setMyOwnRedis;
         return this;
     }
 
@@ -121,16 +136,18 @@ public abstract class BaseRedisCacheFactory extends AbstractSerializingCacheFact
      * @since 0.6.3
      */
     public void destroy() {
-        if (jedisConnector != null && myOwnRedis) {
-            try {
-                jedisConnector.destroy();
-            } catch (Exception e) {
-                LOGGER.warn(e.getMessage(), e);
-            } finally {
-                jedisConnector = null;
+        try {
+            super.destroy();
+        } finally {
+            if (jedisConnector != null && myOwnRedis) {
+                try {
+                    jedisConnector.destroy();
+                } catch (Exception e) {
+                    LOGGER.warn(e.getMessage(), e);
+                } finally {
+                    jedisConnector = null;
+                }
             }
         }
-
-        super.destroy();
     }
 }

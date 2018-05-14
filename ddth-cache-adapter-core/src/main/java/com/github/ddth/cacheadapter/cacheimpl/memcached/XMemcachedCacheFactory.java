@@ -106,11 +106,25 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
      * @since 0.6.3
      */
     public XMemcachedCacheFactory setMemcachedConnector(XMemcachedConnector memcachedConnector) {
+        return setMemcachedConnector(memcachedConnector, false);
+    }
+
+    /**
+     * Attach a {@link XMemcachedConnector} to this cache factory.
+     * 
+     * @param memcachedConnector
+     * @param setMyOwnMemcachedConnector
+     *            set {@link #myOwnMemcachedConnector} to {@code true} or not.
+     * @return
+     * @since 0.6.3.3
+     */
+    protected XMemcachedCacheFactory setMemcachedConnector(XMemcachedConnector memcachedConnector,
+            boolean setMyOwnMemcachedConnector) {
         if (myOwnMemcachedConnector && this.memcachedConnector != null) {
             this.memcachedConnector.close();
         }
         this.memcachedConnector = memcachedConnector;
-        myOwnMemcachedConnector = false;
+        myOwnMemcachedConnector = setMyOwnMemcachedConnector;
         return this;
     }
 
@@ -124,6 +138,18 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
     }
 
     /**
+     * Build and initialize an instance of {@link XMemcachedConnector}.
+     * 
+     * @return
+     * @since 0.6.3.3
+     */
+    @SuppressWarnings("resource")
+    protected XMemcachedConnector buildXmemcachedConnector() {
+        return new XMemcachedConnector().setMemcachedHostsAndPorts(getMemcachedHostsAndPorts())
+                .init();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -132,8 +158,7 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
 
         if (memcachedConnector == null) {
             try {
-                memcachedConnector = new XMemcachedConnector();
-                memcachedConnector.setMemcachedHostsAndPorts(memcachedHostsAndPorts).init();
+                memcachedConnector = buildXmemcachedConnector();
             } catch (Exception e) {
                 LOGGER.warn(e.getMessage(), e);
             }
@@ -148,17 +173,19 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
      */
     @Override
     public void destroy() {
-        if (memcachedConnector != null && myOwnMemcachedConnector) {
-            try {
-                memcachedConnector.destroy();
-            } catch (Exception e) {
-                LOGGER.warn(e.getMessage(), e);
-            } finally {
-                memcachedConnector = null;
+        try {
+            super.destroy();
+        } finally {
+            if (memcachedConnector != null && myOwnMemcachedConnector) {
+                try {
+                    memcachedConnector.destroy();
+                } catch (Exception e) {
+                    LOGGER.warn(e.getMessage(), e);
+                } finally {
+                    memcachedConnector = null;
+                }
             }
         }
-
-        super.destroy();
     }
 
     /**

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.ddth.cacheadapter.ICacheFactory;
+import com.github.ddth.commons.redis.JedisConnector;
 
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
@@ -109,7 +110,7 @@ public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
                 JedisConnector jedisConnector = new JedisConnector();
                 jedisConnector.setRedisHostsAndPorts(redisHostsAndPorts)
                         .setRedisPassword(getRedisPassword()).init();
-                setJedisConnector(jedisConnector);
+                setJedisConnector(jedisConnector, true);
             } catch (Exception e) {
                 LOGGER.warn(e.getMessage(), e);
             }

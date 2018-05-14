@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public abstract class AbstractCache implements ICache {
+public abstract class AbstractCache implements ICache, AutoCloseable {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AbstractCache.class);
 
@@ -81,7 +81,7 @@ public abstract class AbstractCache implements ICache {
     /**
      * Initializes the cache before use.
      */
-    public void init() {
+    public AbstractCache init() {
         /*
          * Parse custom property: capacity
          */
@@ -132,12 +132,23 @@ public abstract class AbstractCache implements ICache {
         if (expireAfterWrite < -1) {
             setExpireAfterWrite(-1);
         }
+
+        return this;
     }
 
     /**
      * Destroys the cache after use.
      */
     public void destroy() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @since 0.6.3.3
+     */
+    @Override
+    public void close() {
+        destroy();
     }
 
     /**
