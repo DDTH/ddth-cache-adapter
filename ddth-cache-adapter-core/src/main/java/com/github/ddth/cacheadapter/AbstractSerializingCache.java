@@ -12,10 +12,14 @@ import com.github.ddth.cacheadapter.utils.ces.DefaultCacheEntrySerializer;
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.3.0
  */
-public abstract class AbstractSerializingCache extends AbstractCache {
+public abstract class AbstractSerializingCache extends AbstractCache
+        implements ICacheEntrySerializer {
 
     private Logger LOGGER = LoggerFactory.getLogger(AbstractSerializingCache.class);
 
+    /**
+     * Used to serialize/deserialize cache entries.
+     */
     private ICacheEntrySerializer cacheEntrySerializer;
 
     public AbstractSerializingCache() {
@@ -74,6 +78,42 @@ public abstract class AbstractSerializingCache extends AbstractCache {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.6.4
+     */
+    @Override
+    public byte[] serialize(CacheEntry ce) {
+        try {
+            return ce != null && cacheEntrySerializer != null ? cacheEntrySerializer.serialize(ce)
+                    : null;
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @since 0.6.4
+     */
+    @Override
+    public CacheEntry deserialize(byte[] data) {
+        try {
+            return data != null && cacheEntrySerializer != null
+                    ? cacheEntrySerializer.deserialize(data)
+                    : null;
+        } catch (Exception e) {
+            LOGGER.warn(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * @deprecated use {@link #serialize(CacheEntry)} instead.
+     */
     protected byte[] serializeCacheEntry(CacheEntry ce) {
         try {
             return ce != null && cacheEntrySerializer != null ? cacheEntrySerializer.serialize(ce)
@@ -84,10 +124,14 @@ public abstract class AbstractSerializingCache extends AbstractCache {
         }
     }
 
+    /**
+     * @deprecated use {@link #deserialize(byte[])} instead.
+     */
     protected CacheEntry deserializeCacheEntry(byte[] data) {
         try {
             return data != null && cacheEntrySerializer != null
-                    ? cacheEntrySerializer.deserialize(data) : null;
+                    ? cacheEntrySerializer.deserialize(data)
+                    : null;
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
             return null;

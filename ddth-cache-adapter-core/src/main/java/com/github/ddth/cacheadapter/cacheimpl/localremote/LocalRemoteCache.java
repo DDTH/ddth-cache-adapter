@@ -64,7 +64,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Puts an entry to both local and remote caches, with default expiry.
+     * Put an entry to both local and remote caches, with default expiry.
      */
     @Override
     public void set(String key, Object entry) {
@@ -81,7 +81,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Puts an entry to both local and remote caches, with specified expiries.
+     * Put an entry to both local and remote caches, specifying expiry.
      */
     @Override
     public void set(String key, Object entry, long expireAfterWrite, long expireAfterAccess) {
@@ -147,7 +147,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Deletes all entries in the local cache.
+     * Delete all entries in the local cache.
      */
     public void deleteAllLocal() {
         if (localCache != null) {
@@ -160,7 +160,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Checks if an entry exists in either local or remote cache.
+     * Check if an entry exists in either local or remote cache.
      */
     @Override
     public boolean exists(String key) {
@@ -173,7 +173,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Checks if an entry exists in the local cache.
+     * Check if an entry exists in the local cache.
      * 
      * @param key
      */
@@ -186,7 +186,7 @@ public class LocalRemoteCache extends AbstractCache {
     }
 
     /**
-     * Checks if an entry exists in the local cache.
+     * Check if an entry exists in the remote cache.
      * 
      * @param key
      */
@@ -216,5 +216,4 @@ public class LocalRemoteCache extends AbstractCache {
             throw e instanceof CacheException ? (CacheException) e : new CacheException(e);
         }
     }
-
 }

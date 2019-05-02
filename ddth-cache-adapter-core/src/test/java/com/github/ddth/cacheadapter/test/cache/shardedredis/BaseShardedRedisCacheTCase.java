@@ -28,6 +28,9 @@ public abstract class BaseShardedRedisCacheTCase extends BaseCacheTCase {
         }
     }
 
+    /*
+     * Use https://github.com/Grokzen/docker-redis-cluster for testing
+     */
     protected ShardedRedisCacheFactory buildRedisCacheFactory() {
         Map<String, Properties> cacheProperties = new HashMap<>();
 
@@ -36,7 +39,7 @@ public abstract class BaseShardedRedisCacheTCase extends BaseCacheTCase {
         cf.setDefaultCacheCapacity(DEFAULT_CACHE_CAPACITY);
         cf.setDefaultExpireAfterAccess(DEFAULT_EXPIRE_AFTER_ACCESS);
         cf.setDefaultExpireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE);
-        cf.setRedisHostsAndPorts("localhost:6379,localhost:6380");
+        cf.setRedisHostsAndPorts("localhost:7006,localhost:7007");
 
         return cf;
     }

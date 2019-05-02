@@ -14,7 +14,7 @@ import com.github.ddth.commons.redis.JedisConnector;
 
 import redis.clients.jedis.Protocol;
 import redis.clients.jedis.ShardedJedis;
-import redis.clients.util.SafeEncoder;
+import redis.clients.jedis.util.SafeEncoder;
 
 /**
  * Sharded <a href="http://redis.io">Redis</a> implementation of {@link ICache}.
@@ -99,7 +99,7 @@ public class ShardedRedisCache extends BaseRedisCache {
     }
 
     /**
-     * Sets Redis' hosts and ports scheme (format
+     * Set Redis' hosts and ports scheme (format
      * {@code host1:port1,host2:port2,host3:port3}).
      * 
      * @param redisHostsAndPorts
@@ -189,7 +189,7 @@ public class ShardedRedisCache extends BaseRedisCache {
                 CacheEntry ce = (CacheEntry) entry;
                 ttl = ce.getExpireAfterAccess();
             }
-            byte[] data = serializeCacheEntry((CacheEntry) entry);
+            byte[] data = serialize((CacheEntry) entry);
 
             // TTL Rules:
             // 1. New item: TTL is calculated as formula(s) above.
@@ -327,7 +327,7 @@ public class ShardedRedisCache extends BaseRedisCache {
                     ? jedis.hget(SafeEncoder.encode(getName()), SafeEncoder.encode(KEY))
                     : jedis.get(SafeEncoder.encode(KEY));
             if (data != null) {
-                CacheEntry ce = deserializeCacheEntry(data);
+                CacheEntry ce = deserialize(data);
                 if (ce != null && ce.touch()) {
                     /*
                      * Since v0.6.2: use refreshTTL() instead of set() to save

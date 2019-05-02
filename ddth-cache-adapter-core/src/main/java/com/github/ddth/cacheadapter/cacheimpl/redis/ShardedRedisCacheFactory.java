@@ -27,7 +27,7 @@ public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
     private final Logger LOGGER = LoggerFactory.getLogger(ShardedRedisCacheFactory.class);
 
     /**
-     * Creates a new {@link ShardedJedisPool}, with default timeout.
+     * Create a new {@link ShardedJedisPool}, with default timeout.
      * 
      * @param hostsAndPorts
      *            format {@code host1:port1,host2:port2...}
@@ -39,7 +39,7 @@ public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Creates a new {@link ShardedJedisPool}.
+     * Create a new {@link ShardedJedisPool}.
      * 
      * @param hostsAndPorts
      *            format {@code host1:port1,host2:port2...}
@@ -132,5 +132,4 @@ public class ShardedRedisCacheFactory extends BaseRedisCacheFactory {
         cache.setJedisConnector(getJedisConnector());
         return cache;
     }
-
 }

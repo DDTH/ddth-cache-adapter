@@ -22,7 +22,7 @@ public class DefaultCacheEntrySerializerWithCompressionTest extends BaseCacheEnt
     @Before
     public void setUp() {
         cacheEntrySerializer = new DefaultCacheEntrySerializer()
-                .setCompressor(JdkDeflateCompressor.instance);
+                .setCompressor(JdkDeflateCompressor.instance).init();
     }
 
     @After

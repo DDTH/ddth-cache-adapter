@@ -1,25 +1,25 @@
 package com.github.ddth.cacheadapter;
 
 /**
- * Interface to compress/decompress data ({@code byte[]}).
+ * API interface: compress/decompress data ({@code byte[]}).
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.4.1
  */
 public interface ICompressor {
     /**
-     * Compresses data.
+     * Compress data.
      * 
      * @param data
-     *            @return @throws
+     * @return @throws
      */
-    public byte[] compress(byte[] data) throws Exception;
+    public byte[] compress(byte[] data) throws CacheException;
 
     /**
-     * Decompresses data.
+     * Decompress data.
      * 
      * @param compressedData
-     *            @return @throws
+     * @return @throws
      */
-    public byte[] decompress(byte[] compressedData) throws Exception;
+    public byte[] decompress(byte[] compressedData) throws CacheException;
 }

@@ -20,7 +20,7 @@ public class KryoCacheEntrySerializerTest extends BaseCacheEntrySerializerTest {
 
     @Before
     public void setUp() {
-        cacheEntrySerializer = KryoCacheEntrySerializer.instance;
+        cacheEntrySerializer = new KryoCacheEntrySerializer().init();
     }
 
     @After

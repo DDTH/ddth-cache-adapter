@@ -1,7 +1,7 @@
 package com.github.ddth.cacheadapter;
 
 /**
- * Throws to indicate there has been an exception while interacting with the
+ * Thrown to indicate there has been an exception while interacting with the
  * underlying cache system.
  * 
  * @author Thanh Ba Nguyen <bnguyen2k@gmail.com>
@@ -29,7 +29,7 @@ public class CacheException extends RuntimeException {
     /*----------------------------------------------------------------------*/
 
     /**
-     * Throws to indicate that the specified cache key does not exist.
+     * Thrown to indicate that the specified cache key does not exist.
      * 
      * @author Thanh Ba Nguyen <bnguyen2k@gmail.com>
      * @since 0.6.0
@@ -46,7 +46,7 @@ public class CacheException extends RuntimeException {
     }
 
     /**
-     * Throws to indicate that the operation is not supported/allowed.
+     * Thrown to indicate that the operation is not supported/allowed.
      * 
      * @author Thanh Ba Nguyen <bnguyen2k@gmail.com>
      * @since 0.6.0

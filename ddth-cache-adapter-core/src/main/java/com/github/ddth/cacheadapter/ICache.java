@@ -3,7 +3,7 @@ package com.github.ddth.cacheadapter;
 import com.github.ddth.cacheadapter.cacheimpl.redis.RedisCache;
 
 /**
- * Represents a cache.
+ * Represent a cache.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0

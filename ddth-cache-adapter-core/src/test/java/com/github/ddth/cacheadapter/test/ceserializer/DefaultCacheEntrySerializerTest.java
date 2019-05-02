@@ -20,7 +20,7 @@ public class DefaultCacheEntrySerializerTest extends BaseCacheEntrySerializerTes
 
     @Before
     public void setUp() {
-        cacheEntrySerializer = DefaultCacheEntrySerializer.instance;
+        cacheEntrySerializer = new DefaultCacheEntrySerializer().init();
     }
 
     @After

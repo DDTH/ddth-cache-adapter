@@ -61,7 +61,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, AutoCloseab
     }
 
     /**
-     * Prefixes {@link #cacheNamePrefix} to {@code cacheName} if
+     * Prefix {@link #cacheNamePrefix} to {@code cacheName} if
      * {@link #cacheNamePrefix} is not null.
      * 
      * @param cacheName
@@ -119,7 +119,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, AutoCloseab
     }
 
     /**
-     * Gets all cache properties settings.
+     * Get all cache properties settings.
      * 
      * @return
      * @since 0.2.0.2
@@ -129,7 +129,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, AutoCloseab
     }
 
     /**
-     * Gets a cache's properties
+     * Get a cache's properties
      * 
      * @param name
      * @return
@@ -231,7 +231,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, AutoCloseab
     }
 
     /**
-     * Creates and initializes an {@link ICache} instance, ready for use.
+     * Create and initializes an {@link ICache} instance, ready for use.
      * 
      * @param name
      * @param capacity
@@ -252,7 +252,7 @@ public abstract class AbstractCacheFactory implements ICacheFactory, AutoCloseab
     }
 
     /**
-     * Creates a new cache instance, but does not initialize it. Convenient
+     * Create a new cache instance, but does not initialize it. Convenient
      * method for sub-class to override.
      * 
      * @param name

@@ -28,6 +28,9 @@ public abstract class BaseRedisCacheTCase extends BaseCacheTCase {
         }
     }
 
+    /*
+     * Use https://github.com/Grokzen/docker-redis-cluster for testing
+     */
     protected RedisCacheFactory buildRedisCacheFactory() {
         Map<String, Properties> cacheProperties = new HashMap<>();
 

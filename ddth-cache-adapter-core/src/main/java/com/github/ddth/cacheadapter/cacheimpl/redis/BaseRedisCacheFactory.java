@@ -99,40 +99,6 @@ public abstract class BaseRedisCacheFactory extends AbstractSerializingCacheFact
     }
 
     /**
-     * Should the factory build a global Redis resource (e.g. Redis client pool)
-     * to be shared by all Redis caches created by this factory.
-     * 
-     * @return
-     * @deprecated deprecated since 0.6.3
-     */
-    public boolean isBuildGlobalRedis() {
-        return true;
-    }
-
-    /**
-     * Should the factory build a global Redis resource (e.g. Redis client pool)
-     * to be shared by all Redis caches created by this factory.
-     * 
-     * @return
-     * @deprecated deprecated since 0.6.3
-     */
-    public boolean getBuildGlobalRedis() {
-        return true;
-    }
-
-    /**
-     * Should the factory build a global Redis resource (e.g. Redis client pool)
-     * to be shared by all Redis caches created by this factory.
-     * 
-     * @param buildGlobalRedis
-     * @return
-     * @deprecated deprecated since 0.6.3
-     */
-    public BaseRedisCacheFactory setBuildGlobalRedis(boolean buildGlobalRedis) {
-        return null;
-    }
-
-    /**
      * @since 0.6.3
      */
     public void destroy() {

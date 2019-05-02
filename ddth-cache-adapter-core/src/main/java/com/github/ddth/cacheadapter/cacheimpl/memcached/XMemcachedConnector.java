@@ -8,7 +8,7 @@ import com.github.ddth.cacheadapter.CacheException;
 import net.rubyeye.xmemcached.MemcachedClient;
 
 /**
- * Manage connection to memcached server.
+ * Manage connections to memcached server.
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.6.3
@@ -21,7 +21,7 @@ public class XMemcachedConnector implements AutoCloseable {
     private String memcachedHostsAndPorts = "localhost:11211";
 
     /**
-     * Get Memcached' hosts and ports scheme (format
+     * Get Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @return
@@ -31,7 +31,7 @@ public class XMemcachedConnector implements AutoCloseable {
     }
 
     /**
-     * Set Memcached' hosts and ports scheme (format
+     * Set Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @param memcachedHostsAndPorts
@@ -87,5 +87,4 @@ public class XMemcachedConnector implements AutoCloseable {
     public void close() {
         destroy();
     }
-
 }

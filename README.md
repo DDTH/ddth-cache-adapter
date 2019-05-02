@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/DDTH/ddth-cache-adapter.svg?branch=master)](https://travis-ci.org/DDTH/ddth-cache-adapter)
 
-ddth-cache-adapter
-==================
+# ddth-cache-adapter
 
 DDTH's adapter for various cache backends.
 
@@ -20,7 +19,7 @@ Third party libraries are distributed under their own licenses.
 
 ## Installation
 
-Latest release version: `0.6.3.3`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `0.6.4`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -31,7 +30,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.6.3.3</version>
+	<version>0.6.4</version>
 </dependency>
 ```
 
@@ -41,7 +40,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-memcached</artifactId>
-    <version>0.6.3.3</version>
+    <version>0.6.4</version>
     <type>pom</type>
 </dependency>
 ```
@@ -52,7 +51,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.6.3.3</version>
+    <version>0.6.4</version>
     <type>pom</type>
 </dependency>
 ```
@@ -190,4 +189,4 @@ Object value = cache.get("key1");
 
 > Note:
 > 
-> - `expireAfterWrite` and `expireAfterWrite` are in seconds.
+> - `expireAfterWrite` and `expireAfterAccess` are in seconds.

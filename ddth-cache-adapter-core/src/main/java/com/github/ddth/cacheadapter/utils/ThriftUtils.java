@@ -13,6 +13,7 @@ import com.github.ddth.commons.utils.SerializationUtils;
  * 
  * @author ThanhNB
  * @since 0.3.2
+ * @deprecated since v0.6.4
  */
 public class ThriftUtils {
 

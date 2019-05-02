@@ -24,7 +24,7 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     private final Logger LOGGER = LoggerFactory.getLogger(BaseRedisCache.class);
 
     /**
-     * Defines how cache key/entries are grouped together.
+     * Define how cache key/entries are grouped together.
      */
     public enum KeyMode {
         /**
@@ -155,7 +155,6 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     }
 
     /**
-     * 
      * @return
      * @since 0.6.3
      */
@@ -288,7 +287,7 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
     }
 
     /**
-     * Calculates cache key based on the key mode.
+     * Calculate cache key based on the key mode.
      * 
      * <ul>
      * <li>HASH & MONOPOLISTIC mode: return the key as-is</li>
@@ -322,5 +321,4 @@ public abstract class BaseRedisCache extends AbstractSerializingCache {
             set(key, entry, getExpireAfterWrite(), getExpireAfterAccess());
         }
     }
-
 }

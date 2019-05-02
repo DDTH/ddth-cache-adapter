@@ -8,6 +8,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ RedisCacheHashTCase.class, RedisCacheMonolisticTCase.class,
         RedisCacheNamespaceTCase.class })
 
+/*
+ * Use https://github.com/Grokzen/docker-redis-cluster for testing
+ */
 public class MySuiteTest {
 
 }

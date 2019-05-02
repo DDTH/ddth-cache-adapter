@@ -4,3 +4,5 @@
 /.settings
 /.README.md.html
 /.RELEASE-NOTES.md.html
+*.iml
+/.idea/

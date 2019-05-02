@@ -16,7 +16,7 @@ public class CacheStats {
     }
 
     /**
-     * Fires a cache miss event.
+     * Fire a cache miss event.
      * 
      * @return
      */
@@ -25,7 +25,7 @@ public class CacheStats {
     }
 
     /**
-     * Fires a cache hit event.
+     * Fire a cache hit event.
      * 
      * @return
      */
@@ -34,7 +34,7 @@ public class CacheStats {
     }
 
     /**
-     * Returns total number of cache misses.
+     * Return total number of cache misses.
      * 
      * @return
      */
@@ -43,7 +43,7 @@ public class CacheStats {
     }
 
     /**
-     * Returns total number of cache hits.
+     * Return total number of cache hits.
      * 
      * @return
      */

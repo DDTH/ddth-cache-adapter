@@ -24,7 +24,7 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
     private final Logger LOGGER = LoggerFactory.getLogger(RedisCacheFactory.class);
 
     /**
-     * Creates a new {@link JedisPool}, with default database and timeout.
+     * Create a new {@link JedisPool}, with default database and timeout.
      * 
      * @param hostAndPort
      * @param password
@@ -36,7 +36,7 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Creates a new {@link JedisPool}, with specified database and default
+     * Create a new {@link JedisPool}, with specified database and default
      * timeout.
      * 
      * @param hostAndPort
@@ -49,7 +49,7 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Creates a new {@link JedisPool} with default database and specified
+     * Create a new {@link JedisPool} with default database and specified
      * timeout.
      * 
      * @param hostAndPort
@@ -62,7 +62,7 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Creates a new {@link JedisPool}.
+     * Create a new {@link JedisPool}.
      * 
      * @param hostAndPort
      * @param password
@@ -103,7 +103,7 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Sets Redis' host and port scheme (format {@code host:port}).
+     * Set Redis' host and port scheme (format {@code host:port}).
      * 
      * @param redisHostAndPort
      * @return
@@ -148,5 +148,4 @@ public class RedisCacheFactory extends BaseRedisCacheFactory {
         cache.setJedisConnector(getJedisConnector());
         return cache;
     }
-
 }

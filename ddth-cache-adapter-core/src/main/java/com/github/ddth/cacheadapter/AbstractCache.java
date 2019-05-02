@@ -79,7 +79,7 @@ public abstract class AbstractCache implements ICache, AutoCloseable {
     }
 
     /**
-     * Initializes the cache before use.
+     * Initialize the cache before use.
      */
     public AbstractCache init() {
         /*
@@ -137,7 +137,7 @@ public abstract class AbstractCache implements ICache, AutoCloseable {
     }
 
     /**
-     * Destroys the cache after use.
+     * Destroy the cache after use.
      */
     public void destroy() {
     }
@@ -343,7 +343,7 @@ public abstract class AbstractCache implements ICache, AutoCloseable {
     }
 
     /**
-     * Gets an entry from cache. Sub-class overrides this method to actually
+     * Get an entry from cache. Sub-class overrides this method to actually
      * retrieve entries from cache.
      * 
      * @param key

@@ -22,7 +22,7 @@ public class KryoCacheEntrySerializerWithCompressionTest extends BaseCacheEntryS
     @Before
     public void setUp() {
         cacheEntrySerializer = new KryoCacheEntrySerializer()
-                .setCompressor(JdkDeflateCompressor.instance);
+                .setCompressor(JdkDeflateCompressor.instance).init();
     }
 
     @After

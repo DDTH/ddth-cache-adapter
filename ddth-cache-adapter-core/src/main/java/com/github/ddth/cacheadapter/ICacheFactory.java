@@ -1,7 +1,7 @@
 package com.github.ddth.cacheadapter;
 
 /**
- * Factory to create {@link ICache} instance.
+ * Factory to create {@link ICache} instances.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0

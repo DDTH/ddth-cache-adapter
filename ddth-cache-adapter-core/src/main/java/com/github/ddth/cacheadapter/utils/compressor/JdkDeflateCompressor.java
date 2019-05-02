@@ -1,12 +1,12 @@
 package com.github.ddth.cacheadapter.utils.compressor;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.InflaterOutputStream;
 
+import com.github.ddth.cacheadapter.CacheException;
 import com.github.ddth.cacheadapter.ICompressor;
 
 /**
@@ -48,35 +48,38 @@ public class JdkDeflateCompressor implements ICompressor {
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws IOException
      */
     @Override
-    public byte[] compress(byte[] data) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            Deflater def = new Deflater(compressionLevel, false);
-            try (DeflaterOutputStream dos = new DeflaterOutputStream(baos, def)) {
-                dos.write(data);
-                dos.finish();
-                return baos.toByteArray();
+    public byte[] compress(byte[] data) throws CacheException {
+        try {
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                Deflater def = new Deflater(compressionLevel, false);
+                try (DeflaterOutputStream dos = new DeflaterOutputStream(baos, def)) {
+                    dos.write(data);
+                    dos.finish();
+                    return baos.toByteArray();
+                }
             }
+        } catch (Exception e) {
+            throw e instanceof CacheException ? (CacheException) e : new CacheException(e);
         }
     }
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws IOException
      */
     @Override
-    public byte[] decompress(byte[] compressedData) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            try (InflaterOutputStream ios = new InflaterOutputStream(baos)) {
-                ios.write(compressedData);
-                ios.finish();
-                return baos.toByteArray();
+    public byte[] decompress(byte[] compressedData) throws CacheException {
+        try {
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                try (InflaterOutputStream ios = new InflaterOutputStream(baos)) {
+                    ios.write(compressedData);
+                    ios.finish();
+                    return baos.toByteArray();
+                }
             }
+        } catch (Exception e) {
+            throw e instanceof CacheException ? (CacheException) e : new CacheException(e);
         }
     }
-
 }

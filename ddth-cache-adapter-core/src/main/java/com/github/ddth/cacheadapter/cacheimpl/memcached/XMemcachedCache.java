@@ -32,7 +32,7 @@ public class XMemcachedCache extends AbstractSerializingCache {
     private final Logger LOGGER = LoggerFactory.getLogger(XMemcachedCache.class);
 
     /**
-     * Defines how cache key/entries are grouped together.
+     * Define how cache key/entries are grouped together.
      */
     public enum KeyMode {
         /**
@@ -155,7 +155,6 @@ public class XMemcachedCache extends AbstractSerializingCache {
     }
 
     /**
-     * 
      * @return
      * @see KeyMode
      */
@@ -164,7 +163,7 @@ public class XMemcachedCache extends AbstractSerializingCache {
     }
 
     /**
-     * Get Memcached' hosts and ports scheme (format
+     * Get Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @return
@@ -174,7 +173,7 @@ public class XMemcachedCache extends AbstractSerializingCache {
     }
 
     /**
-     * Set Memcached' hosts and ports scheme (format
+     * Set Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @param memcachedHostsAndPorts
@@ -365,7 +364,7 @@ public class XMemcachedCache extends AbstractSerializingCache {
             CacheEntry ce = (CacheEntry) entry;
             ttl = ce.getExpireAfterAccess();
         }
-        byte[] _data = serializeCacheEntry((CacheEntry) entry);
+        byte[] _data = serialize((CacheEntry) entry);
         String data = Base64.encodeBase64String(_data);
 
         final int TTL = (int) ttl;
@@ -533,7 +532,7 @@ public class XMemcachedCache extends AbstractSerializingCache {
         }
         if (_data != null) {
             byte[] data = Base64.decodeBase64(_data);
-            CacheEntry ce = deserializeCacheEntry(data);
+            CacheEntry ce = deserialize(data);
             if (ce != null && ce.touch()) {
                 set(key, ce, ce.getExpireAfterWrite(), ce.getExpireAfterAccess());
             }

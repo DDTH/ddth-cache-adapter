@@ -22,7 +22,7 @@ public class ThriftCacheEntrySerializerWithCompressionTest extends BaseCacheEntr
     @Before
     public void setUp() {
         cacheEntrySerializer = new ThriftCacheEntrySerializer()
-                .setCompressor(JdkDeflateCompressor.instance);
+                .setCompressor(JdkDeflateCompressor.instance).init();
     }
 
     @After

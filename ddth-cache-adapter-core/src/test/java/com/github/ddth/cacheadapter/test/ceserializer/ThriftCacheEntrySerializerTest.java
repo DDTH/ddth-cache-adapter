@@ -20,7 +20,7 @@ public class ThriftCacheEntrySerializerTest extends BaseCacheEntrySerializerTest
 
     @Before
     public void setUp() {
-        cacheEntrySerializer = ThriftCacheEntrySerializer.instance;
+        cacheEntrySerializer = new ThriftCacheEntrySerializer().init();
     }
 
     @After

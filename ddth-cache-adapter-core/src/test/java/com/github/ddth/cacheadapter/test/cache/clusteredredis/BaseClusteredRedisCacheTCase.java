@@ -25,12 +25,16 @@ public abstract class BaseClusteredRedisCacheTCase extends BaseCacheTCase {
             jedis.getClusterNodes().forEach((n, p) -> {
                 try (Jedis j = p.getResource()) {
                     j.flushAll();
+                } catch (Exception e) {
                 }
             });
             return this;
         }
     }
 
+    /*
+     * Use https://github.com/Grokzen/docker-redis-cluster for testing
+     */
     protected ClusteredRedisCacheFactory buildRedisCacheFactory() {
         Map<String, Properties> cacheProperties = new HashMap<>();
 
@@ -39,7 +43,8 @@ public abstract class BaseClusteredRedisCacheTCase extends BaseCacheTCase {
         cf.setDefaultCacheCapacity(DEFAULT_CACHE_CAPACITY);
         cf.setDefaultExpireAfterAccess(DEFAULT_EXPIRE_AFTER_ACCESS);
         cf.setDefaultExpireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE);
-        cf.setRedisHostsAndPorts("localhost:7000");
+        cf.setRedisHostsAndPorts(
+                "localhost:7000,localhost:7001,localhost:7002,localhost:7003,localhost:7004,localhost:7005");
 
         return cf;
     }

@@ -13,6 +13,7 @@ import com.github.ddth.cacheadapter.utils.ThriftUtils;
  * 
  * @author Thanh Nguyen <btnguyen2k@gmail.com>
  * @since 0.3.2
+ * @deprecated since v0.6.4
  */
 public class ThriftCacheEntrySerializer extends AbstractCacheEntrySerializer {
 

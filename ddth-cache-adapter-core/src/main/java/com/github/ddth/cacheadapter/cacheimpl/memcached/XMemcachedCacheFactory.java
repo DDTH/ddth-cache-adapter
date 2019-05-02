@@ -30,8 +30,8 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
     private final Logger LOGGER = LoggerFactory.getLogger(XMemcachedCacheFactory.class);
 
     /**
-     * Creates a new {@link MemcachedClient}, with default connection timeout
-     * and connection pool size of 1.
+     * Create a new {@link MemcachedClient}, with default connection timeout and
+     * connection pool size of 1.
      * 
      * @param hostsAndPorts
      *            Memcached' hosts and ports scheme (format
@@ -44,8 +44,8 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
     }
 
     /**
-     * Creates a new {@link MemcachedClient}, with specified connection timeout
-     * and connection pool size.
+     * Create a new {@link MemcachedClient}, specifying connection timeout and
+     * connection pool size.
      * 
      * @param hostsAndPorts
      *            Memcached' hosts and ports scheme (format
@@ -71,7 +71,7 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
     private String memcachedHostsAndPorts = "localhost:11211";
 
     /**
-     * Get Memcached' hosts and ports scheme (format
+     * Get Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @return
@@ -81,7 +81,7 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
     }
 
     /**
-     * Set Memcached' hosts and ports scheme (format
+     * Set Memcached's hosts and ports scheme (format
      * {@code host1:port1,host2:port2}).
      * 
      * @param memcachedHostsAndPorts
@@ -201,5 +201,4 @@ public class XMemcachedCacheFactory extends AbstractSerializingCacheFactory {
                 .setMemcachedConnector(memcachedConnector);
         return cache;
     }
-
 }

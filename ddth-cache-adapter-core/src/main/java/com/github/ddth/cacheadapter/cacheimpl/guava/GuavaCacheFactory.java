@@ -63,5 +63,4 @@ public class GuavaCacheFactory extends AbstractCacheFactory {
         cache.setCloneCacheEntries(cloneCacheEntries);
         return cache;
     }
-
 }

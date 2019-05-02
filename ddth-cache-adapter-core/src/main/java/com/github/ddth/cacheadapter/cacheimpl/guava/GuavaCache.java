@@ -247,9 +247,8 @@ public class GuavaCache extends AbstractCache {
             if (t instanceof CacheException.CacheEntryNotFoundException) {
                 return null;
             } else {
-                throw new RuntimeException(e);
+                throw t instanceof CacheException ? (CacheException) t : new CacheException(t);
             }
         }
     }
-
 }

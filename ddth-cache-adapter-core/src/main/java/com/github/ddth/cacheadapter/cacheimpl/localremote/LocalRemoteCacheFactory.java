@@ -53,5 +53,4 @@ public class LocalRemoteCacheFactory extends AbstractCacheFactory {
         cache.setLocalCache(localCache).setRemoteCache(remoteCache);
         return cache;
     }
-
 }

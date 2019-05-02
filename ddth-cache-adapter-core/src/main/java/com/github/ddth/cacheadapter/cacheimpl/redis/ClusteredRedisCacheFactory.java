@@ -29,7 +29,7 @@ public class ClusteredRedisCacheFactory extends BaseRedisCacheFactory {
     public final static int DEFAULT_MAX_ATTEMPTS = 3;
 
     /**
-     * Creates a new {@link JedisCluster}, with default timeout.
+     * Create a new {@link JedisCluster}, with default timeout.
      * 
      * @param hostsAndPorts
      *            format {@code host1:port1,host2:port2...}
@@ -41,7 +41,7 @@ public class ClusteredRedisCacheFactory extends BaseRedisCacheFactory {
     }
 
     /**
-     * Creates a new {@link JedisCluster}.
+     * Create a new {@link JedisCluster}.
      * 
      * @param hostsAndPorts
      *            format {@code host1:port1,host2:port2...}
@@ -134,5 +134,4 @@ public class ClusteredRedisCacheFactory extends BaseRedisCacheFactory {
         cache.setJedisConnector(getJedisConnector());
         return cache;
     }
-
 }

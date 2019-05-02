@@ -20,7 +20,7 @@ public class FstCacheEntrySerializerTest extends BaseCacheEntrySerializerTest {
 
     @Before
     public void setUp() {
-        cacheEntrySerializer = FstCacheEntrySerializer.instance;
+        cacheEntrySerializer = new FstCacheEntrySerializer().init();
     }
 
     @After

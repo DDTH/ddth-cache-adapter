@@ -1,30 +1,22 @@
 package com.github.ddth.cacheadapter;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.github.ddth.cacheadapter.utils.CacheUtils;
-import com.github.ddth.commons.serialization.DeserializationException;
-import com.github.ddth.commons.serialization.ISerializationSupport;
-import com.github.ddth.commons.serialization.SerializationException;
-import com.github.ddth.commons.utils.DPathUtils;
-import com.github.ddth.commons.utils.SerializationUtils;
 
 /**
- * Encapsulates a cache item with extra functionality.
+ * Encapsulate a cache item with extra functionality.
  * 
  * @author Thanh Ba Nguyen <btnguyen2k@gmail.com>
  * @since 0.1.0
  */
-public class CacheEntry implements Serializable, Cloneable, ISerializationSupport {
+public class CacheEntry implements Serializable, Cloneable {
 
     private final static long serialVersionUID = "0.5.1".hashCode();
     private final static long LAST_ACCESS_THRESHOLD_MS = 1000;
@@ -46,7 +38,7 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
             clone.value = CacheUtils.tryClone(value);
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            throw new CacheException(e);
         }
     }
 
@@ -209,67 +201,69 @@ public class CacheEntry implements Serializable, Cloneable, ISerializationSuppor
         return hcb.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @since 0.5.0
-     */
-    @Override
-    public byte[] toBytes() throws SerializationException {
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("k", this.key);
-        dataMap.put("tac", this.lastAccessTimestampMs);
-        dataMap.put("tcr", this.creationTimestampMs);
-        dataMap.put("eac", this.expireAfterAccess);
-        dataMap.put("ewr", this.expireAfterWrite);
-
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (value != null) {
-            dataMap.put("_c_", value.getClass().getName());
-            dataMap.put("v", SerializationUtils.toByteArray(this.value, cl));
-        }
-
-        return SerializationUtils.toByteArrayFst(dataMap, cl);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @since 0.5.0
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public CacheEntry fromBytes(byte[] data) throws DeserializationException {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        Map<String, Object> dataMap = SerializationUtils.fromByteArrayFst(data, Map.class, cl);
-
-        this.key = DPathUtils.getValue(dataMap, "k", String.class);
-
-        Long tAccess = DPathUtils.getValue(dataMap, "tac", Long.class);
-        this.lastAccessTimestampMs = tAccess != null ? tAccess.longValue()
-                : System.currentTimeMillis();
-
-        Long tCreate = DPathUtils.getValue(dataMap, "tcr", Long.class);
-        this.creationTimestampMs = tCreate != null ? tCreate.longValue()
-                : System.currentTimeMillis();
-
-        Long eAccess = DPathUtils.getValue(dataMap, "eac", Long.class);
-        this.expireAfterAccess = eAccess != null ? eAccess.longValue() : -1;
-
-        Long eWrite = DPathUtils.getValue(dataMap, "ewr", Long.class);
-        this.expireAfterWrite = eWrite != null ? eWrite.longValue() : -1;
-
-        String clazzName = DPathUtils.getValue(dataMap, "_c_", String.class);
-        if (!StringUtils.isBlank(clazzName)) {
-            try {
-                byte[] valueData = DPathUtils.getValue(dataMap, "v", byte[].class);
-                Class<?> clazz = Class.forName(clazzName, true, cl);
-                this.value = SerializationUtils.fromByteArray(valueData, clazz, cl);
-            } catch (ClassNotFoundException e) {
-                throw new DeserializationException(e);
-            }
-        }
-
-        return this;
-    }
+    // /**
+    // * {@inheritDoc}
+    // *
+    // * @since 0.5.0
+    // */
+    // @Override
+    // public byte[] toBytes() throws SerializationException {
+    // Map<String, Object> dataMap = new HashMap<>();
+    // dataMap.put("k", this.key);
+    // dataMap.put("tac", this.lastAccessTimestampMs);
+    // dataMap.put("tcr", this.creationTimestampMs);
+    // dataMap.put("eac", this.expireAfterAccess);
+    // dataMap.put("ewr", this.expireAfterWrite);
+    //
+    // ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    // if (value != null) {
+    // dataMap.put("_c_", value.getClass().getName());
+    // dataMap.put("v", SerializationUtils.toByteArray(this.value, cl));
+    // }
+    //
+    // return SerializationUtils.toByteArrayFst(dataMap, cl);
+    // }
+    //
+    // /**
+    // * {@inheritDoc}
+    // *
+    // * @since 0.5.0
+    // */
+    // @SuppressWarnings("unchecked")
+    // @Override
+    // public CacheEntry fromBytes(byte[] data) throws DeserializationException
+    // {
+    // ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    // Map<String, Object> dataMap = SerializationUtils.fromByteArrayFst(data,
+    // Map.class, cl);
+    //
+    // this.key = DPathUtils.getValue(dataMap, "k", String.class);
+    //
+    // Long tAccess = DPathUtils.getValue(dataMap, "tac", Long.class);
+    // this.lastAccessTimestampMs = tAccess != null ? tAccess.longValue()
+    // : System.currentTimeMillis();
+    //
+    // Long tCreate = DPathUtils.getValue(dataMap, "tcr", Long.class);
+    // this.creationTimestampMs = tCreate != null ? tCreate.longValue()
+    // : System.currentTimeMillis();
+    //
+    // Long eAccess = DPathUtils.getValue(dataMap, "eac", Long.class);
+    // this.expireAfterAccess = eAccess != null ? eAccess.longValue() : -1;
+    //
+    // Long eWrite = DPathUtils.getValue(dataMap, "ewr", Long.class);
+    // this.expireAfterWrite = eWrite != null ? eWrite.longValue() : -1;
+    //
+    // String clazzName = DPathUtils.getValue(dataMap, "_c_", String.class);
+    // if (!StringUtils.isBlank(clazzName)) {
+    // try {
+    // byte[] valueData = DPathUtils.getValue(dataMap, "v", byte[].class);
+    // Class<?> clazz = Class.forName(clazzName, true, cl);
+    // this.value = SerializationUtils.fromByteArray(valueData, clazz, cl);
+    // } catch (ClassNotFoundException e) {
+    // throw new DeserializationException(e);
+    // }
+    // }
+    //
+    // return this;
+    // }
 }

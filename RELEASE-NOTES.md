@@ -1,5 +1,14 @@
 # ddth-cache-adapter release notes
 
+## 0.6.4 - 2019-05-02
+
+- Update dependency libs.
+- Clean-up deprecated methods/classes.
+- Mark `ThriftCacheEntrySerializer` as deprecated.
+- `CacheEntry` no longer implements `com.github.ddth.commons.serialization.ISerializationSupport`
+- `DefaultCacheEntrySerializer` uses a `ISerDeser` (default `com.github.ddth.commons.serialization.FstSerDeser`) for serialization/deserialization.
+
+
 ## 0.6.3.3 - 2018-05-14
 
 - Update dependency libs.
