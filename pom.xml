@@ -10,7 +10,7 @@
 
 	<!-- <groupId>com.github.ddth</groupId> -->
 	<artifactId>ddth-cache-adapter</artifactId>
-	<version>0.6.4</version>
+	<version>0.6.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>ddth-cache-adapter</name>
