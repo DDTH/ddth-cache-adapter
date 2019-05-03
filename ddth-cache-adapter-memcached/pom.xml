@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.ddth</groupId>
 		<artifactId>ddth-cache-adapter</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ddth-cache-adapter-memcached</artifactId>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>com.github.ddth</groupId>
 			<artifactId>ddth-cache-adapter-serializing</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
