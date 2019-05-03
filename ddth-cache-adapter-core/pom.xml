@@ -1,60 +1,68 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.github.ddth</groupId>
-        <artifactId>ddth-cache-adapter</artifactId>
-        <version>0.6.5-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>com.github.ddth</groupId>
+		<artifactId>ddth-cache-adapter</artifactId>
+		<version>0.6.5-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>ddth-cache-adapter-core</artifactId>
-    <!-- <version>0.6.3.4-SNAPSHOT</version> -->
-    <packaging>bundle</packaging>
+	<artifactId>ddth-cache-adapter-core</artifactId>
+	<!-- <version>0.6.3.4-SNAPSHOT</version> -->
+	<packaging>bundle</packaging>
 
-    <name>ddth-cache-adapter-core</name>
-    <description>DDTH's adapter for various cache systems</description>
-    <url>https://github.com/DDTH/ddth-cache-adapter</url>
+	<name>ddth-cache-adapter-core</name>
+	<description>DDTH's adapter for various cache systems</description>
+	<url>https://github.com/DDTH/ddth-cache-adapter</url>
 
-    <developers>
-        <developer>
-            <id>btnguyen2k</id>
-            <name>Thanh Ba Nguyen</name>
-            <email>btnguyen2k@gmail.com</email>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>btnguyen2k</id>
+			<name>Thanh Ba Nguyen</name>
+			<email>btnguyen2k@gmail.com</email>
+		</developer>
+	</developers>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${version.java}</source>
-                    <target>${version.java}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <!-- <Bundle-Activator></Bundle-Activator> -->
-                        <Export-Package>com.github.ddth.cacheadapter,com.github.ddth.cacheadapter.utils,com.github.ddth.cacheadapter.utils.ces,com.github.ddth.cacheadapter.utils.compressor,com.github.ddth.cacheadapter.utils.thrift,com.github.ddth.cacheadapter.cacheimpl.guava,com.github.ddth.cacheadapter.cacheimpl.localremote,com.github.ddth.cacheadapter.cacheimpl.memcached,com.github.ddth.cacheadapter.cacheimpl.redis,com.github.ddth.cacheadapter.cacheimpl.threadlocal</Export-Package>
-                        <!-- <Import-Package>com.google.common.*;version="${version.guava}",*</Import-Package> -->
-                        <!-- <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> <Embed-Transitive>false</Embed-Transitive> 
-                            <Embed-Directory>lib</Embed-Directory> -->
-                    </instructions>
-                </configuration>
-            </plugin>
-            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId> 
-                <executions> <execution> <id>distro-assembly</id> <phase>package</phase> <goals> <goal>single</goal> 
-                </goals> <configuration> <descriptors> <descriptor>assembly/ddth-cache-adapter-withdeps.xml</descriptor> 
-                </descriptors> </configuration> </execution> </executions> </plugin> -->
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<!-- <Bundle-Activator></Bundle-Activator> -->
+						<Export-Package>com.github.ddth.cacheadapter,com.github.ddth.cacheadapter.utils,com.github.ddth.cacheadapter.utils.ces,com.github.ddth.cacheadapter.utils.compressor,com.github.ddth.cacheadapter.utils.thrift,com.github.ddth.cacheadapter.cacheimpl.guava,com.github.ddth.cacheadapter.cacheimpl.localremote,com.github.ddth.cacheadapter.cacheimpl.memcached,com.github.ddth.cacheadapter.cacheimpl.redis,com.github.ddth.cacheadapter.cacheimpl.threadlocal</Export-Package>
+						<!-- <Import-Package>com.google.common.*;version="${version.guava}",*</Import-Package> -->
+						<!-- <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency> <Embed-Transitive>false</Embed-Transitive> 
+							<Embed-Directory>lib</Embed-Directory> -->
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>distro-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>assembly/ddth-cache-adapter-withdeps.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

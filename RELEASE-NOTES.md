@@ -1,5 +1,11 @@
 # ddth-cache-adapter release notes
 
+## 1.0.0 - 2019-05-03
+
+- Migrate to `Java 11`.
+- Clean-up deprecated methods/classes.
+
+
 ## 0.6.4 - 2019-05-02
 
 - Update dependency libs.

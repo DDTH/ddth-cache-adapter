@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.github.ddth</groupId>
 		<artifactId>ddth-parent</artifactId>
-		<version>6</version>
+		<version>11</version>
 	</parent>
 
 	<!-- <groupId>com.github.ddth</groupId> -->
@@ -49,19 +49,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<skipTests>true</skipTests>
 
-		<version.ddth_commons>0.9.3</version.ddth_commons>
+		<version.ddth_commons>1.0.0</version.ddth_commons>
 		<version.jedis>3.0.1</version.jedis>
 		<version.xmemcached>2.4.6</version.xmemcached>
 		<version.commons_codec>1.12</version.commons_codec>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>sonatype-org</id>
-			<name>Sonatype Releases</name>
-			<url>http://oss.sonatype.org/content/repositories/releases/</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -146,19 +138,10 @@
 					<reuseForks>true</reuseForks>
 					<parallel>suites</parallel>
 					<useUnlimitedThreads>true</useUnlimitedThreads>
-
 					<skipTests>${skipTests}</skipTests>
 					<systemPropertyVariables>
 						<!-- <log4j.configuration>file:${basedir}/../etc/log4j.xml</log4j.configuration> -->
 					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
 		</plugins>

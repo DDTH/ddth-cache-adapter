@@ -7,19 +7,19 @@ DDTH's adapter for various cache backends.
 Project home:
 [https://github.com/DDTH/ddth-cache-adapter](https://github.com/DDTH/ddth-cache-adapter)
 
-**`ddth-cache-adapter` requires Java 8+ since v0.5.0**
+**`ddth-cache-adapter` requires Java 11+ since v1.0.0, for Java 8, use v0.x.y**
 
 
 ## License
 
-See LICENSE.txt for details. Copyright (c) 2014-2018 Thanh Ba Nguyen.
+See LICENSE.txt for details. Copyright (c) 2014-2019 Thanh Ba Nguyen.
 
 Third party libraries are distributed under their own licenses.
 
 
 ## Installation
 
-Latest release version: `0.6.4`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
+Latest release version: `1.0.0`. See [RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 Maven dependency: if only a sub-set of `ddth-cache-adapter` functionality is used, choose the corresponding
 dependency artifact(s) to reduce the number of unused jar files.
@@ -30,7 +30,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
 	<groupId>com.github.ddth</groupId>
 	<artifactId>ddth-cache-adapter-core</artifactId>
-	<version>0.6.4</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-memcached</artifactId>
-    <version>0.6.4</version>
+    <version>1.0.0</version>
     <type>pom</type>
 </dependency>
 ```
@@ -51,7 +51,7 @@ dependency artifact(s) to reduce the number of unused jar files.
 <dependency>
     <groupId>com.github.ddth</groupId>
     <artifactId>ddth-cache-adapter-redis</artifactId>
-    <version>0.6.4</version>
+    <version>1.0.0</version>
     <type>pom</type>
 </dependency>
 ```
